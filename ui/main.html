@@ -30,18 +30,58 @@
         </div>
         <div class="container__authorize">
             <div class="container__userName">
-            <img src="../assets/icon/user.svg" alt="white thema" class="user__img" />
-            <p class="user__name">Иван</p>
+                <img src="../assets/icon/user.svg" alt="white thema" class="user__img" />
+                <p class="user__name">Иван</p>
+            </div>
+            <button type="button" class="light_btn btn">LogOut</button>
         </div>
-        <button type="button" class="light_btn btn">LogOut</button>
-        </div>        
     </header>
-    <main class="main"></main>
+
+
+    <main class="main">
+        <section class="container__filter">
+            <h5 class="filter__title">Filter by</h5>
+            <div class="container__search">
+                <button class="search__by-name" type="button">name</button>
+                <span>/</span>
+                <button class="search__by-title" type="button">title</button>
+                <input type="search" class="search__input" placeholder="enter data" />
+            </div>
+            <div class="container__priority">
+                <p class="priority__title">priority</p>
+                <div class="priority__items">
+                    <button class="priority__btn priority_low" type="button" title="low"></button>
+                    <button class="priority__btn priority_medium" type="button" title="medium"></button>
+                    <button class="priority__btn priority_height" type="button" title="hight"></button>
+                </div>
+
+            </div>
+            <div class="container__privacy">
+                <p class="priority__title">privacy</p>
+                <button class="privacy__btn" type="button" title="privacy">
+                    <img src="./../assets/icon/person.svg" alt="icon" />
+                </button>
+                <button class="privacy__btn" type="button" title="public">
+                    <img src="./../assets/icon/multiple.svg" alt="icon" />
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="container__tasks">
+
+        </section>
+    </main>
+
+
     <footer class="footer">
         <h5 class="footer__title">Task Manager</h5>
         <address class="container__email">
             <p class="name__title">Sviatlana Matskevich</p>
-            <img src="./../assets/icon/email.svg" alt="icon email"/>
+            <img src="./../assets/icon/email.svg" alt="icon email" />
             <a href="mailto: Sve-Mac@yandex.ru" class="email__title">Sve-Mac@yandex.ru</a>
         </address>
         <p class="footer__date">20/02/2023</p>
