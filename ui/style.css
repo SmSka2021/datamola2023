@@ -6,7 +6,9 @@
   --fuschia-color: #F178B6;
   --irys-color: #A5A6F6;
   --grey-color: #807C8D;
+  --progress-color: #f7ef7e;
   --yellow-color: #fdfcbf;
+  --compleled-color: #a7e7ba;
   --filter-svg-red: invert(37%) sepia(93%) saturate(7471%) hue-rotate(356deg) brightness(91%) contrast(135%);
   --filter-svg-blue: invert(12%) sepia(83%) saturate(5841%) hue-rotate(244deg) brightness(87%) contrast(153%);
   --filter-svg-purple: invert(18%) sepia(98%) saturate(2657%) hue-rotate(289deg) brightness(121%) contrast(140%);
@@ -53,14 +55,14 @@ html *::-webkit-scrollbar {
 
 *::-webkit-scrollbar-track,
 html *::-webkit-scrollbar-track {
-  background: rgb(253, 216, 5);
+  background:  var(--progress-color);
 }
 
 *::-webkit-scrollbar-thumb,
 html *::-webkit-scrollbar-thumb {
-  background-color: rgb(8, 8, 245);
+  background-color: var(--technic-color);
   border-radius: 15px;
-  border: 3px solid rgb(253, 216, 5);
+  border: 3px solid var(--progress-color);
 }
 
 body {
@@ -446,7 +448,12 @@ body {
   justify-content: center;
   align-items: center;
 }
-
+.progress {
+  background: var(--progress-color);
+}
+.completed {
+  background: var(--compleled-color);
+}
 .task__text {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
