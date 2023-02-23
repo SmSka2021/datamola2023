@@ -6,6 +6,7 @@
   --fuschia-color: #F178B6;
   --irys-color: #A5A6F6;
   --grey-color: #807C8D;
+  --grey-light-color:rgb(225, 223, 233);
   --progress-color: #f7ef7e;
   --yellow-color: #fdfcbf;
   --compleled-color: #a7e7ba;
@@ -67,6 +68,11 @@ html *::-webkit-scrollbar-thumb {
 
 body {
   width: 100%;
+  min-height: 100vh;  
+}
+.wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -216,6 +222,9 @@ body {
   background-size: 100%;
   background-repeat: none;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .container__filter {
