@@ -6,7 +6,7 @@
   --fuschia-color: #F178B6;
   --irys-color: #A5A6F6;
   --grey-color: #807C8D;
-  --grey-light-color:rgb(225, 223, 233);
+  --grey-light-color: rgb(225, 223, 233);
   --progress-color: #f7ef7e;
   --yellow-color: #fdfcbf;
   --compleled-color: #a7e7ba;
@@ -27,6 +27,7 @@
   font-weight: 900;
   src: url("./../assets/fonts/Roboto-Bold.ttf") format(ttf);
 }
+
 @font-face {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
@@ -56,7 +57,7 @@ html *::-webkit-scrollbar {
 
 *::-webkit-scrollbar-track,
 html *::-webkit-scrollbar-track {
-  background:  var(--progress-color);
+  background: var(--progress-color);
 }
 
 *::-webkit-scrollbar-thumb,
@@ -68,8 +69,9 @@ html *::-webkit-scrollbar-thumb {
 
 body {
   width: 100%;
-  min-height: 100vh;  
+  min-height: 100vh;
 }
+
 .wrapper {
   max-width: 1440px;
   margin: 0 auto;
@@ -359,13 +361,13 @@ body {
 /*****************************container__tasks***************************/
 .container__columns {
   width: 100%;
-  padding: 20px 40px; 
+  padding: 20px 40px;
   display: flex;
   justify-content: space-between;
 }
 
 .column {
-  width: 350px; 
+  width: 350px;
 }
 
 .btn__add_task {
@@ -404,26 +406,31 @@ body {
   margin-bottom: 15px;
   cursor: pointer;
 }
+
 .task:hover {
   background: var(--yellow-color);
 }
+
 .container__title_task,
-.container__date_task, 
+.container__date_task,
 .container__info_task {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .container__btn_delete {
-  display: flex;  
+  display: flex;
   align-items: center;
   column-gap: 1.5rem;
 }
+
 .container__date_task {
   padding-right: 2.5rem;
   margin: 0;
 }
+
 .container__comments {
   display: flex;
   justify-content: flex-start;
@@ -441,10 +448,13 @@ body {
   font-weight: 400;
   font-size: 1.4rem;
   color: var(--grey-color);
+  margin: 0;
 }
+
 .user_name {
   background: var(--fuschia-color);
 }
+
 .label__todo {
   width: 7rem;
   height: 2rem;
@@ -457,12 +467,15 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .progress {
   background: var(--progress-color);
 }
+
 .completed {
   background: var(--compleled-color);
 }
+
 .task__text {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
@@ -471,23 +484,27 @@ body {
   color: var(--primary-color);
   margin: 0;
 }
+
 .btn_icon {
   border: none;
   background: transparent;
   width: 30px;
   height: 30px;
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all .4s ease;
 }
+
 .user_name {
   background: var(--fuschia-color);
 }
+
 .img_delete:hover {
   filter: var(--filter-svg-red);
 }
+
 .img_edit:hover {
   filter: var(--filter-svg-blue);
 }
