@@ -1,0 +1,159 @@
+.main__create_task {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0;
+}
+
+.wrapper__cteate_task {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--grey-light-color);
+    opacity: 0.5;
+    z-index: 2;
+}
+
+.container__create_task {
+    position: relative;
+    z-index: 3;
+}
+
+.container__form_task {
+    width: 450px;
+    margin: 0 auto;
+    position: relative;
+    background-image: url('./../assets/img/dark_fon.jpg');
+    background-size: 100%;
+    border-radius: 10px;
+    padding: 10px 25px;
+}
+
+.form__task_title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 2.8rem;
+    text-align: center;
+    color: var(--white-color);
+    margin: 0;
+}
+
+.form__btn_close {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 30px;
+    top: 15px;
+    border-radius: 50%;
+    border: none;
+    background: var(--white-color);
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.form__btn_close:hover {
+    background: var(--irys-color);
+}
+
+.container__input_task {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 1rem auto;
+}
+
+.label__task_info {
+    font-family: "Open Sans", sans-serif;
+    color: var(--white-color);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 3px 0;
+}
+
+.label_width {
+    width: 60px;
+}
+
+.radio_label {
+    color: var(--irys-color);
+    font-size: 1.4rem;
+}
+
+.input__task_info {
+    border-radius: 5px;
+    font-size: 1.4rem;
+    padding: 3px 10px;
+    background: var(--secondary-color);
+    height: 30px;
+}
+
+.container__line_second {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container__input_second {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container__radios {
+    display: flex;
+    justify-content: space-between;
+    border: 1px dashed var(--secondary-color);
+    padding: 3px 5px;
+}
+
+.container__radio {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.container__input_status {
+    margin: 10px 0;
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    align-items: center;
+}
+
+.status_container {
+    flex-grow: 1;
+}
+
+.area__task_description {
+    resize: none;
+    min-height: 50px;
+}
+
+
+.form__task_btn {
+    width: 90px;
+    height: 30px;
+    font-size: 1.4rem;
+}
+
+.form__task_btns {
+    width: 100%;
+    display: flex;
+    padding: 10px 0;
+    justify-content: space-between;
+}
+
+.form__task_btns button:first-child {
+    color: red;
+}
+
+.form__task_btns button:last-child {
+    color: green;
+}

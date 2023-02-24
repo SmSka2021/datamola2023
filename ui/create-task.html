@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-create-task.css">
+    <title>TaskManager</title>
+    <link rel="icon" type="image" href="./../assets/icon/tm.png">
+</head>
+
+<body>
+    <form class="wrapper">
+        <header class="header">
+            <div class="container__logo">
+                <img src="../assets/icon/llogo.svg" alt="logo" class="logo__img" />
+                <h3 class="logo__title">Task Manager</h3>
+            </div>
+            <div class="container__thema">
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/typcn_weather-sunny.svg" alt="white thema" class="thema__img" />
+                </button>
+
+                <span>/</span>
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/line-md_moon-twotone.svg" alt="white thema" class="thema__img" />
+                </button>
+
+            </div>
+            <div class="container__authorize">
+                <div class="container__userName">
+                    <img src="../assets/icon/user.svg" alt="white thema" class="user__img" />
+                    <p class="user__name">Иван</p>
+                </div>
+                <button type="button" class="light_btn btn">LogOut</button>
+            </div>
+        </header>
+
+        
+        <main class="main main__create_task">
+            <div class="wrapper__cteate_task"></div>  
+
+            <section class="container__create_task">
+
+                <div class="container__form_task">
+                    <h4 class="form__task_title">Create new Task</h4>
+                    <button type="button" class="form__btn_close">X</button>
+
+                    <form class="form__task">
+                        <div class="container__input_task">
+                            <label class="label__task_info" for="titleTask">Title</label>
+                            <input class="input__task_info" type="text" id="titleTask" placeholder="Enter title task" />
+                        </div>
+                        <div class="container__line_second">
+                            <div class="container__input_second">
+                                <label class="label__task_info" for="userName">User Name</label>
+                                <input class="input__task_info" type="text" id="userName" placeholder="Enter name" />
+                            </div>
+                            <div class="container__input_second">
+                                <p class="label__task_info">Privacy</p>
+                                <div class="container__radios">
+                                    <div class="container__radio">
+                                        <input class="input__task_info" name="privacy" value="private" type="radio"
+                                            id="privacy" checked />
+                                        <label class="label__task_info radio_label" for="privacy">Private</label>
+
+                                    </div>
+                                    <div class="container__radio">
+                                        <input class="input__task_info" name="privacy" value="public" type="radio"
+                                            id="public" />
+                                        <label class="label__task_info radio_label" for="public">Public</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container__input_status">
+                            <p class="label__task_info label_width">Status</p>
+                            <div class="container__radios status_container">
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="status" value="ToDo" type="radio" id="todo"
+                                        checked />
+                                    <label class="label__task_info radio_label" for="todo">To Do</label>
+
+                                </div>
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="status" value="InProcess" type="radio"
+                                        id="inProcess" />
+                                    <label class="label__task_info radio_label" for="inProcess">In Process</label>
+                                </div>
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="status" value="Completed" type="radio"
+                                        id="completed" />
+                                    <label class="label__task_info radio_label" for="completed">Completed</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container__input_status">
+                            <p class="label__task_info label_width">Priority</p>
+                            <div class="container__radios status_container">
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="priority" value="height" type="radio"
+                                        id="height" checked />
+                                    <label class="label__task_info radio_label" for="height">Height</label>
+
+                                </div>
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="priority" value="medium" type="radio"
+                                        id="medium" />
+                                    <label class="label__task_info radio_label" for="medium">Medium</label>
+                                </div>
+                                <div class="container__radio">
+                                    <input class="input__task_info" name="priority" value="low" type="radio" id="low" />
+                                    <label class="label__task_info radio_label" for="low">Low</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="container__input_task">
+                            <label class="label__task_info" for="description">Description</label>
+                            <textarea class="input__task_info area__task_description" maxlength="280" type="text"
+                                id="description"></textarea>
+                        </div>
+
+                        <div class="form__task_btns">
+                            <button type="button" class="light_btn btn form__task_btn">Reset</button>
+                            <button type="button" class="light_btn btn form__task_btn">Save</button>
+
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+        <footer class="footer">
+            <h5 class="footer__title">Task Manager</h5>
+            <address class="container__email">
+                <p class="name__title">Sviatlana Matskevich</p>
+                <img src="./../assets/icon/email.svg" alt="icon email" />
+                <a href="mailto: Sve-Mac@yandex.ru" class="email__title">Sve-Mac@yandex.ru</a>
+            </address>
+            <p class="footer__date">20/02/2023</p>
+        </footer>
+        </div>
+</body>
+
+</html>
