@@ -3,12 +3,11 @@
     
 }
 .container__form {
-    width: 50%;
-    height: 500px;
+    width: 30%;   
     margin: 0 auto;
     background-image: url('./../assets/img/dark_fon.jpg');
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px 20px;
 }
 .user__info_title {
     font-family: 'Open Sans', sans-serif;   
@@ -26,5 +25,51 @@
 }
 .label__user_info {
     color: var(--white-color);
-    font-size: 1.8rem;
+    font-size: 1.4rem;
+    margin: 12px 0 7px;
+    font-weight: 500;
+}
+.input__user_info {
+border-radius: 5px;
+font-size: 1.4rem;
+padding: 3px 10px;
+}
+.container__avatar {
+    display: flex;
+    justify-content: space-between;
+    border: 1px dashed var(--secondary-color);
+    padding: 3px 2px;
+}
+.container__avatar img:first-child {
+border: 3px solid var(--fuschia-color);
+border-radius: 50%;
+}
+.container__avatar img {
+    border: 3px solid transparent;
+    border-radius: 50%;
+}
+.container__avatar img:hover {
+    border: 3px solid var(--progress-color);
+    border-radius: 50%;
+}
+.form_btn {
+    width: 70px;
+    height: 30px;
+    font-size: 1.2rem;
+}
+.form_btns {
+    width: 100%;
+    display: flex;
+    padding: 10px 35px;
+    justify-content: space-between;
+}
+.action__form_btns {
+    display: flex;
+    column-gap: 15px;
+}
+.action__form_btns button:first-child {
+    color: red;
+}
+.action__form_btns button:last-child {
+    color:  green;
 }
