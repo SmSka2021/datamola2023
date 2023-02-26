@@ -1,0 +1,87 @@
+.main__confirm_modal {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0;
+}
+
+.wrapper__confirm_modal {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--grey-light-color);
+    opacity: 0.5;
+    z-index: 2;
+}
+
+.container__confirm_modal {
+    position: relative;
+    z-index: 3;
+}
+
+.modal {
+    width: 300px;
+    height: 250px;
+    margin: 0 auto;
+    position: relative;
+    background-image: url('./../assets/img/dark_fon.jpg');
+    background-size: 100%;
+    border-radius: 10px;
+    padding: 10px 25px;
+}
+
+.confirm__modal_title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 2.4rem;
+    text-align: center;
+    color: var(--white-color);
+    margin: 50px 0 0 0 ;
+}
+
+.form__btn_close {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 30px;
+    top: 15px;
+    border-radius: 50%;
+    border: none;
+    background: var(--white-color);
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.form__btn_close:hover {
+    background: var(--irys-color);
+}
+
+.confirm__modal_btn {
+    width: 90px;
+    height: 30px;
+    font-size: 1.4rem;
+}
+
+.confirm__modal_btns {
+    width: 100%;
+    display: flex;
+    padding: 10px 0;
+    justify-content: space-around;
+    margin-top: 50px;
+}
+
+.confirm__modal_btns button:first-child {
+    color: red;
+}
+
+.confirm__modal_btns button:last-child {
+    color: green;
+}
