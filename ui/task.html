@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-task.css">
+    <title>TaskManager</title>
+    <link rel="icon" type="image" href="./../assets/icon/tm.png">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="container__logo">
+                <img src="../assets/icon/llogo.svg" alt="logo" class="logo__img" />
+                <h3 class="logo__title">Task Manager</h3>
+            </div>
+            <div class="container__thema">
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/typcn_weather-sunny.svg" alt="white thema" class="thema__img" />
+                </button>
+
+                <span>/</span>
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/line-md_moon-twotone.svg" alt="white thema" class="thema__img" />
+                </button>
+
+            </div>
+            <div class="container__authorize">
+                <div class="container__userName">
+                    <img src="../assets/icon/user.svg" alt="white thema" class="user__img" />
+                    <p class="user__name">Иван</p>
+                </div>
+                <button type="button" class="light_btn btn">LogOut</button>
+            </div>
+        </header>
+
+
+        <main class="main main_task">    
+            <button type="button" class="dark_btn btn"><img src="./../assets/icon/previous.svg" alt="icon"/></button>
+            <section class="container__one_task">        
+                 <div class="header_task">
+                    <div class="container__label">
+                       <div class="label__todo"> <p>Todo</p></div>
+                       <div class="label__todo user_name"><p>userName</p></div>
+                    </div>
+                    <div class="container__title_one_task">
+                        <img src="./../assets/icon/priority_medium.svg" alt="priority icon" class="task__priority_img">
+                     <h6 class="task__title_one">Up on stage! Decorate.</h6>
+                    </div>
+                     
+                     <div class="container__btn_task">
+                        <button type="button" class="btn_icon delete"><img class="img_delete"
+                                src="./../assets/icon/delete.svg" alt="icon delete" /></button>
+                        <button type="button" class="btn_icon edit"><img class="img_edit"
+                                src="./../assets/icon/edit.svg" alt="icon edit" /></button>
+                    </div>   
+                </div>
+                <div class="container__date_task_one">
+                    <p class="task__date">22/02/2023</p>
+                    <img src="./../assets/icon/multiple1.svg" alt="privacy icon" class="task__img_privacy">
+                </div>
+                <p class="task__text_one">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate obcaecati aut iste, beatae in fugiat tenetur cum saepe animi laborum ut possimus dolor voluptatem assumenda, excepturi magni autem at. Minus illum recusandae, quos suscipit exercitationem ratione! Animi quod sequi laudantium eligendi praesentium, delectus, unde aut, commodi numquam corporis mollitia accusantium.</p>
+
+                            
+                <h6 class="comments__title">Comments:</h6>
+                <ul class="comments__list">
+                    <li class="container__comment">
+                        <img src="./../assets/icon/comment-text.svg" alt="comments icon"
+                        class="task__img_comment">
+                        <div class="comment__item">
+                            <div class="comment__user_name">
+                                <p class="user__name_item">Иван</p>
+                                <p class="task__date">22/02/2023</p>
+                            </div>
+                            <p class="task__comments_one">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste dolorum id veritatis fugit rerum saepe. Vero, laudantium! Nisi quo molestiae voluptate ad ratione. Quo amet, neque pariatur soluta numquam cum.</p>
+                        </div>                    
+                    </li>
+                    <li class="container__comment">
+                        <img src="./../assets/icon/comment-text.svg" alt="comments icon"
+                        class="task__img_comment">
+                        <div class="comment__item">
+                            <div class="comment__user_name">
+                                <p class="user__name_item">Aнна</p>
+                                <p class="task__date">20/02/2020</p>
+                            </div>
+                            <p class="task__comments_one">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, totam quo quod nisi blanditiis facere?</p>
+                        </div>                    
+                    </li>
+                </ul>
+                <form action="#" class="form">
+                    <label class="form__label" for="addComment">Comment:</label>
+                        <textarea class="form__area" name="comment" id="addComment" maxlength='280'></textarea>
+                        <button type="button" class="light_btn btn">Add</button>
+
+                </form>
+             </section>           
+        </main>
+
+
+        <footer class="footer">
+            <h5 class="footer__title">Task Manager</h5>
+            <address class="container__email">
+                <p class="name__title">Sviatlana Matskevich</p>
+                <img src="./../assets/icon/email.svg" alt="icon email" />
+                <a href="mailto: Sve-Mac@yandex.ru" class="email__title">Sve-Mac@yandex.ru</a>
+            </address>
+            <p class="footer__date">20/02/2023</p>
+        </footer>
+    </div>
+</body>
+
+</html>

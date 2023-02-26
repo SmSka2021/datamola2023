@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_list.css">
+    <title>TaskManager</title>
+    <link rel="icon" type="image" href="./../assets/icon/tm.png">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="container__logo">
+                <img src="../assets/icon/llogo.svg" alt="logo" class="logo__img" />
+                <h3 class="logo__title">Task Manager</h3>
+            </div>
+            <div class="container__thema">
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/typcn_weather-sunny.svg" alt="white thema" class="thema__img" />
+                </button>
+
+                <span>/</span>
+                <button type="button" class="thema__btn">
+                    <img src="../assets/icon/line-md_moon-twotone.svg" alt="white thema" class="thema__img" />
+                </button>
+
+            </div>
+            <div class="container__authorize">
+                <div class="container__userName">
+                    <img src="../assets/icon/user.svg" alt="white thema" class="user__img" />
+                    <p class="user__name">Иван</p>
+                </div>
+                <button type="button" class="light_btn btn">LogOut</button>
+            </div>
+        </header>
+
+
+        <main class="main">
+            <section class="container__filter">
+                <h5 class="filter__title">Filter by</h5>
+                <div class="container__search">
+                    <button class="search__by-name" type="button">name</button>
+                    <span>/</span>
+                    <button class="search__by-title" type="button">title</button>
+                    <input type="search" class="search__input" placeholder="enter data" />
+                </div>
+                <div class="container__priority">
+                    <p class="priority__title">priority</p>
+                    <div class="priority__items">
+                        <button class="priority__btn priority_low" type="button" title="low"></button>
+                        <button class="priority__btn priority_medium" type="button" title="medium"></button>
+                        <button class="priority__btn priority_height" type="button" title="hight"></button>
+                    </div>
+
+                </div>
+                <div class="container__privacy">
+                    <p class="priority__title">privacy</p>
+                    <button class="privacy__btn" type="button" title="privacy">
+                        <img src="./../assets/icon/person.svg" alt="icon" />
+                    </button>
+                    <button class="privacy__btn" type="button" title="public">
+                        <img src="./../assets/icon/multiple.svg" alt="icon" />
+                    </button>
+
+                </div>
+                <div class="container__privacy">
+                    <p class="priority__title">date</p>
+                    <div class="container__date">
+                        <label class="date__label">from
+                            <input class="input__date" type="date" />
+                        </label>
+                        <label class="date__label">to
+                            <input class="input__date" type="date" />
+                        </label>
+                    </div>
+                </div>
+                <button type="button" class="dark_btn btn">Reset</button>
+            </section>
+
+
+            <section class="container__row">
+                <div class="container__todo">
+                    <div class="table__header table__header_close">
+                        <h5 class="label__todo_list">To Do</h5>
+                        <button type="button" class="btn_icon close__todo_btn"><img class="close__todo_img"
+                                src="./../assets/icon/closeBtn.svg" alt="icon" /></button>
+                    </div>
+                </div>
+
+                <div class="container__todo">
+                    <div class="table__header table__header_open">
+                        <h5 class="label__todo_list label_open">In progress</h5>
+                        <button type="button" class="btn_icon btn__add_task"><img class="add__todo_img"
+                                src="./../assets/icon/add-plus-circle.svg" alt="icon"></button>
+                        <button type="button" class="btn_icon open__todo_btn"><img class="open__todo_img"
+                                src="./../assets/icon/folder-open.svg" alt="icon" /></button>
+                    </div>
+                    <table class="open__table">
+                        <thead>
+                            <tr>
+                                <th>Name Task</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Privacy</th>
+                                <th>Assignee</th>
+                                <th>Date</th>
+                                <th>
+                                    <img src="./../assets/icon/comment-text.svg" alt="comments icon"
+                                        class="task__img_comment">
+                                </th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Correct style</td>
+                                <td>
+                                    <div class="label__todo progress table_progress">
+                                        <p>In progress</p>
+                                    </div>
+                                </td>
+                                <td class="comment__text">Decor team will work right after team A done cleaning the
+                                    hall. no gap time, chop
+                                    chop. make it vibrant!</td>
+                                <td>
+                                    <img src="./../assets/icon/priority_medium.svg" alt="priority icon"
+                                        class="task__priority_img" />
+                                </td>
+                                <td><img src="./../assets/icon/multiple1.svg" alt="privacy icon"
+                                        class="task__img_privacy" /></td>
+                                <td>TomSoer</td>
+                                <td>22/02/2023</td>
+                                <td>2</td>
+                                <td> <button type="button" class="btn_icon edit"><img class="img_edit"
+                                            src="./../assets/icon/edit.svg" alt="icon edit" /></button></td>
+                                <td><button type="button" class="btn_icon delete"><img class="img_delete"
+                                            src="./../assets/icon/delete.svg" alt="icon delete" /></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Correct html</td>
+                                <td>
+                                    <div class="label__todo table_progress">
+                                        <p>ToDo</p>
+                                    </div>
+                                </td>
+                                <td class="comment__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. In,
+                                    consequatur!</td>
+                                <td><img src="./../assets/icon/priority_medium.svg" alt="priority icon"
+                                        class="task__priority_img" /> </td>
+                                <td><img src="./../assets/icon/multiple1.svg" alt="privacy icon"
+                                        class="task__img_privacy" /></td>
+                                <td>JekVorobej</td>
+                                <td>27/02/2023</td>
+                                <td>7</td>
+                                <td> <button type="button" class="btn_icon edit">
+                                        <img class="img_edit" src="./../assets/icon/edit.svg" alt="icon edit" />
+                                    </button>
+                                </td>
+                                <td><button type="button" class="btn_icon delete">
+                                        <img class="img_delete" src="./../assets/icon/delete.svg"
+                                            alt="icon delete" /></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Add React</td>
+                                <td>
+                                    <div class="label__todo table_progress">
+                                        <p>ToDo</p>
+                                    </div>
+                                </td>
+                                <td class="comment__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. In,
+                                    consequatur!</td>
+                                <td><img src="./../assets/icon/priority_medium.svg" alt="priority icon"
+                                        class="task__priority_img" /> </td>
+                                <td><img src="./../assets/icon/multiple1.svg" alt="privacy icon"
+                                        class="task__img_privacy" /></td>
+                                <td>JekiChan</td>
+                                <td>7/01/2023</td>
+                                <td>9</td>
+                                <td> <button type="button" class="btn_icon edit">
+                                        <img class="img_edit" src="./../assets/icon/edit.svg" alt="icon edit" />
+                                    </button>
+                                </td>
+                                <td><button type="button" class="btn_icon delete">
+                                        <img class="img_delete" src="./../assets/icon/delete.svg"
+                                            alt="icon delete" /></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Correct style</td>
+                                <td>
+                                    <div class="label__todo progress table_progress">
+                                        <p>In progress</p>
+                                    </div>
+                                </td>
+                                <td class="comment__text">Decor team will work right after team A done cleaning the
+                                    hall. no gap time, chop
+                                    chop. make it vibrant!</td>
+                                <td>
+                                    <img src="./../assets/icon/priority_medium.svg" alt="priority icon"
+                                        class="task__priority_img" />
+                                </td>
+                                <td><img src="./../assets/icon/multiple1.svg" alt="privacy icon"
+                                        class="task__img_privacy" /></td>
+                                <td>TomSoer</td>
+                                <td>22/02/2023</td>
+                                <td>2</td>
+                                <td> <button type="button" class="btn_icon edit"><img class="img_edit"
+                                            src="./../assets/icon/edit.svg" alt="icon edit" /></button></td>
+                                <td><button type="button" class="btn_icon delete"><img class="img_delete"
+                                            src="./../assets/icon/delete.svg" alt="icon delete" /></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="container__todo">
+                    <div class="table__header table__header_close">
+                        <h5 class="label__todo_list">Completed</h5>
+                        <button type="button" class="btn_icon close__todo_btn"><img class="close__todo_img"
+                                src="./../assets/icon/closeBtn.svg" alt="icon" /></button>
+                    </div>
+                </div>
+
+            </section>
+            <section class="container__view_btn">
+                <button type="button" class="load__btn dark_btn btn">Load more<img src="./../assets/icon/load_more.svg"
+                        alt="icon"></button>
+                <button type="button" class="dark_btn btn btn_list"><img src="./../assets/icon/view-list.svg"
+                        alt="icon"></button>
+                <a href="main.html" class="dark_btn btn btn_table"><img src="./../assets/icon/view_table.svg"
+                        alt="icon" /></a>
+            </section>
+        </main>
+
+
+        <footer class="footer">
+            <h5 class="footer__title">Task Manager</h5>
+            <address class="container__email">
+                <p class="name__title">Sviatlana Matskevich</p>
+                <img src="./../assets/icon/email.svg" alt="icon email" />
+                <a href="mailto: Sve-Mac@yandex.ru" class="email__title">Sve-Mac@yandex.ru</a>
+            </address>
+            <p class="footer__date">20/02/2023</p>
+        </footer>
+    </div>
+</body>
+
+</html>
