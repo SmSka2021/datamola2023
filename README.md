@@ -9,5 +9,4 @@
 
 - Для дополнительных заданий нужно создать папку “Extra tasks”. Все дополнительные задания будут складываться в папки вида “<Номер Темы>.<Номер Задания>”, например, “1.1”.
 
-*
-https://datamola.sharepoint.com/:w:/g/ER5QMcpSvyxCov6UW-uD-WABifurvKiP-7cT5EyX5HRysw?e=pUrDA8
+* https://datamola.sharepoint.com/:w:/g/ER5QMcpSvyxCov6UW-uD-WABifurvKiP-7cT5EyX5HRysw?e=pUrDA8
