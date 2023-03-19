@@ -613,8 +613,8 @@ class TaskCollection {
 const myTasks = new TaskCollection(tasksMy);
 
 console.log(myTasks.tasks.length);
-myTasks.clear();
-console.log(myTasks.tasks.length);
+// myTasks.clear();
+// console.log(myTasks.tasks.length);
 
 // const addMyCollection = [
 //   {

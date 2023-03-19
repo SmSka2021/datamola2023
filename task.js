@@ -1,5 +1,6 @@
 const maxLengthName = 100;
 const maxLengthDescription = 280;
+
 const taskStatus = {
   toDo: 'To Do',
   complete: 'Complete',
@@ -119,5 +120,9 @@ const newTaskObjFalse = new Task(
 
 console.log('validate task: ', Task.validate(newTaskObj));
 console.log('validate task: ', Task.validate(newTaskObjFalse));
-console.log('newTaskObj: ', newTaskObj.id);
-newTaskObj.id = '777';
+
+// console.log('newTaskObj: ', newTaskObj.id);
+// newTaskObj.id = '777';
+
+// console.log('createTaskObj: ', newTaskObj.createdAt);
+// newTaskObj.createdAt = new Date();

@@ -40,28 +40,31 @@ function div(a, b) {
   if (arguments.length > 1) return a / b;
   return (y) => y / a;
 }
-const a = add(1, 2);
+const sum = add(1, 2);
 const sub1 = sub(1);
 const add5 = add(5);
 const divNumber2 = div(2);
+const mul10 = mul(10);
+const mul50 = mul10(5);
 
-console.log(divNumber2(div(15, 5)));
-console.log(div(5, 5));
-console.log(sub(4, 1));
-console.log(mul(add5(7), 10));
-console.log(mul(a, 10));
-console.log(sub1(30));
-console.log(sub(4, 1));
-console.log(add(add(4, 1), 3));
-console.log(mul(sub(4, 1), 2));
+console.log(typeof mul10); // function
+console.log(sum); // 3
+console.log(divNumber2(div(15, 5))); // 1.5
+console.log(div(5, 5)); // 1
+console.log(sub(4, 1)); // 3
+console.log(mul(add5(7), 10)); // 120
+console.log(mul50); // 50
+console.log(mul(sum, 10)); // 30
+console.log(sub1(30)); // 29
+console.log(sub(4, 1)); // 3
+console.log(add(add(4, 1), 3)); // 8
+console.log(mul(sub(4, 1), 2)); // 6
 
 function pipe(...args) {
   function pipeFn(x) {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const func of args) {
-      // eslint-disable-next-line no-param-reassign
-      x = func(x);
-    }
+    // eslint-disable-next-line no-param-reassign
+    args.forEach((func) => { x = func(x); });
+
     return x;
   }
   return pipeFn;
@@ -73,5 +76,6 @@ const num2 = 30;
 const num3 = 29;
 const num4 = 58;
 const doSmth = pipe(add(num4), sub(num3), mul(num2), div(num1));
-console.log(doSmth(0));
-console.log(pipe(add(1), mul(2))(3));
+console.log(doSmth(0)); // (((0 + 58) - 29) * 30) / 3 => выход 290
+console.log(pipe(add(1), mul(2))(3)); // ((3 + 1) * 2) =>  выход 8
+console.log(pipe(add(10), mul(2), sub(4), div(2))(3)); // (((3 + 10) * 2) - 4) / 2 => выход  11
