@@ -1,3 +1,282 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file */
+const myTaskArr = [
+
+  {
+    id: '2',
+    name: 'Переименовать константу DELAY_TIME ',
+    description:
+      'Необходимо переименовать константу с DELAY_TIME на DELAY_API_TIME',
+    createdAt: new Date('2023-03-09T23:00:00'),
+    assignee: 'Иванов',
+    status: 'To Do',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Разработать дизайн ',
+    description: 'Необходимо разработать дизайн приложения',
+    createdAt: new Date('2023-02-09T23:00:00'),
+    assignee: 'Петров',
+    status: 'In progress',
+    priority: 'Low',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9120',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-02-09T23:00:05'),
+        author: 'Петров',
+      },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Разработать бургер-меню',
+    description: 'Разработать бургер-меню',
+    createdAt: new Date('2023-01-09T23:00:00'),
+    assignee: 'Коршунов',
+    status: 'In progress',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9121',
+        text: 'Ok',
+        createdAt: new Date('2023-01-09T23:00:05'),
+        author: 'Коршунов',
+      },
+    ],
+  },
+];
+
+function convertationDate(dateObject) {
+  const string = dateObject.toISOString().slice(0, 10);
+  return `${string.slice(8)}/${string.slice(5, 7)}/${string.slice(0, 4)}`;
+}
+
+const priorityTask = {
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
+
+const createDiv = (classes = []) => {
+  const div = document.createElement('div');
+  if (classes.length) {
+    classes.forEach((classElem) => div.classList.add(classElem));
+  }
+  return div;
+};
+
+const createElem = (tag, classes = []) => {
+  const elem = document.createElement(`${tag}`);
+  if (classes.length) {
+    classes.forEach((classElem) => elem.classList.add(classElem));
+  }
+  return elem;
+};
+
+const createText = (tag, text, classes = []) => {
+  const textBlock = document.createElement(tag);
+  textBlock.textContent = text;
+  if (classes.length) {
+    classes.forEach((classElem) => textBlock.classList.add(classElem));
+  }
+  return textBlock;
+};
+
+const createImg = (src, alt, classes = []) => {
+  const image = new Image();
+  image.src = src;
+  image.alt = alt;
+  if (classes.length) {
+    classes.forEach((classElem) => image.classList.add(classElem));
+  }
+  return image;
+};
+
+const createBtn = (name = '', classes = [], type = 'button') => {
+  const btn = document.createElement('button');
+  btn.textContent = name;
+  btn.type = type;
+  if (classes.length) {
+    classes.forEach((classElem) => btn.classList.add(classElem));
+  }
+  return btn;
+};
+
+const srcImgCollection = {
+  private: {
+    multiple: 'assets/icon/multiple1.svg',
+    person: 'assets/icon/person1.svg',
+  },
+  priority: {
+    high: 'assets/icon/priority_high.svg',
+    medium: 'assets/icon/priority_medium.svg',
+    low: 'assets/icon/priority_high.svg',
+  },
+  comments: 'assets/icon/comment-text.svg',
+  delete: 'assets/icon/delete.svg',
+  edit: 'assets/icon/edit.svg',
+  addTask: 'assets/icon/add-plus-circle.svg',
+  loadMoreTasks: 'assets/icon/load_more.svg',
+  viewList: 'assets/icon/view-list.svg',
+  viewTable: 'assets/icon/view_table.svg',
+};
+
+const srcPriority = (priority) => {
+  if (priority === priorityTask.high) return srcImgCollection.priority.high;
+  if (priority === priorityTask.medium) return srcImgCollection.priority.medium;
+  return srcImgCollection.priority.low;
+};
+
+class HeaderView {
+  constructor(id) {
+    this.id = id;
+  }
+
+  display(params) {
+    const parentElem = document.getElementById(this.id);
+    parentElem.textContent = params;
+  }
+}
+
+const userName = new HeaderView('user__name');
+userName.display('Tom');
+
+class TaskView {
+  constructor(id) {
+    this.id = id;
+  }
+
+  display(taskOne) {
+    const parentElem = document.getElementById(this.id);
+
+    const task = createDiv(['task']);
+    const containerTitleTask = createDiv(['container__title_task']);
+    const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
+    const labelTodo = createDiv(['label__todo']);
+    const itemLabelTodo = createText('p', `${taskOne.status}`, []);
+    labelTodo.append(itemLabelTodo);
+    containerTitleTask.append(taskTitle, labelTodo);
+
+    const containerDateTask = createDiv(['container__date_task']);
+    const taskDate = createText('p', `${convertationDate(taskOne.createdAt)}`, ['task__date']);
+    const imgIsPrivate = createImg(`${taskOne.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
+    containerDateTask.append(taskDate, imgIsPrivate);
+
+    const taskText = createText('p', taskOne.description, ['task__text']);
+
+    const containerComments = createDiv(['container__comments']);
+    const imgComments = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
+    const countComments = createText('p', `${taskOne.comments.length}`, ['task__date']);
+    containerComments.append(imgComments, countComments);
+
+    const containerInfoTask = createDiv(['container__info_task']);
+    const userNameLabel = createDiv(['label__todo', 'user_name']);
+    const userNameItem = createText('p', `${taskOne.assignee}`, []);
+    userNameLabel.append(userNameItem);
+
+    const containerBtn = createDiv(['container__btn_delete']);
+    const btnDelete = createBtn('', ['btn_icon', 'delete']);
+    const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
+    btnDelete.append(imgDelete);
+
+    const btnEdit = createBtn('', ['btn_icon', 'edit']);
+    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
+    btnEdit.append(imgEdit);
+    containerBtn.append(btnDelete, btnEdit);
+
+    const imgPriority = createImg(srcPriority(taskOne.priority), 'priority icon', ['task__priority_img']);
+    containerInfoTask.append(userNameLabel, containerBtn, imgPriority);
+
+    task.append(
+      containerTitleTask,
+      containerDateTask,
+      taskText,
+      containerComments,
+      containerInfoTask,
+    );
+    parentElem.append(task);
+  }
+}
+
+const taskStatusObj = {
+  toDo: 'To Do',
+  complete: 'Complete',
+  inProgress: 'In progress',
+};
+class TaskFeedView {
+  constructor(id) {
+    this.id = id;
+  }
+
+  taskStatus = ['To Do', 'Complete', 'In progress'];
+
+  createIdList(str) {
+    if (str === taskStatusObj.toDo) return 'todo';
+    if (str === taskStatusObj.inProgress) return 'inProgress';
+    return 'complete';
+  }
+
+  display(tasks) {
+    const parentElem = document.getElementById(this.id);
+    const sectionTasks = createElem('section', ['container__columns']);
+    this.taskStatus.forEach((column) => {
+      const columnOne = createDiv(['column']);
+
+      const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
+      const imgAdd = createImg(srcImgCollection.addTask, 'icon');
+      btnAddTask.append(imgAdd);
+
+      const line = createElem('hr', ['line__column']);
+      const list = createElem('ul', ['container__tasks']);
+      const idList = this.createIdList(column);
+      list.id = idList;
+
+      const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
+      const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
+      btnMoreTasks.append(imgMoreTasks);
+      columnOne.append(btnAddTask, line, list, btnMoreTasks);
+      sectionTasks.append(columnOne);
+    });
+    const containerViewBtn = createDiv(['container__view_btn']);
+
+    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list']);
+    const imgList = createImg(srcImgCollection.viewList, 'icon');
+    btnViewList.append(imgList);
+
+    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
+    const imgTable = createImg(srcImgCollection.viewTable, 'icon');
+    btnViewTable.append(imgTable);
+    containerViewBtn.append(btnViewList, btnViewTable);
+    parentElem.append(sectionTasks, containerViewBtn);
+    this.taskStatus.forEach((column) => {
+      const arrTasksStatus = tasks.filter((task) => task.status === column);
+      // console.log(arrTasksStatus);
+      if (arrTasksStatus.length) {
+        arrTasksStatus.forEach((task) => {
+          const oneTask = new TaskView(this.createIdList(column));
+          oneTask.display(task);
+        });
+      }
+    });
+  }
+}
+const myBoard = new TaskFeedView('container__columns');
+myBoard.display(myTaskArr);
+
+// display(myTaskArr);
 // const tasks = [
 //   {
 //     id: '1',
