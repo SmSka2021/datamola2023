@@ -19,25 +19,25 @@
 @font-face {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  src: url("assets/fonts/Roboto-Regular.ttf") format(ttf);
+  src: url("../assets/fonts/Roboto-Regular.ttf") format(ttf);
 }
 
 @font-face {
   font-family: "Roboto", sans-serif;
   font-weight: 900;
-  src: url("assets/fonts/Roboto-Bold.ttf") format(ttf);
+  src: url("../assets/fonts/Roboto-Bold.ttf") format(ttf);
 }
 
 @font-face {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
-  src: url("assets/fonts/OpenSans-Regular.ttf") format(ttf);
+  src: url("../assets/fonts/OpenSans-Regular.ttf") format(ttf);
 }
 
 @font-face {
   font-family: "Open Sans", sans-serif;
   font-weight: 900;
-  src: url("assets/fonts/OpenSans-Bold.ttf") format(ttf);
+  src: url("../assets/fonts/OpenSans-Bold.ttf") format(ttf);
 }
 
 * {
@@ -222,7 +222,7 @@ body {
 .main {
   width: 100%;
   padding: 10px;
-  background-image: url("assets/img/light_fon.jpg");
+  background-image: url("../assets/img/light_fon.jpg");
   background-size: 100%;
   background-repeat: none;
   flex-grow: 1;
@@ -282,7 +282,7 @@ body {
   background-color: transparent;
   border: 1px solid var(--technic-color);
   border-radius: 30px;
-  background: url("assets/icon/search.svg") no-repeat scroll 10px 4px;
+  background: url("../assets/icon/search.svg") no-repeat scroll 10px 4px;
   padding-left: 40px;
   margin-left: 15px;
 }
@@ -375,6 +375,7 @@ body {
 }
 
 .column {
+  position: relative;
   width: 350px;
   display: flex;
   flex-direction: column;
@@ -390,11 +391,13 @@ body {
 }
 
 .line__column {
-  width: 100%;
+  position: absolute;
+  top: 33px;
+  left: 7px;
+  width: 95%;
   height: 3px;
   border: none;
-  background-color: var(--technic-color);
-  margin: 1rem 0;
+  background-color: var(--technic-color);  
 }
 
 .container__tasks {

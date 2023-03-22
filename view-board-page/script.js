@@ -81,28 +81,29 @@ const taskStatusObj = {
 
 const srcImgCollection = {
   private: {
-    multiple: 'assets/icon/multiple1.svg',
-    person: 'assets/icon/person1.svg',
+    multiple: '../assets/icon/multiple1.svg',
+    person: '../assets/icon/person1.svg',
   },
   priority: {
-    high: 'assets/icon/priority_high.svg',
-    medium: 'assets/icon/priority_medium.svg',
-    low: 'assets/icon/priority_high.svg',
+    high: '../assets/icon/priority_high.svg',
+    medium: '../assets/icon/priority_medium.svg',
+    low: '../assets/icon/priority_high.svg',
   },
-  comments: 'assets/icon/comment-text.svg',
-  delete: 'assets/icon/delete.svg',
-  edit: 'assets/icon/edit.svg',
-  addTask: 'assets/icon/add-plus-circle.svg',
-  loadMoreTasks: 'assets/icon/load_more.svg',
-  viewList: 'assets/icon/view-list.svg',
-  viewTable: 'assets/icon/view_table.svg',
-  logo: 'assets/icon/llogo.svg',
-  lightThema: 'assets/icon/typcn_weather-sunny.svg',
-  darkThema: 'assets/icon/line-md_moon-twotone.svg',
-  iconUser: 'assets/icon/user.svg',
-  privacyPerson: 'assets/icon/person.svg',
-  privacyMultiple: 'assets/icon/multiple.svg',
-  free: '',
+  comments: '../assets/icon/comment-text.svg',
+  delete: '../assets/icon/delete.svg',
+  edit: '../assets/icon/edit.svg',
+  addTask: '../assets/icon/add-plus-circle.svg',
+  loadMoreTasks: '../assets/icon/load_more.svg',
+  viewList: '../assets/icon/view-list.svg',
+  viewTable: '../assets/icon/view_table.svg',
+  logo: '../assets/icon/llogo.svg',
+  lightThema: '../assets/icon/typcn_weather-sunny.svg',
+  darkThema: '../assets/icon/line-md_moon-twotone.svg',
+  iconUser: '../assets/icon/user.svg',
+  privacyPerson: '../assets/icon/person.svg',
+  privacyMultiple: '../assets/icon/multiple.svg',
+  previos: '../assets/icon/previous.svg',
+  previos1: '../assets/icon/previous.svg',
 };
 
 const srcPriority = (priority) => {
@@ -212,6 +213,32 @@ class HeaderView {
 const myHeader = new HeaderView('header');
 myHeader.display();
 myHeader.setUser('Tom');
+
+//   ***ViewFooter****** //
+// *************footer*************//
+class FooterView {
+  constructor(id) {
+    this.id = id;
+  }
+
+  display() {
+    const parentElem = document.getElementById(this.id);
+
+    const footerTitle = createText('h5', 'Task Manager', ['footer__title']);
+
+    const adress = createElem('address', ['container__email']);
+    const myName = createText('p', 'Sviatlana Matskevich', ['name__title']);
+    const imgEmail = createImg(srcImgCollection.email, 'icon email');
+    const ancor = createElem('a', ['email__title']);
+    ancor.textContent = 'Sve-Mac@yandex.ru';
+    ancor.href = 'mailto: Sve-Mac@yandex.ru';
+    adress.append(myName, imgEmail, ancor);
+    const date = createText('p', `${convertationDate(new Date())}`, ['footer__date']);
+    parentElem.append(footerTitle, adress, date);
+  }
+}
+const footerView = new FooterView('footer');
+footerView.display();
 
 // *************class FilterView************//
 class FilterView {
@@ -339,7 +366,7 @@ class OneTaskView {
   }
 }
 
-// ------**********----class TaskFeedView-------*******--------//
+// *****************class TaskFeedView*****************//
 class TaskFeedView {
   constructor(id) {
     this.id = id;
