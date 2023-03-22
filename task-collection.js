@@ -1,5 +1,10 @@
+/* eslint-disable max-classes-per-file */
+
+// ////////***utils***/////////////////
+
 const maxLengthName = 100;
 const maxLengthDescription = 280;
+
 const taskStatus = {
   toDo: 'To Do',
   complete: 'Complete',
@@ -22,7 +27,14 @@ const tasksMy = [
     status: 'To Do',
     priority: 'High',
     isPrivate: false,
-    comments: [],
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
   },
   {
     id: '1',
@@ -33,7 +45,14 @@ const tasksMy = [
     status: 'Complete',
     priority: 'High',
     isPrivate: false,
-    comments: [],
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
   },
   {
     id: '2',
@@ -183,7 +202,14 @@ const tasksMy = [
     status: 'In progress',
     priority: 'Low',
     isPrivate: true,
-    comments: [],
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
   },
   {
     id: '10',
@@ -383,21 +409,175 @@ const tasksMy = [
     status: 'Complete',
     priority: 'High',
     isPrivate: false,
-    comments: [],
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
   },
 ];
+// ////////////////////////////---class Comment---//////////////////////
+class Comment {
+  constructor(id, text, createdAt, author) {
+    this._id = id;
+    this.text = text;
+    this._createdAt = createdAt;
+    this._author = author;
+  }
 
-// ///////////////////////////////////////////////////////////////////////////////
+  get id() {
+    return this._id;
+  }
 
+  set id(item) {
+    throw new Error(`Can't change current id ${this._id}`);
+  }
+
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(item) {
+    throw new Error(`Can't change date ${this._createdAt}`);
+  }
+
+  get author() {
+    return this._author;
+  }
+
+  set author(item) {
+    throw new Error(`Can't change author ${this._author}`);
+  }
+
+  static validate(comment) {
+    const keysComment = ['_id', 'text', '_createdAt', '_author'];
+
+    const isAllKey = keysComment.every((item) => Object.keys(comment).includes(item));
+    if (!isAllKey) return false;
+
+    const validateId = typeof comment._id === 'string' && comment._id.trim().length;
+    const validateText = typeof comment.text === 'string'
+      && comment.text.length <= maxLengthDescription
+      && comment.text.trim().length;
+    const validateCreatedAt = comment._createdAt instanceof Date;
+    const validateAauthor = typeof comment._author === 'string' && comment._author.length;
+
+    return !!(
+      validateId
+        && validateText
+        && validateAauthor
+        && validateCreatedAt
+        && true
+    );
+  }
+}
+// ////////////////////////////--- class Task ------/////////////////////////////////////
+
+class Task {
+  constructor(task) {
+    this._id = task.id;
+    this.name = task.name;
+    this.description = task.description;
+    this._createdAt = task.createdAt;
+    this.assignee = task.assignee;
+    this.status = task.status;
+    this.priority = task.priority;
+    this.isPrivate = task.isPrivate;
+    this.comments = task.comments.map(
+      (comment) => new Comment(comment.id, comment.text, comment.createdAt, comment.author),
+    );
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(item) {
+    throw new Error(`Can't change current id ${this._id}`);
+  }
+
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(item) {
+    throw new Error(`Can't change current date ${this._createdAt}`);
+  }
+
+  static validate(task) {
+    const keysTask = [
+      '_id',
+      'name',
+      'description',
+      '_createdAt',
+      'assignee',
+      'status',
+      'priority',
+      'isPrivate',
+      'comments',
+    ];
+
+    const isAllKey = keysTask.every((item) => Object.keys(task).includes(item));
+    if (!isAllKey) return false;
+
+    const validateId = typeof task._id === 'string' && task._id.trim().length;
+    const validateName = typeof task.name === 'string'
+      && task.name.length <= maxLengthName
+      && task.name.trim().length;
+    const validateDescription = typeof task.description === 'string'
+      && task.description.length <= maxLengthDescription
+      && task.description.trim().length;
+    const validateCreatedAt = task._createdAt instanceof Date;
+    const validateAssignee = typeof task.assignee === 'string'
+      && task.assignee.trim().length;
+    const validateStatus = typeof task.status === 'string'
+      && (task.status === taskStatus.toDo
+      || task.status === taskStatus.complete
+      || task.status === taskStatus.inProgress);
+    const validatePriority = typeof task.priority === 'string'
+      && (task.priority === priorityTask.high
+      || task.priority === priorityTask.medium
+      || task.priority === priorityTask.low);
+    const validateIsPrivate = typeof task.isPrivate === 'boolean';
+    const validateComments = task.comments instanceof Array;
+    let resValidateTaskComments = true;
+    if (task.comments.length) {
+      resValidateTaskComments = task.comments.every((comment) => Comment.validate(comment));
+    }
+
+    return !!(
+      validateId
+        && validateName
+        && validateDescription
+        && validateCreatedAt
+        && validateAssignee
+        && validateStatus
+        && validatePriority
+        && validateIsPrivate
+        && validateComments
+        && resValidateTaskComments
+        && true
+    );
+  }
+}
+
+// //////////---class TaskCollection---/////////////////
 class TaskCollection {
   _user = 'Иванов';
 
   constructor(tasks) {
-    this._tasks = tasks;
+    this._tasks = tasks.map((task) => new Task(task));
   }
 
   get tasks() {
     return this._tasks;
+  }
+
+  set tasks(newTasks) {
+    this._tasks = newTasks.map((task) => new Task(task));
   }
 
   get user() {
@@ -409,11 +589,13 @@ class TaskCollection {
   }
 
   get(id) {
-    return this._tasks.find((task) => task.id === id);
+    return this.tasks.find((task) => task.id === id);
   }
 
   add(name, description, assignee, status, priority, isPrivate) {
-    const newTask = {
+    if (!this.user) return false;
+
+    const newTask = new Task({
       id: new Date().getTime().toString(),
       name,
       description,
@@ -423,66 +605,13 @@ class TaskCollection {
       priority,
       isPrivate,
       comments: [],
-    };
+    });
 
-    if (this._validateTask(newTask)) {
-      this._tasks.push(newTask);
+    if (Task.validate(newTask)) {
+      this.tasks.push(newTask);
       return true;
     }
     return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  _validateTask(task) {
-    const keysTask = [
-      'id',
-      'name',
-      'description',
-      'createdAt',
-      'assignee',
-      'status',
-      'priority',
-      'isPrivate',
-      'comments',
-    ];
-    const isAllKey = keysTask.every((item) => Object.keys(task).includes(item));
-    if (!isAllKey) return false;
-
-    const validateId = typeof task.id === 'string' && task.id.trim().length;
-    const validateName = typeof task.name === 'string'
-      && task.name.length <= maxLengthName
-      && task.name.trim().length;
-    const validateDescription = typeof task.description === 'string'
-      && task.description.length <= maxLengthDescription
-      && task.description.trim().length;
-    const validateCreatedAt = task.createdAt instanceof Date;
-    const validateAssignee = typeof task.assignee === 'string'
-      && task.assignee.trim().length;
-    const validateStatus = typeof task.status === 'string'
-      && (
-        task.status === taskStatus.toDo
-        || task.status === taskStatus.complete
-        || task.status === taskStatus.inProgress);
-    const validatePriority = typeof task.priority === 'string'
-      && (
-        task.priority === priorityTask.high
-        || task.priority === priorityTask.low
-        || task.priority === priorityTask.medium);
-    const validateIsPrivate = typeof task.isPrivate === 'boolean';
-    const validateComments = task.comments instanceof Array;
-
-    return !!(
-      validateId
-      && validateName
-      && validateDescription
-      && validateCreatedAt
-      && validateAssignee
-      && validateStatus
-      && validatePriority
-      && validateIsPrivate
-      && validateComments
-      && true
-    );
   }
 
   getPage = (skip = 0, top = 10, filterConfig = {}) => {
@@ -527,83 +656,60 @@ class TaskCollection {
     isPrivateNew = false,
   ) {
     const cheskTask = this.get(id);
+    if (!this.user || (cheskTask.assignee !== this.user)) return false;
+
     const editTaskCopy = {
       ...cheskTask,
+      id: cheskTask.id,
       name: nameNew || cheskTask.name,
       description: descriptionNew || cheskTask.description,
+      createdAt: cheskTask.createdAt,
       assignee: assigneeNew || cheskTask.assignee,
       status: statusNew || cheskTask.status,
       priority: priorityNew || cheskTask.priority,
       isPrivate: (typeof isPrivateNew === 'boolean') ? isPrivateNew : cheskTask.isPrivate,
     };
-    if (editTaskCopy.assignee !== this._user) return false;
 
-    if (!this._validateTask(editTaskCopy)) return false;
-    const index = this._tasks.findIndex((task) => task.id === id);
-    this._tasks.splice(index, 1, editTaskCopy);
+    if (!Task.validate(editTaskCopy)) {
+      return false;
+    }
+    const index = this.tasks.findIndex((task) => task.id === id);
+    this.tasks.splice(index, 1, new Task(editTaskCopy));
     return true;
   }
 
   remove(id) {
-    const index = this._tasks.findIndex((task) => task.id === id);
+    const index = this.tasks.findIndex((task) => task.id === id);
 
-    if (this.get(id).assignee === this._user) {
-      this._tasks.splice(index, 1);
+    if (this.get(id).assignee === this.user) {
+      this.tasks.splice(index, 1);
       return true;
     }
     return false;
   }
 
   addComment(id, textComment) {
-    const indexTask = this._tasks.findIndex((task) => task.id === id);
-    const dateNow = new Date();
-    const newComment = {
-      id: dateNow.getTime().toString(),
-      text: textComment,
-      createdAt: new Date(dateNow),
-      author: this._user,
-    };
-
-    if (this._validateComment(newComment)) {
-      this._tasks[indexTask].comments.push(newComment);
+    const indexTask = this.tasks.findIndex((task) => task.id === id);
+    const newComment = new Comment(id, textComment, new Date(), this.user);
+    if (Comment.validate(newComment)) {
+      this.tasks[indexTask].comments.push(newComment);
       return true;
     }
     return false;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  _validateComment(comment) {
-    const keysComment = ['id', 'text', 'createdAt', 'author'];
-    const isAllKey = keysComment.every((item) => Object.keys(comment).includes(item));
-    if (!isAllKey) return false;
-
-    const validateId = typeof comment.id === 'string' && comment.id.trim().length;
-    const validateText = typeof comment.text === 'string'
-    && comment.text.length <= maxLengthDescription
-    && comment.text.trim().length;
-    const validateCreatedAt = comment.createdAt instanceof Date;
-    const validateAauthor = typeof comment.author === 'string' && comment.author.length;
-
-    return !!(
-      validateId
-      && validateText
-      && validateAauthor
-      && validateCreatedAt
-      && true
-    );
-  }
-
   clear() {
-    this._tasks = [];
+    this.tasks = [];
   }
 
   addAll(tasks) {
     const invalidTasks = [];
     tasks.forEach((task) => {
-      if (this._validateTask(task)) {
-        this._tasks.push(task);
+      const taskNew = new Task(task);
+      if (Task.validate(taskNew)) {
+        this.tasks.push(taskNew);
       } else {
-        invalidTasks.push(task);
+        invalidTasks.push(taskNew);
       }
     });
     return invalidTasks;
@@ -611,6 +717,7 @@ class TaskCollection {
 }
 
 const myTasks = new TaskCollection(tasksMy);
+// myTasks.user = 'Иванов';
 
 console.log(myTasks.tasks.length);
 // myTasks.clear();
@@ -642,49 +749,31 @@ console.log(myTasks.tasks.length);
 // ];
 
 // console.log(myTasks.addAll(addMyCollection));
+// console.log(myTasks.tasks.length);
 
+// const validComments1 = {
+//   _id: '9143',
+//   text: 'Это не срочно, но важно!',
+//   _createdAt: new Date(),
+//   _author: 'Коршунов Илья',
+// };
 // const invalidComments1 = {
-//   id: '19',
-//   name: 'Сверстать  страницу регистрации',
-//   description:
-//     'Сверстать страницу регистрации в соответствии с дизайном  приложения',
-//   createdAt: new Date('2022-01-29T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'In progress',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [
-//     {
-//       id: '9143',
-//       text: 'Это не срочно, но важно!',
-//       createdAt: '2022-01-29T23:00:05',
-//       author: 'Коршунов Илья',
-//     },
-//   ],
+//   id: '9143',
+//   text: 'Это не срочно, но важно!',
+//   createdAt: new Date(),
+//   author: 'Коршунов Илья',
 // };
 
 // const invalidComments2 = {
-//   id: '19',
-//   name: 'Сверстать  страницу регистрации',
-//   description:
-//     'Сверстать страницу регистрации в соответствии с дизайном  приложения',
-//   createdAt: new Date('2022-01-29T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'In progress',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [
-//     {
-//       id: '9143',
-//       createdAt: '2022-01-29T23:00:05',
-//       author: 'Коршунов Илья',
-//     },
-//   ],
+//   _id: '9143',
+//   _createdAt: '2022-01-29T23:00:05',
+//   author: 'Коршунов Илья',
 // };
 
-// console.log(myTasks._validateComment(tasksMy[2].comments[0]));
-// console.log(myTasks._validateComment(invalidComments1));
-// console.log(myTasks._validateComment(invalidComments2));
+// console.log(Comment.validate(validComments1));
+// console.log(Comment.validate(myTasks.tasks[17].comments[0]));
+// console.log(Comment.validate(invalidComments1));
+// console.log(Comment.validate(invalidComments2));
 
 // console.log(myTasks.get('1'));
 // console.log(myTasks.addComment('1', 'Hello, user'));
@@ -694,18 +783,19 @@ console.log(myTasks.tasks.length);
 // console.log(myTasks.addComment('2', ''));
 // console.log(myTasks.get('2'));
 
-// console.log(tasksMy.length);
-// console.log(myTasks.remove('5'));
-// console.log(tasksMy.length);
-// console.log(myTasks.remove('1'));
+// console.log(myTasks.tasks.length);
+// console.log(myTasks.remove('5')); // user != assegne => false
+// console.log(myTasks.tasks.length);
+
+// console.log(myTasks.remove('1')); // user === assegne => true
 // console.log(myTasks.get('1'));
-// console.log(tasksMy.length);
+// console.log(myTasks.tasks.length);
 
 // console.log(myTasks.get('5'));
-// console.log(myTasks.edit('5', 'hi', 'hello'));
+// console.log(myTasks.edit('5', 'hi', 'hello')); // user != assegne => false
 // console.log(myTasks.get('5'));
 
-// console.log(myTasks.get('1'));
+// console.log(Task.validate(myTasks.get('1')));
 // console.log(myTasks.edit('1', 'hi', 'hello'));
 // console.log(myTasks.get('1'));
 // console.log(myTasks.edit('1', 'hi', 'hello', 'Иванов', 'To Do', 'Low', true));
@@ -721,6 +811,38 @@ console.log(myTasks.tasks.length);
 // console.log(myTasks.getPage(0, 2, { dateTo: new Date('2022-01-29T23:00:05') }));
 
 // console.log(myTasks.get('15'));
+// const validTask = {
+//   id: '700',
+//   name: 'Проверить макет на соответствие ТЗ',
+//   description: 'Проверить все страницы макета на соответствие ТЗ ',
+//   createdAt: new Date('2022-01-30T23:00:00'),
+//   assignee: 'Васильев',
+//   status: 'Complete',
+//   priority: 'High',
+//   isPrivate: false,
+//   comments: [{
+//     id: '9143',
+//     text: 'Это не срочно, но важно!',
+//     createdAt: new Date(),
+//     author: 'Коршунов Илья',
+//   }],
+// };
+// const validTaskInvalidComment = {
+//   id: '700',
+//   name: 'Проверить макет на соответствие ТЗ',
+//   description: 'Проверить все страницы макета на соответствие ТЗ ',
+//   createdAt: new Date('2022-01-30T23:00:00'),
+//   assignee: 'Васильев',
+//   status: 'Complete',
+//   priority: 'High',
+//   isPrivate: false,
+//   comments: [{
+//     id: '9143',
+//     text: 'Это не срочно, но важно!',
+//     createdAt: '25.03.2033',
+//     author: 'Коршунов Илья',
+//   }],
+// };
 // const invalidTask = {
 //   id: '4',
 //   name: 'Проверить макет на соответствие ТЗ',
@@ -754,16 +876,15 @@ console.log(myTasks.tasks.length);
 //   isPrivate: false,
 //   comments: [],
 // };
+// console.log(Task.validate(new Task(validTask)));
+// console.log(Task.validate(new Task(validTaskInvalidComment)));
+// console.log(Task.validate(new Task(invalidTask)));
+// console.log(Task.validate(new Task(invalidTask2)));
+// console.log(Task.validate(new Task(invalidTask3)));
+// console.log(myTasks.tasks.every((task) => Task.validate(task)));
 
-// console.log(myTasks._validateTask(tasksMy[0]));
-
-// console.log([...tasksMy.map((task) => myTasks._validateTask(task))]);
-// console.log(myTasks._validateTask(invalidTask));
-// console.log(myTasks._validateTask(invalidTask2));
-// console.log(myTasks._validateTask(invalidTask3));
-
-// console.log(tasksMy.length);
+// console.log(myTasks.tasks.length);
 // console.log(myTasks.add('Add modal', 'Description', 'Serg', 'Complete', 'Low', false));
-// console.log(tasksMy.length);
+// console.log(myTasks.tasks.length);
 // console.log(myTasks.add('Add modal', 'Description', 'Serg', 'Complete', 'Low', 'false'));
-// console.log(tasksMy.length);
+// console.log(myTasks.tasks.length);
