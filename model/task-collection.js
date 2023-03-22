@@ -717,6 +717,7 @@ class TaskCollection {
 }
 
 const myTasks = new TaskCollection(tasksMy);
+
 // myTasks.user = 'Иванов';
 
 console.log(myTasks.tasks.length);
@@ -802,6 +803,7 @@ console.log(myTasks.tasks.length);
 // console.log(myTasks.get('1'));
 
 // console.log(myTasks.getPage(0, 2, { assignee: 'Васильев' }));
+console.log(myTasks.getPage(0, 2, { priority: 'Low' }));
 // console.log(myTasks.getPage(0, 3, { status: 'Complete' }));
 // console.log(myTasks.getPage(0, 2, { assignee: 'Петров', status: 'To Do' }));
 // console.log(myTasks.getPage(0, 2, { assignee: 'Петров', status: 'To Do', priority: 'Low' }));
