@@ -1,5 +1,116 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
+
+// *******************utils***************//
+
+function convertationDate(dateObject) {
+  const string = dateObject.toISOString().slice(0, 10);
+  return `${string.slice(8)}/${string.slice(5, 7)}/${string.slice(0, 4)}`;
+}
+
+// -----------function-builders------------- //
+const createDiv = (classes = []) => {
+  const div = document.createElement('div');
+  if (classes.length) {
+    classes.forEach((classElem) => div.classList.add(classElem));
+  }
+  return div;
+};
+
+const createElem = (tag, classes = []) => {
+  const elem = document.createElement(`${tag}`);
+  if (classes.length) {
+    classes.forEach((classElem) => elem.classList.add(classElem));
+  }
+  return elem;
+};
+
+const createText = (tag, text, classes = []) => {
+  const textBlock = document.createElement(tag);
+  textBlock.textContent = text;
+  if (classes.length) {
+    classes.forEach((classElem) => textBlock.classList.add(classElem));
+  }
+  return textBlock;
+};
+
+const createImg = (src, alt, classes = []) => {
+  const image = new Image();
+  image.src = src;
+  image.alt = alt;
+  if (classes.length) {
+    classes.forEach((classElem) => image.classList.add(classElem));
+  }
+  return image;
+};
+
+const createBtn = (name = '', classes = [], type = 'button', title = null) => {
+  const btn = document.createElement('button');
+  btn.textContent = name;
+  btn.type = type;
+  btn.title = title;
+  if (classes.length) {
+    classes.forEach((classElem) => btn.classList.add(classElem));
+  }
+  return btn;
+};
+
+const createInput = (type, classes = [], placeholder = null) => {
+  const input = document.createElement('input');
+  input.placeholder = placeholder;
+  input.type = type;
+  if (classes.length) {
+    classes.forEach((classElem) => input.classList.add(classElem));
+  }
+  return input;
+};
+
+// *************-----------data-------------*********** //
+
+const priorityTask = {
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
+
+const taskStatusObj = {
+  toDo: 'To Do',
+  complete: 'Complete',
+  inProgress: 'In progress',
+};
+
+const srcImgCollection = {
+  private: {
+    multiple: 'assets/icon/multiple1.svg',
+    person: 'assets/icon/person1.svg',
+  },
+  priority: {
+    high: 'assets/icon/priority_high.svg',
+    medium: 'assets/icon/priority_medium.svg',
+    low: 'assets/icon/priority_high.svg',
+  },
+  comments: 'assets/icon/comment-text.svg',
+  delete: 'assets/icon/delete.svg',
+  edit: 'assets/icon/edit.svg',
+  addTask: 'assets/icon/add-plus-circle.svg',
+  loadMoreTasks: 'assets/icon/load_more.svg',
+  viewList: 'assets/icon/view-list.svg',
+  viewTable: 'assets/icon/view_table.svg',
+  logo: 'assets/icon/llogo.svg',
+  lightThema: 'assets/icon/typcn_weather-sunny.svg',
+  darkThema: 'assets/icon/line-md_moon-twotone.svg',
+  iconUser: 'assets/icon/user.svg',
+  privacyPerson: 'assets/icon/person.svg',
+  privacyMultiple: 'assets/icon/multiple.svg',
+  free: '',
+};
+
+const srcPriority = (priority) => {
+  if (priority === priorityTask.high) return srcImgCollection.priority.high;
+  if (priority === priorityTask.medium) return srcImgCollection.priority.medium;
+  return srcImgCollection.priority.low;
+};
+
 const myTaskArr = [
 
   {
@@ -58,103 +169,120 @@ const myTaskArr = [
     ],
   },
 ];
-
-function convertationDate(dateObject) {
-  const string = dateObject.toISOString().slice(0, 10);
-  return `${string.slice(8)}/${string.slice(5, 7)}/${string.slice(0, 4)}`;
-}
-
-const priorityTask = {
-  high: 'High',
-  medium: 'Medium',
-  low: 'Low',
-};
-
-const createDiv = (classes = []) => {
-  const div = document.createElement('div');
-  if (classes.length) {
-    classes.forEach((classElem) => div.classList.add(classElem));
-  }
-  return div;
-};
-
-const createElem = (tag, classes = []) => {
-  const elem = document.createElement(`${tag}`);
-  if (classes.length) {
-    classes.forEach((classElem) => elem.classList.add(classElem));
-  }
-  return elem;
-};
-
-const createText = (tag, text, classes = []) => {
-  const textBlock = document.createElement(tag);
-  textBlock.textContent = text;
-  if (classes.length) {
-    classes.forEach((classElem) => textBlock.classList.add(classElem));
-  }
-  return textBlock;
-};
-
-const createImg = (src, alt, classes = []) => {
-  const image = new Image();
-  image.src = src;
-  image.alt = alt;
-  if (classes.length) {
-    classes.forEach((classElem) => image.classList.add(classElem));
-  }
-  return image;
-};
-
-const createBtn = (name = '', classes = [], type = 'button') => {
-  const btn = document.createElement('button');
-  btn.textContent = name;
-  btn.type = type;
-  if (classes.length) {
-    classes.forEach((classElem) => btn.classList.add(classElem));
-  }
-  return btn;
-};
-
-const srcImgCollection = {
-  private: {
-    multiple: 'assets/icon/multiple1.svg',
-    person: 'assets/icon/person1.svg',
-  },
-  priority: {
-    high: 'assets/icon/priority_high.svg',
-    medium: 'assets/icon/priority_medium.svg',
-    low: 'assets/icon/priority_high.svg',
-  },
-  comments: 'assets/icon/comment-text.svg',
-  delete: 'assets/icon/delete.svg',
-  edit: 'assets/icon/edit.svg',
-  addTask: 'assets/icon/add-plus-circle.svg',
-  loadMoreTasks: 'assets/icon/load_more.svg',
-  viewList: 'assets/icon/view-list.svg',
-  viewTable: 'assets/icon/view_table.svg',
-};
-
-const srcPriority = (priority) => {
-  if (priority === priorityTask.high) return srcImgCollection.priority.high;
-  if (priority === priorityTask.medium) return srcImgCollection.priority.medium;
-  return srcImgCollection.priority.low;
-};
-
+// ----------class ViewHeader---------------//
 class HeaderView {
   constructor(id) {
     this.id = id;
   }
 
-  display(params) {
+  setUser(nameUser) {
+    const parentElem = document.querySelector('.user__name');
+    parentElem.textContent = nameUser;
+  }
+
+  display() {
     const parentElem = document.getElementById(this.id);
-    parentElem.textContent = params;
+
+    const containerLogo = createDiv(['container__logo']);
+    const imgLogo = createImg(srcImgCollection.logo, 'logo', ['logo__img']);
+    const logoTitle = createText('h3', 'Task Manager', ['logo__title']);
+    containerLogo.append(imgLogo, logoTitle);
+
+    const containerThema = createDiv(['container__thema']);
+    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny']);
+    const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img']);
+    themaBtnLiht.append(imgLightThema);
+    const spanSlesh = createText('span', ' / ');
+    const themaBtnDark = createBtn('', ['thema__btn', 'dark']);
+    const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img']);
+    themaBtnDark.append(imgDarkThema);
+    containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
+
+    const containerAuth = createDiv(['container__authorize']);
+    const containerUserName = createDiv(['container__userName']);
+    const imgIconUser = createImg(srcImgCollection.iconUser, 'icon user', ['user__img']);
+    const itemNameUser = createText('p', 'user', ['user__name']);
+    containerUserName.append(imgIconUser, itemNameUser);
+    const btnLogOut = createBtn('LogOut', ['light_btn', 'btn']);
+    containerAuth.append(containerUserName, btnLogOut);
+    parentElem.append(containerLogo, containerThema, containerAuth);
   }
 }
 
-const userName = new HeaderView('user__name');
-userName.display('Tom');
+const myHeader = new HeaderView('header');
+myHeader.display();
+myHeader.setUser('Tom');
 
-class TaskView {
+// *************class FilterView************//
+class FilterView {
+  constructor(id) {
+    this.id = id;
+  }
+
+  display() {
+    const parentElem = document.getElementById(this.id);
+    const filterTitle = createText('h5', 'Filter by', ['filter__title']);
+
+    const containerSearch = createDiv(['container__search']);
+    const searchByName = createBtn('name', ['search__by-name']);
+    const spanSlesh = createText('span', ' / ');
+    const searchByTitle = createBtn('title', ['search__by-title']);
+    const inputSearch = createInput('search', ['search__input'], 'enter data');
+    containerSearch.append(searchByName, spanSlesh, searchByTitle, inputSearch);
+
+    const containerPriority = createDiv(['container__priority']);
+    const prioritTitle = createText('p', 'priority', ['priority__title']);
+
+    const priorityItems = createDiv(['priority__items']);
+    const btnLowPriority = createBtn('', ['priority__btn', 'priority_low'], 'button', 'low');
+    const btnMediumPriority = createBtn('', ['priority__btn', 'priority_medium'], 'button', 'medium');
+    const btnHightPriority = createBtn('', ['priority__btn', 'priority_height'], 'button', 'hight');
+    priorityItems.append(btnLowPriority, btnMediumPriority, btnHightPriority);
+    containerPriority.append(prioritTitle, priorityItems);
+
+    const containerPrivacy = createDiv(['container__privacy']);
+    const privacyTitle = createText('p', 'privacy', ['priority__title']);
+
+    const privacyBtn = createBtn('', ['privacy__btn'], 'button', 'privacy');
+    const imgPersonPrivacy = createImg(srcImgCollection.privacyPerson, 'icon');
+    privacyBtn.append(imgPersonPrivacy);
+    const publicBtn = createBtn('', ['privacy__btn'], 'button', 'public');
+    const imgPublicPrivacy = createImg(srcImgCollection.privacyMultiple, 'icon');
+    publicBtn.append(imgPublicPrivacy);
+    containerPrivacy.append(privacyTitle, privacyBtn, publicBtn);
+
+    const containerDate = createDiv(['container__privacy']);
+    const dateTitle = createText('p', 'date', ['priority__title']);
+
+    const blockDate = createDiv(['container__date']);
+    const labelFrom = createText('label', 'from  ', ['date__label']);
+    const inputDateFrom = createInput('date', ['input__date']);
+    labelFrom.append(inputDateFrom);
+
+    const labelTo = createText('label', 'to  ', ['date__label']);
+    const inputDateTo = createInput('date', ['input__date']);
+    labelTo.append(inputDateTo);
+    blockDate.append(labelFrom, labelTo);
+    containerDate.append(dateTitle, blockDate);
+    const resetBtn = createBtn('Reset', ['dark_btn', 'btn']);
+
+    parentElem.append(
+      filterTitle,
+      containerSearch,
+      containerPriority,
+      containerPrivacy,
+      containerDate,
+      resetBtn,
+    );
+  }
+}
+
+const filter = new FilterView('container__filter');
+filter.display();
+
+// ------**********----class ViewHeader-------*******--------//
+
+class OneTaskView {
   constructor(id) {
     this.id = id;
   }
@@ -211,11 +339,7 @@ class TaskView {
   }
 }
 
-const taskStatusObj = {
-  toDo: 'To Do',
-  complete: 'Complete',
-  inProgress: 'In progress',
-};
+// ------**********----class TaskFeedView-------*******--------//
 class TaskFeedView {
   constructor(id) {
     this.id = id;
@@ -266,7 +390,7 @@ class TaskFeedView {
       // console.log(arrTasksStatus);
       if (arrTasksStatus.length) {
         arrTasksStatus.forEach((task) => {
-          const oneTask = new TaskView(this.createIdList(column));
+          const oneTask = new OneTaskView(this.createIdList(column));
           oneTask.display(task);
         });
       }
@@ -275,740 +399,3 @@ class TaskFeedView {
 }
 const myBoard = new TaskFeedView('container__columns');
 myBoard.display(myTaskArr);
-
-// display(myTaskArr);
-// const tasks = [
-//   {
-//     id: '1',
-//     name: 'Создать логотип приложения',
-//     description: 'Формат изображения – svg, размеры - 100х100px',
-//     createdAt: new Date('2023-03-09T23:00:00'),
-//     assignee: 'Иванов',
-//     status: 'To Do',
-//     priority: 'High',
-//     isPrivate: false,
-//     comments: [],
-//   },
-//   {
-//     id: '2',
-//     name: 'Переименовать константу DELAY_TIME ',
-//     description:
-//       'Необходимо переименовать константу с DELAY_TIME на DELAY_API_TIME',
-//     createdAt: new Date('2023-03-09T23:00:00'),
-//     assignee: 'Иванов',
-//     status: 'To Do',
-//     priority: 'Medium',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '912',
-//         text: 'Будет сделано!',
-//         createdAt: new Date('2023-03-09T23:00:05'),
-//         author: 'Иванов',
-//       },
-//     ],
-//   },
-//   {
-//     id: '3',
-//     name: 'Разработать дизайн ',
-//     description: 'Необходимо разработать дизайн приложения',
-//     createdAt: new Date('2023-02-09T23:00:00'),
-//     assignee: 'Петров',
-//     status: 'In progress',
-//     priority: 'Low',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9120',
-//         text: 'Будет сделано!',
-//         createdAt: new Date('2023-02-09T23:00:05'),
-//         author: 'Петров',
-//       },
-//     ],
-//   },
-//   {
-//     id: '4',
-//     name: 'Разработать бургер-меню',
-//     description: 'Разработать бургер-меню',
-//     createdAt: new Date('2023-01-09T23:00:00'),
-//     assignee: 'Коршунов',
-//     status: 'In progress',
-//     priority: 'Medium',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9121',
-//         text: 'Ok',
-//         createdAt: new Date('2023-01-09T23:00:05'),
-//         author: 'Коршунов',
-//       },
-//     ],
-//   },
-//   {
-//     id: '5',
-//     name: 'Разработать модалку',
-//     description: 'Сделать модалку',
-//     createdAt: new Date('2023-01-12T23:00:00'),
-//     assignee: 'Ермолаева',
-//     status: 'Complete',
-//     priority: 'Low',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9122',
-//         text: 'Срочно!',
-//         createdAt: new Date('2023-01-12T23:00:05'),
-//         author: 'Коршунов',
-//       },
-//     ],
-//   },
-//   {
-//     id: '6',
-//     name: 'Протестировать бургер-меню',
-//     description: 'Протестировать бургер-меню на разных разрешениях',
-//     createdAt: new Date('2023-01-15T23:00:00'),
-//     assignee: 'Буян',
-//     status: 'To Do',
-//     priority: 'Low',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9123',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-01-15T23:00:05'),
-//         author: 'Коршунов',
-//       },
-//     ],
-//   },
-//   {
-//     id: '7',
-//     name: 'Сделать адаптив',
-//     description: 'Сделать адаптивную версию дизайна',
-//     createdAt: new Date('2023-02-15T23:00:00'),
-//     assignee: 'Варан',
-//     status: 'In progress',
-//     priority: 'Medium',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9124',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-01-15T23:00:05'),
-//         author: 'Коршунов',
-//       },
-//       {
-//         id: '9125',
-//         text: 'Не забудь проо логотип!',
-//         createdAt: new Date('2023-02-15T23:00:05'),
-//         author: 'Варан',
-//       },
-//     ],
-//   },
-//   {
-//     id: '8',
-//     name: 'Разработать слайдер',
-//     description: 'Сделать слайдер под фотографии',
-//     createdAt: new Date('2023-02-1T23:00:00'),
-//     assignee: 'Белусь',
-//     status: 'To Do',
-//     priority: 'Medium',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '912',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-01-1T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//       {
-//         id: '912',
-//         text: 'Не забудь про новые форматы!',
-//         createdAt: new Date('2023-02-15T23:00:05'),
-//         author: 'Варан Саша',
-//       },
-//     ],
-//   },
-//   {
-//     id: '9',
-//     name: 'Разработать пагинацию',
-//     description: 'Сделать пагинацию основной страницы',
-//     createdAt: new Date('2023-01-19T23:00:00'),
-//     assignee: 'Варяг',
-//     status: 'In progress',
-//     priority: 'Low',
-//     isPrivate: true,
-//     comments: [],
-//   },
-//   {
-//     id: '10',
-//     name: 'Сделать авторизацию',
-//     description: 'Сделать авторизацию пользователя на главной странице',
-//     createdAt: new Date('2023-02-20T23:00:00'),
-//     assignee: 'Симан',
-//     status: 'Complete',
-//     priority: 'High',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9129',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-01-20T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//       {
-//         id: '9130',
-//         text: 'Не забудь проо логотип!',
-//         createdAt: new Date('2023-02-15T23:00:05'),
-//         author: 'Варан Саша',
-//       },
-//     ],
-//   },
-//   {
-//     id: '11',
-//     name: 'Сделать страницу админа',
-//     description: 'Сделать страницу админа для администрирования сайта',
-//     createdAt: new Date('2023-01-20T23:00:00'),
-//     assignee: 'Горян',
-//     status: 'In progress',
-//     priority: 'Low',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9135',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-01-20T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '12',
-//     name: 'Сделать страницу 404',
-//     description: 'Сделать страницу 404',
-//     createdAt: new Date('2023-03-20T23:00:00'),
-//     assignee: 'Ткачук',
-//     status: 'To Do',
-//     priority: 'Medium',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9136',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2023-03-20T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '13',
-//     name: 'Разработать header',
-//     description: 'Разработать header для всех страниц',
-//     createdAt: new Date('2022-12-22T23:00:00'),
-//     assignee: 'Шук',
-//     status: 'To Do',
-//     priority: 'Low',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9137',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-12-25T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '14',
-//     name: 'Разработать footer',
-//     description: 'Разработать footer для всех страниц',
-//     createdAt: new Date('2022-12-25T23:00:00'),
-//     assignee: 'Сидоренко',
-//     status: 'To Do',
-//     priority: 'Medium',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9138',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-12-25T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '15',
-//     name: 'Разработать navigation',
-//     description: 'Разработать navigation для всех страниц',
-//     createdAt: new Date('2022-12-27T23:00:00'),
-//     assignee: 'Сидоренко',
-//     status: 'In progress',
-//     priority: 'High',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9139',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-12-27T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '16',
-//     name: 'Разработать aside',
-//     description: 'Разработать aside для главной страницы',
-//     createdAt: new Date('2022-02-27T23:00:00'),
-//     assignee: 'Ткач',
-//     status: 'Complete',
-//     priority: 'Medium',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9140',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-02-27T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '17',
-//     name: 'Сверстать confirm modal',
-//     description:
-//       'Разработать confirm modal  в соответствии с дизайном  приложения',
-//     createdAt: new Date('2022-02-28T23:00:00'),
-//     assignee: 'Петров',
-//     status: 'To Do',
-//     priority: 'Low',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9141',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-02-29T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '18',
-//     name: 'Сверстать главную страницу',
-//     description:
-//       'Сверстать главную страницу в соответствии с дизайном  приложения',
-//     createdAt: new Date('2022-01-28T23:00:00'),
-//     assignee: 'Петров',
-//     status: 'To Do',
-//     priority: 'Medium',
-//     isPrivate: true,
-//     comments: [
-//       {
-//         id: '9142',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-01-29T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '19',
-//     name: 'Сверстать  страницу регистрации',
-//     description:
-//       'Сверстать страницу регистрации в соответствии с дизайном  приложения',
-//     createdAt: new Date('2022-01-29T23:00:00'),
-//     assignee: 'Васильев',
-//     status: 'In progress',
-//     priority: 'High',
-//     isPrivate: false,
-//     comments: [
-//       {
-//         id: '9143',
-//         text: 'Это не срочно, но важно!',
-//         createdAt: new Date('2022-01-29T23:00:05'),
-//         author: 'Коршунов Илья',
-//       },
-//     ],
-//   },
-//   {
-//     id: '19',
-//     name: 'Проверить макет на соответствие ТЗ',
-//     description: 'Проверить все страницы макета на соответствие ТЗ ',
-//     createdAt: new Date('2022-01-30T23:00:00'),
-//     assignee: 'Васильев',
-//     status: 'Complete',
-//     priority: 'High',
-//     isPrivate: false,
-//     comments: [],
-//   },
-// ];
-// const invalidTask = {
-//   id: '4',
-//   name: 'Проверить макет на соответствие ТЗ',
-//   description: 'Проверить все страницы макета на соответствие ТЗ ',
-//   createdAt: '2022-01-30T23:00:00',
-//   assignee: 'Васильев',
-//   status: 'Complete',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [],
-// };
-// const invalidTask2 = {
-//   id: '',
-//   name: 'Проверить макет на соответствие ТЗ',
-//   description: 'Проверить все страницы макета на соответствие ТЗ ',
-//   createdAt: new Date('2022-01-30T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'Complete',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [],
-// };
-
-// const invalidTask3 = {
-//   id: '77',
-//   description: 'Проверить все страницы макета на соответствие ТЗ ',
-//   createdAt: new Date('2022-01-30T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'Complete',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [],
-// };
-// const invalidComments1 = {
-//   id: '19',
-//   name: 'Сверстать  страницу регистрации',
-//   description:
-//     'Сверстать страницу регистрации в соответствии с дизайном  приложения',
-//   createdAt: new Date('2022-01-29T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'In progress',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [
-//     {
-//       id: '9143',
-//       text: 'Это не срочно, но важно!',
-//       createdAt: '2022-01-29T23:00:05',
-//       author: 'Коршунов Илья',
-//     },
-//   ],
-// };
-
-// const invalidComments2 = {
-//   id: '19',
-//   name: 'Сверстать  страницу регистрации',
-//   description:
-//     'Сверстать страницу регистрации в соответствии с дизайном  приложения',
-//   createdAt: new Date('2022-01-29T23:00:00'),
-//   assignee: 'Васильев',
-//   status: 'In progress',
-//   priority: 'High',
-//   isPrivate: false,
-//   comments: [
-//     {
-//       id: '9143',
-//       createdAt: '2022-01-29T23:00:05',
-//       author: 'Коршунов Илья',
-//     },
-//   ],
-// };
-
-// const myModule = (function () {
-//   let user = 'Иванов';
-//   function getUser() {
-//     return user;
-//   }
-
-//   function changeUser(usr) {
-//     if (usr.trim().length && typeof usr === 'string') user = usr;
-//   }
-
-//   function getTasks(skip = 0, top = 10, filterConfig = {}) {
-//     let tasksArrSortDate = tasks.sort(
-//       (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-//     );
-
-//     const config = { ...filterConfig };
-
-//     if (config.assignee) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.assignee.includes(config.assignee),
-//       );
-//     }
-
-//     if (config.description) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.description.includes(config.description),
-//       );
-//     }
-
-//     if (config.status) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.status === config.status,
-//       );
-//     }
-
-//     if (config.priority) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.priority === config.priority,
-//       );
-//     }
-
-//     if (config.isPrivate) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.isPrivate === config.isPrivate,
-//       );
-//     }
-
-//     if (config.dateFrom) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.createdAt.getTime() >= config.dateFrom.getTime(),
-//       );
-//     }
-
-//     if (config.dateTo) {
-//       tasksArrSortDate = tasksArrSortDate.filter(
-//         (task) => task.createdAt.getTime() <= config.dateTo.getTime(),
-//       );
-//     }
-//     return tasksArrSortDate.slice(skip, skip + top);
-//   }
-
-//   function getTask(id) {
-//     return tasks.filter((task) => task.id === id)[0];
-//   }
-
-//   function validateTask(task) {
-//     let isNotAllKey = false;
-//     const keysTask = [
-//       'id',
-//       'name',
-//       'description',
-//       'createdAt',
-//       'assignee',
-//       'status',
-//       'priority',
-//       'isPrivate',
-//       'comments',
-//     ];
-
-//     // eslint-disable-next-line no-restricted-syntax
-//     for (const item of keysTask) {
-//       if (!Object.prototype.hasOwnProperty.call(task, item)) {
-//         isNotAllKey = true;
-//       }
-//     }
-//     if (isNotAllKey) return false;
-
-//     const validateId = typeof task.id === 'string' && task.id.trim().length;
-//     const validateName = typeof task.name === 'string'
-//       && task.name.length <= 100
-//       && task.name.trim().length;
-//     const validateDescription = typeof task.description === 'string'
-//      && task.description.length <= 280
-//      && task.description.trim().length;
-//     const validateCreatedAt = task.createdAt instanceof Date;
-//     const validateAssignee = typeof task.assignee === 'string'
-//     && task.assignee.trim().length;
-//     const validateStatus = typeof task.status === 'string'
-//     && (task.status === 'To Do'
-//     || task.status === 'Complete'
-//     || task.status === 'In progress');
-//     const validatePriority = typeof task.priority === 'string'
-//     && (task.priority === 'High'
-//     || task.priority === 'Medium'
-//     || task.priority === 'Low');
-//     const validateIsPrivate = typeof task.isPrivate === 'boolean';
-//     const validateComments = task.comments instanceof Array;
-
-//     return !!(
-//       validateId
-//       && validateName
-//       && validateDescription
-//       && validateCreatedAt
-//       && validateAssignee
-//       && validateStatus
-//       && validatePriority
-//       && validateIsPrivate
-//       && validateComments
-//       && true
-//     );
-//   }
-
-//   function addTask(
-//     nameTask,
-//     descriptionTask,
-//     assigneeTask,
-//     statusTask,
-//     priorityTask,
-//     isPrivateTask,
-//   ) {
-//     const dateNow = new Date();
-//     const newTask = {
-//       id: dateNow.getTime().toString(),
-//       name: nameTask,
-//       description: descriptionTask,
-//       createdAt: new Date(dateNow),
-//       assignee: user || assigneeTask,
-//       status: statusTask,
-//       priority: priorityTask,
-//       isPrivate: isPrivateTask,
-//       comments: [],
-//     };
-
-//     if (validateTask(newTask)) {
-//       tasks.push(newTask);
-//       return true;
-//     }
-//     return false;
-//   }
-
-//   function editTask(
-//     id,
-//     name = '',
-//     description = '',
-//     assignee = '',
-//     status = '',
-//     priority = '',
-//     isPrivate = false,
-//   ) {
-//     const index = tasks.findIndex((task) => task.id === id);
-//     const editTaskCopy = { ...tasks[index] };
-
-//     if (editTaskCopy.assignee === user) {
-//       if (name) editTaskCopy.name = name;
-//       if (description) editTaskCopy.description = description;
-//       if (assignee) editTaskCopy.assignee = assignee;
-//       if (status) editTaskCopy.status = status;
-//       if (priority) editTaskCopy.priority = priority;
-//       if (typeof isPrivate === 'boolean') editTaskCopy.isPrivate = isPrivate;
-//       if (!validateTask(editTaskCopy)) return false;
-//       tasks.splice(index, 1, editTaskCopy);
-//       return true;
-//     }
-//     return false;
-//   }
-
-//   function removeTask(id) {
-//     const index = tasks.findIndex((task) => task.id === id);
-
-//     if (tasks[index].assignee === user) {
-//       tasks.splice(index, 1);
-//       return true;
-//     }
-//     return false;
-//   }
-
-//   function validateComment(comment) {
-//     let isNotAllKey = false;
-//     const keysComment = ['id', 'text', 'createdAt', 'author'];
-
-//     // eslint-disable-next-line no-restricted-syntax
-//     for (const item of keysComment) {
-//       if (!Object.prototype.hasOwnProperty.call(comment, item)) {
-//         isNotAllKey = true;
-//       }
-//     }
-//     if (isNotAllKey) return false;
-
-//     const validateId = typeof comment.id === 'string' && comment.id.trim().length;
-//     const validateText = typeof comment.text === 'string'
-//     && comment.text.length <= 280
-//     && comment.text.trim().length;
-//     const validateCreatedAt = comment.createdAt instanceof Date;
-//     const validateAauthor = typeof comment.author === 'string' && comment.author.length;
-
-//     return !!(
-//       validateId
-//       && validateText
-//       && validateAauthor
-//       && validateCreatedAt
-//       && true
-//     );
-//   }
-
-//   function addComment(id, textComment) {
-//     const index = tasks.findIndex((task) => task.id === id);
-//     const dateNow = new Date();
-//     const newComment = {
-//       id: dateNow.getTime().toString(),
-//       text: textComment,
-//       createdAt: new Date(dateNow),
-//       author: user,
-//     };
-
-//     if (validateComment(newComment)) {
-//       tasks[index].comments.push(newComment);
-//       return true;
-//     }
-//     return false;
-//   }
-
-//   return {
-//     getTasks,
-//     getTask,
-//     validateTask,
-//     addTask,
-//     editTask,
-//     removeTask,
-//     validateComment,
-//     addComment,
-//     changeUser,
-//     getUser,
-//   };
-// }());
-
-// //  console.log(myModule.getTasks())
-// //  console.log(myModule.getTasks(0, 2, {assignee: 'Васильев'}))
-// //  console.log(myModule.getTasks(0, 3, {status: 'Complete'}))
-// //  console.log(myModule.getTasks(0, 2, {assignee: 'Петров', status: 'To Do'}))
-// //  console.log(myModule.getTasks(0, 2, {assignee: 'Петров', status: 'To Do', priority: 'Low'}))
-// //  console.log(myModule.getTasks(0, 2, {assignee: 'Петров', isPrivate: true}))
-// //  console.log(myModule.getTasks(0, 2, {assignee: 'Петров', description: 'confirm modal'}))
-// //  console.log(myModule.getTasks(0, 2, {dateFrom: new Date('2022-01-29T23:00:05')}))
-// //  console.log(myModule.getTasks(0, 2, {dateTo: new Date('2022-01-29T23:00:05')}))
-
-// //  console.log(myModule.getTask('15'));
-
-// //  console.log(myModule.validateTask(tasks[15]))
-// //  console.log([...tasks.map((task) => myModule.validateTask(task))])
-// console.log(myModule.validateTask(invalidTask));
-// console.log(myModule.validateTask(invalidTask2));
-// console.log(myModule.validateTask(invalidTask3));
-
-// //  console.log(tasks.length)
-// //  console.log(myModule.addTask('Add modal', 'Description', 'Serg', 'Complete', 'Low', false))
-// //  console.log(tasks.length)
-// //  console.log(myModule.addTask('Add modal', 'Description', 'Serg', 'Complete', 'Low', 'false'))
-// //  console.log(tasks.length)
-
-// //  console.log(myModule.getTask('5'))  //editTask.assignee !== user
-// //  console.log(myModule.editTask('5', 'hi', 'hello'))
-// //  console.log(myModule.getTask('5'))
-
-// //  console.log(myModule.getTask('1'))  //editTask.assignee === user
-// //  console.log(myModule.editTask('1', 'hi', 'hello'))
-// //  console.log(myModule.getTask('1'))
-
-// //  console.log(tasks.length)
-// //  console.log(myModule.removeTask('5'))  //removeTask.assignee !== user
-// //  console.log(tasks.length)
-// //  console.log(myModule.removeTask('1')) //removeTask.assignee === user
-// //  console.log(myModule.getTask('1'))
-// //  console.log(tasks.length)
-
-// //  console.log(myModule.validateComment(tasks[1].comments[0]))
-// console.log(myModule.validateComment(invalidComments1));
-// console.log(myModule.validateComment(invalidComments2));
-
-// //  console.log(myModule.getTask('1'))
-// //  console.log(myModule.addComment('1', 'Hello, user'))
-// //  console.log(myModule.getTask('1'))
-
-// //  console.log(myModule.getTask('2'))     //add invalid comment
-// //  console.log(myModule.addComment('2', ''))
-// //  console.log(myModule.getTask('2'))
-
-// //  console.log(myModule.getUser());
-// //  console.log(myModule.changeUser('newUser'));
-// //  console.log(myModule.getUser());
-// export default tasks;
