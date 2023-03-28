@@ -1,0 +1,91 @@
+:root {
+  --primary-color: #00093C;
+  --white-color: #FFFFFF;
+  --technic-color: #7b61ff;
+  --secondary-color: #E2E8F6;
+  --fuschia-color: #F178B6;
+  --irys-color: #A5A6F6;
+  --grey-color: #807C8D;
+  --grey-light-color: rgb(225, 223, 233);
+  --progress-color: #f7ef7e;
+  --yellow-color: #fdfcbf;
+  --compleled-color: #a7e7ba;
+  --filter-svg-red: invert(37%) sepia(93%) saturate(7471%) hue-rotate(356deg) brightness(91%) contrast(135%);
+  --filter-svg-blue: invert(12%) sepia(83%) saturate(5841%) hue-rotate(244deg) brightness(87%) contrast(153%);
+  --filter-svg-purple: invert(18%) sepia(98%) saturate(2657%) hue-rotate(289deg) brightness(121%) contrast(140%);
+  --filter-svg-black-blue: invert(12%) sepia(83%) saturate(5841%) hue-rotate(244deg) brightness(48%) contrast(153%);
+  --shadow: 2px 11px 9px 6px rgba(34, 60, 80, 0.2);
+}
+
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  src: url("./assets/fonts/Roboto-Regular.ttf") format(ttf);
+}
+
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  src: url("./assets/fonts/Roboto-Bold.ttf") format(ttf);
+}
+
+@font-face {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  src: url("./assets/fonts/OpenSans-Regular.ttf") format(ttf);
+}
+
+@font-face {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 900;
+  src: url("./assets/fonts/OpenSans-Bold.ttf") format(ttf);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+html {
+  font-size: 10px;
+}
+
+*::-webkit-scrollbar,
+html *::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+  background: var(--progress-color);
+}
+
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+  background-color: var(--technic-color);
+  border-radius: 15px;
+  border: 3px solid var(--progress-color);
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+@import 'styles/style-list.css';
+@import 'styles/style-task.css';
+@import 'styles/style-header-footer.css';
+@import 'styles/style-board-table.css';

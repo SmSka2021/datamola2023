@@ -2,10 +2,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 
-let bigArrTasks = [];
-if (localStorage.getItem('tasks')) {
-  bigArrTasks = [...JSON.parse(localStorage.getItem('tasks'))];
-}
+//  ****************MODELS**************** //
 
 // ////////***utils***/////////////////
 
@@ -23,6 +20,410 @@ const priorityTask = {
   medium: 'Medium',
   low: 'Low',
 };
+
+const bigArrTasks = [
+  {
+    id: '155',
+    name: 'Создать логотип приложения',
+    description: 'Формат изображения – svg, размеры - 100х100px',
+    createdAt: new Date('2023-03-09T23:00:00'),
+    assignee: 'Иванов',
+    status: 'To Do',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+  {
+    id: '1',
+    name: 'Создать логотип приложения',
+    description: 'Формат изображения – svg, размеры - 100х100px',
+    createdAt: new Date('2023-03-09T23:00:00'),
+    assignee: 'Иванов',
+    status: 'Complete',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Переименовать константу DELAY_TIME ',
+    description:
+      'Необходимо переименовать константу с DELAY_TIME на DELAY_API_TIME',
+    createdAt: new Date('2023-03-09T23:00:00'),
+    assignee: 'Иванов',
+    status: 'To Do',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Разработать дизайн ',
+    description: 'Необходимо разработать дизайн приложения',
+    createdAt: new Date('2023-02-09T23:00:00'),
+    assignee: 'Петров',
+    status: 'In progress',
+    priority: 'Low',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9120',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-02-09T23:00:05'),
+        author: 'Петров',
+      },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Разработать бургер-меню',
+    description: 'Разработать бургер-меню',
+    createdAt: new Date('2023-01-09T23:00:00'),
+    assignee: 'Коршунов',
+    status: 'In progress',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9121',
+        text: 'Ok',
+        createdAt: new Date('2023-01-09T23:00:05'),
+        author: 'Коршунов',
+      },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Разработать модалку',
+    description: 'Сделать модалку',
+    createdAt: new Date('2023-01-12T23:00:00'),
+    assignee: 'Ермолаева',
+    status: 'Complete',
+    priority: 'Low',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9122',
+        text: 'Срочно!',
+        createdAt: new Date('2023-01-12T23:00:05'),
+        author: 'Коршунов',
+      },
+    ],
+  },
+  {
+    id: '6',
+    name: 'Протестировать бургер-меню',
+    description: 'Протестировать бургер-меню на разных разрешениях',
+    createdAt: new Date('2023-01-15T23:00:00'),
+    assignee: 'Буян',
+    status: 'To Do',
+    priority: 'Low',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9123',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-01-15T23:00:05'),
+        author: 'Коршунов',
+      },
+    ],
+  },
+  {
+    id: '7',
+    name: 'Сделать адаптив',
+    description: 'Сделать адаптивную версию дизайна',
+    createdAt: new Date('2023-02-15T23:00:00'),
+    assignee: 'Варан',
+    status: 'In progress',
+    priority: 'Medium',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9124',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-01-15T23:00:05'),
+        author: 'Коршунов',
+      },
+      {
+        id: '9125',
+        text: 'Не забудь проо логотип!',
+        createdAt: new Date('2023-02-15T23:00:05'),
+        author: 'Варан',
+      },
+    ],
+  },
+  {
+    id: '8',
+    name: 'Разработать слайдер',
+    description: 'Сделать слайдер под фотографии',
+    createdAt: new Date('2023-02-11T23:00:00'),
+    assignee: 'Белусь',
+    status: 'To Do',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-01-12T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+      {
+        id: '912',
+        text: 'Не забудь про новые форматы!',
+        createdAt: new Date('2023-02-15T23:00:05'),
+        author: 'Варан Саша',
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: 'Разработать пагинацию',
+    description: 'Сделать пагинацию основной страницы',
+    createdAt: new Date('2023-01-19T23:00:00'),
+    assignee: 'Варяг',
+    status: 'In progress',
+    priority: 'Low',
+    isPrivate: true,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+  {
+    id: '10',
+    name: 'Сделать авторизацию',
+    description: 'Сделать авторизацию пользователя на главной странице',
+    createdAt: new Date('2023-02-20T23:00:00'),
+    assignee: 'Симан',
+    status: 'Complete',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9129',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-01-20T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+      {
+        id: '9130',
+        text: 'Не забудь проо логотип!',
+        createdAt: new Date('2023-02-15T23:00:05'),
+        author: 'Варан Саша',
+      },
+    ],
+  },
+  {
+    id: '11',
+    name: 'Сделать страницу админа',
+    description: 'Сделать страницу админа для администрирования сайта',
+    createdAt: new Date('2023-01-20T23:00:00'),
+    assignee: 'Горян',
+    status: 'In progress',
+    priority: 'Low',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9135',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-01-20T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '12',
+    name: 'Сделать страницу 404',
+    description: 'Сделать страницу 404',
+    createdAt: new Date('2023-03-20T23:00:00'),
+    assignee: 'Ткачук',
+    status: 'To Do',
+    priority: 'Medium',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9136',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2023-03-20T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '13',
+    name: 'Разработать header',
+    description: 'Разработать header для всех страниц',
+    createdAt: new Date('2022-12-22T23:00:00'),
+    assignee: 'Шук',
+    status: 'To Do',
+    priority: 'Low',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9137',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-12-25T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '14',
+    name: 'Разработать footer',
+    description: 'Разработать footer для всех страниц',
+    createdAt: new Date('2022-12-25T23:00:00'),
+    assignee: 'Сидоренко',
+    status: 'To Do',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9138',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-12-25T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '15',
+    name: 'Разработать navigation',
+    description: 'Разработать navigation для всех страниц',
+    createdAt: new Date('2022-12-27T23:00:00'),
+    assignee: 'Сидоренко',
+    status: 'In progress',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9139',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-12-27T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '16',
+    name: 'Разработать aside',
+    description: 'Разработать aside для главной страницы',
+    createdAt: new Date('2022-02-27T23:00:00'),
+    assignee: 'Ткач',
+    status: 'Complete',
+    priority: 'Medium',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9140',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-02-27T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '17',
+    name: 'Сверстать confirm modal',
+    description:
+      'Разработать confirm modal  в соответствии с дизайном  приложения',
+    createdAt: new Date('2022-02-28T23:00:00'),
+    assignee: 'Петров',
+    status: 'To Do',
+    priority: 'Low',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9141',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-02-29T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '18',
+    name: 'Сверстать главную страницу',
+    description:
+      'Сверстать главную страницу в соответствии с дизайном  приложения',
+    createdAt: new Date('2022-01-28T23:00:00'),
+    assignee: 'Петров',
+    status: 'To Do',
+    priority: 'Medium',
+    isPrivate: true,
+    comments: [
+      {
+        id: '9142',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-01-29T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '19',
+    name: 'Сверстать  страницу регистрации',
+    description:
+      'Сверстать страницу регистрации в соответствии с дизайном  приложения',
+    createdAt: new Date('2022-01-29T23:00:00'),
+    assignee: 'Васильев',
+    status: 'In progress',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '9143',
+        text: 'Это не срочно, но важно!',
+        createdAt: new Date('2022-01-29T23:00:05'),
+        author: 'Коршунов Илья',
+      },
+    ],
+  },
+  {
+    id: '19',
+    name: 'Проверить макет на соответствие ТЗ',
+    description: 'Проверить все страницы макета на соответствие ТЗ ',
+    createdAt: new Date('2022-01-30T23:00:00'),
+    assignee: 'Васильев',
+    status: 'Complete',
+    priority: 'High',
+    isPrivate: false,
+    comments: [
+      {
+        id: '912',
+        text: 'Будет сделано!',
+        createdAt: new Date('2023-03-09T23:00:05'),
+        author: 'Иванов',
+      },
+    ],
+  },
+];
+
 // ////////////////////////////---class Comment---//////////////////////
 
 class Comment {
@@ -318,7 +719,7 @@ class TaskCollection {
 // *******************utils***************//
 
 function convertationDate(dateObject) {
-  const string = dateObject.toString().slice(0, 10);
+  const string = dateObject.toISOString().slice(0, 10);
   return `${string.slice(8)}/${string.slice(5, 7)}/${string.slice(0, 4)}`;
 }
 
@@ -414,8 +815,6 @@ const srcImgCollection = {
   previos: 'assets/icon/previous.svg',
   previos1: 'assets/icon/previous.svg',
   email: 'assets/icon/email.svg',
-  openTodo: 'assets/icon/folder-open.svg',
-  closeTodo: 'assets/icon/closeBtn.svg',
 };
 
 const srcPriority = (priority) => {
@@ -543,7 +942,7 @@ class FooterView {
     ancor.textContent = 'Sve-Mac@yandex.ru';
     ancor.href = 'mailto: Sve-Mac@yandex.ru';
     adress.append(myName, imgEmail, ancor);
-    const date = createText('p', `${convertationDate(new Date().toISOString())}`, ['footer__date']);
+    const date = createText('p', `${convertationDate(new Date())}`, ['footer__date']);
     footer.append(footerTitle, adress, date);
     parentElem.replaceWith(footer);
   }
@@ -676,71 +1075,7 @@ class OneTaskView {
     parentElem.append(task);
   }
 }
-// --------- One Task View List ------------ //
-class OneTaskViewList {
-  constructor(id) {
-    this.id = id;
-  }
 
-  display(task) {
-    const parentElem = document.getElementById(this.id);
-    const taskRow = createElem('tr', []);
-    const taskTitle = createElem('td', []);
-    taskTitle.textContent = task.name;
-
-    const taskStat = createElem('td', []);
-    const taskStatusLabel = createDiv(['label__todo', 'progress', 'table_progress']);
-    const taskStatusTxt = createText('p', `${task.status}`);
-    taskStatusLabel.append(taskStatusTxt);
-    taskStat.append(taskStatusLabel);
-
-    const taskDescr = createElem('td', ['comment__text']);
-    taskDescr.textContent = task.description;
-
-    const taskPriority = createElem('td', []);
-    const imgPriorityTask = createImg(srcPriority(task.priority), 'priority icon', ['task__priority_img']);
-    taskPriority.append(imgPriorityTask);
-
-    const taskPrivacy = createElem('td', []);
-    const imgIsPrivateTask = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
-    taskPrivacy.append(imgIsPrivateTask);
-    const taskAssigne = createElem('td', []);
-    taskAssigne.textContent = task.assignee;
-
-    const taskDateItem = createElem('td', []);
-    taskDateItem.textContent = convertationDate(task.createdAt);
-
-    const taskCountComment = createElem('td', []);
-    taskCountComment.textContent = task.comments.length;
-
-    const taskEdit = createElem('td', []);
-    const btnEdit = createBtn('', ['btn_icon', 'edit']);
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
-    btnEdit.append(imgEdit);
-    taskEdit.append(btnEdit);
-
-    const taskDelete = createElem('td', []);
-    const btnDelete = createBtn('', ['btn_icon', 'delete']);
-    const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
-    btnDelete.append(imgDelete);
-    taskDelete.append(btnDelete);
-
-    taskRow.append(
-      taskTitle,
-      taskStat,
-      taskDescr,
-      taskPriority,
-      taskPrivacy,
-      taskAssigne,
-      taskDateItem,
-      taskCountComment,
-      taskEdit,
-      taskDelete,
-    );
-
-    parentElem.append(taskRow);
-  }
-}
 // *****************   class TaskFeedView   *****************//
 
 class TaskFeedView {
@@ -799,86 +1134,6 @@ class TaskFeedView {
       if (arrTasksStatus.length) {
         arrTasksStatus.forEach((task) => {
           const oneTask = new OneTaskView(this.createIdList(column));
-          oneTask.display(task);
-        });
-      }
-    });
-  }
-}
-//  ---task view table---  //
-class BoardViewList {
-  constructor(id) {
-    this.id = id;
-  }
-
-  taskStatus = ['To Do', 'Complete', 'In progress'];
-
-  createIdList(str) {
-    if (str === taskStatusObj.toDo) return 'todo';
-    if (str === taskStatusObj.inProgress) return 'inProgress';
-    return 'complete';
-  }
-
-  arrFieldTask = ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Date', 'Comments', 'Edit', 'Delete'];
-
-  display(tasks) {
-    const parentElem = document.getElementById(this.id);
-    const newsectionTasks = createElem('section', ['board']);
-
-    const sectionTasks = createElem('div', ['container__row']);
-
-    this.taskStatus.forEach((column) => {
-      const columnOne = createDiv(['container__todo']);
-      const tableHeader = createDiv(['table__header', 'table__header_open']);
-      const todoTitle = createText('h5', `${column}`, ['label__todo_list']);
-
-      const btnAddTasks = createBtn('', ['btn_icon', 'btn__add_task_list']);
-      const imgAddTasks = createImg(srcImgCollection.addTask, 'icon');
-      btnAddTasks.append(imgAddTasks);
-
-      const btnOpenTodo = createBtn('', ['btn_icon', 'open__todo_btn']);
-      const imgOpenTodo = createImg(srcImgCollection.openTodo, 'icon');
-      btnOpenTodo.append(imgOpenTodo);
-
-      const btnCloseTodo = createBtn('', ['btn_icon', 'close__todo_btn']);
-      const imgCloseTodo = createImg(srcImgCollection.closeTodo, 'icon');
-      btnCloseTodo.append(imgCloseTodo);
-      tableHeader.append(todoTitle, btnAddTasks, btnOpenTodo, btnCloseTodo);
-
-      const tableTodo = createElem('table', ['open__table']);
-      const tableThead = createElem('thead', []);
-      const tableRowTitle = createElem('tr', []);
-
-      this.arrFieldTask.forEach((field) => {
-        const tableThTitle = createElem('th', []);
-        tableThTitle.textContent = field;
-        if (field === 'Comments') {
-          tableThTitle.innerHTML = `<img src=${srcImgCollection.comments} alt='comments icon'
-          class='task__img_comment'>`;
-        }
-        tableRowTitle.append(tableThTitle);
-      });
-      tableThead.append(tableRowTitle);
-      const tableBody = createElem('tbody', []);
-      tableBody.id = this.createIdList(column);
-      tableTodo.append(tableThead, tableBody);
-
-      columnOne.append(tableHeader, tableTodo);
-      sectionTasks.append(columnOne);
-    });
-
-    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
-    const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-    btnMoreTasks.append(imgMoreTasks);
-
-    newsectionTasks.append(sectionTasks, btnMoreTasks);
-    parentElem.replaceWith(newsectionTasks);
-
-    this.taskStatus.forEach((column) => {
-      const arrTasksStatus = tasks.filter((task) => task.status === column);
-      if (arrTasksStatus.length) {
-        arrTasksStatus.forEach((task) => {
-          const oneTask = new OneTaskViewList(this.createIdList(column));
           oneTask.display(task);
         });
       }
@@ -988,16 +1243,9 @@ const filter = new FilterView('container__filter');
 
 const myBoard = new TaskFeedView('container__columns');
 
-const boardViewList = new BoardViewList('container__columns');
-
 const renderMainBoard = (arrTask) => {
   filter.display();
   myBoard.display(arrTask.tasks);
-};
-
-const renderMainBoardList = (arrTask) => {
-  filter.display();
-  boardViewList.display(arrTask.tasks);
 };
 
 const cleanMainBoard = () => {
@@ -1013,7 +1261,6 @@ const footerView = new FooterView('footer');
 footerView.display();
 
 renderMainBoard(myTasks);
-// renderMainBoardList(myTasks);
 cleanOneTaskPage();
 
 //  _____________________ГЛОБАЛЬНЫЕ ФУНКЦИИ_______________  //

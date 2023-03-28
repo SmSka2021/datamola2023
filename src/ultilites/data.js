@@ -12,7 +12,7 @@ const arrTasks = [
       {
         id: '912',
         text: 'Будет сделано!',
-        createdAt: new Date('2023-03-09T23:00:05'),
+        createdAt: new Date('2023-03-09T23:00:00'),
         author: 'Иванов',
       },
     ],
@@ -30,7 +30,7 @@ const arrTasks = [
       {
         id: '912',
         text: 'Будет сделано!',
-        createdAt: new Date('2023-03-09T23:00:05'),
+        createdAt: new Date('2023-03-09T23:00:00'),
         author: 'Иванов',
       },
     ],
@@ -49,7 +49,7 @@ const arrTasks = [
       {
         id: '912',
         text: 'Будет сделано!',
-        createdAt: new Date('2023-03-09T23:00:05'),
+        createdAt: new Date('2023-03-09T23:00:00'),
         author: 'Иванов',
       },
     ],
@@ -400,4 +400,4 @@ const arrTasks = [
     ],
   },
 ];
-localStorage.setItem('tasks', JSON.stringify(arrTasks));
+export default arrTasks;

@@ -10,6 +10,7 @@
   padding: 2rem 3rem;
   background: var(--white-color);
   border-radius: 5px;
+  box-shadow: var(--shadow);
 }
 
 .header_task {
