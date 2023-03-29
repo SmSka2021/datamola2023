@@ -3,7 +3,6 @@ import TaskCollection from './models/task-collection';
 import HeaderView from './components/header-view';
 import FooterView from './components/footer-view';
 import FilterView from './components/filter-view';
-// eslint-disable-next-line import/no-cycle
 import TaskFeedView from './components/board-table-view';
 import BoardViewList from './components/board-list-view';
 import TaskViewPage from './components/page-one-task-view';
@@ -50,6 +49,7 @@ class TasksController {
     this.boardTableView.display(this.collection.tasks);
     this.boardTableView.bindDeleteTask(this.removeTask);
     this.boardTableView.bindOpenTask(this.showTask);
+    this.boardTableView.bindSetViewBoardList(this.renderMainBoardList);
   };
 
   renderMainBoardList = () => {
@@ -58,6 +58,7 @@ class TasksController {
     this.boardListView.display(this.collection.tasks);
     this.boardListView.bindDeleteTask(this.removeTask);
     this.boardListView.bindOpenTask(this.showTask);
+    this.boardListView.bindSetViewBoardTable(this.renderMainBoardTable);
   };
 
   cleanMainBoard = () => {

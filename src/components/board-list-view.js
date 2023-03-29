@@ -9,25 +9,25 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import { taskStatusArr, arrFieldTask, createIdList } from '../ultilites/field-task';
 import OneTaskViewList from './one-task-view-list';
-import { getElements } from '../ultilites/get-element';
+import { getElements, getElement } from '../ultilites/get-element';
 
 class BoardViewList {
   constructor(id) {
     this.id = id;
   }
 
-  isOpenTodo = false;
+  isOpenTodo = this.getStateIsOpenTodo();
 
-  isOpenComplete = false;
+  isOpenComplete = this.getStateIsOpenComplete();
 
-  isOpenInProgress = false;
+  isOpenInProgress = this.getStateIsOpenInProgress();
 
   bindDeleteTask(handler) {
     const btnDelete = getElements('.img_delete');
     btnDelete.forEach((btn) => btn.addEventListener('click', (event) => {
+      event.stopPropagation();
       const isBtnDelete = event.target.parentElement.classList.contains('delete');
       if (isBtnDelete) {
-        event.stopPropagation();
         handler(event.target.parentElement.dataset.id, 'board-list');
       }
     }));
@@ -44,45 +44,71 @@ class BoardViewList {
     }));
   }
 
-  openTodo = (e) => {
-    e.stopPropagation();
-    const elem = e.target.closest('.table__header');
+  bindSetViewBoardTable(handler) {
+    const tasksAll = getElement('.btn_table');
+    if (tasksAll) {
+      tasksAll.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
+  getStateIsOpenTodo() {
+    if (localStorage.getItem('isOpenTodo')) {
+      return localStorage.getItem('isOpenTodo') === 'true';
+    }
+    return false;
+  }
+
+  getStateIsOpenComplete() {
+    if (localStorage.getItem('isOpenTodo')) {
+      return localStorage.getItem('isOpenComplete') === 'true';
+    }
+    return false;
+  }
+
+  getStateIsOpenInProgress() {
+    if (localStorage.getItem('isOpenTodo')) {
+      return localStorage.getItem('isOpenInProgress') === 'true';
+    }
+    return false;
+  }
+
+  changeOpenCloseTodo = (elem, index) => {
     const titleColumn = getElements('.label__todo_list');
     const tablesTodo = getElements('.open__table');
     const btnsImgCloseColumn = getElements('.img_close');
     const btnsImgOpenColumn = getElements('.img_open');
     const loadBths = getElements('.load__btn');
 
+    elem.classList.toggle('table__header_open');
+    elem.classList.toggle('table__header_close');
+    titleColumn[index].classList.toggle('label_open');
+    tablesTodo[index].hidden = !tablesTodo[index].hidden;
+    btnsImgCloseColumn[index].hidden = !btnsImgCloseColumn[index].hidden;
+    btnsImgOpenColumn[index].hidden = !btnsImgOpenColumn[index].hidden;
+    loadBths[index].classList.toggle('display_none');
+  };
+
+  actionLabelTodo = (e) => {
+    e.stopPropagation();
+    const elem = e.target.closest('.table__header');
     switch (elem.dataset.column) {
       case 'todo':
         this.isOpenTodo = !this.isOpenTodo;
-        elem.classList.toggle('table__header_open');
-        elem.classList.toggle('table__header_close');
-        titleColumn[0].classList.toggle('label_open');
-        tablesTodo[0].hidden = !tablesTodo[0].hidden;
-        btnsImgCloseColumn[0].hidden = !btnsImgCloseColumn[0].hidden;
-        btnsImgOpenColumn[0].hidden = !btnsImgOpenColumn[0].hidden;
-        loadBths[0].classList.toggle('display_none');
-        break;
-      case 'complete':
-        this.isOpenComplete = !this.isOpenComplete;
-        elem.classList.toggle('table__header_open');
-        elem.classList.toggle('table__header_close');
-        titleColumn[2].classList.toggle('label_open');
-        tablesTodo[2].hidden = !tablesTodo[2].hidden;
-        btnsImgCloseColumn[2].hidden = !btnsImgCloseColumn[2].hidden;
-        btnsImgOpenColumn[2].hidden = !btnsImgOpenColumn[2].hidden;
-        loadBths[2].classList.toggle('display_none');
+        localStorage.setItem('isOpenTodo', this.isOpenTodo);
+        this.changeOpenCloseTodo(elem, 0);
         break;
       case 'inProgress':
         this.isOpenInProgress = !this.isOpenInProgress;
-        elem.classList.toggle('table__header_open');
-        elem.classList.toggle('table__header_close');
-        titleColumn[1].classList.toggle('label_open');
-        btnsImgCloseColumn[1].hidden = !btnsImgCloseColumn[1].hidden;
-        btnsImgOpenColumn[1].hidden = !btnsImgOpenColumn[1].hidden;
-        loadBths[1].classList.toggle('display_none');
-        tablesTodo[1].hidden = !tablesTodo[1].hidden;
+        localStorage.setItem('isOpenInProgress', this.isOpenInProgress);
+        this.changeOpenCloseTodo(elem, 1);
+        break;
+      case 'complete':
+        this.isOpenComplete = !this.isOpenComplete;
+        localStorage.setItem('isOpenComplete', this.isOpenComplete);
+        this.changeOpenCloseTodo(elem, 2);
         break;
       default:
         elem.classList.toggle('table__header_open');
@@ -97,7 +123,7 @@ class BoardViewList {
 
     const containerViewBtn = createDiv(['container__view_btn_list']);
     const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list']);
-    const imgList = createImg(srcImgCollection.viewList, 'icon');
+    const imgList = createImg(srcImgCollection.viewList, 'icon', ['img_viewList']);
     btnViewList.append(imgList);
     const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
@@ -110,7 +136,7 @@ class BoardViewList {
       columnOne.setAttribute('data-table', `${createIdList(column)}`);
       const tableHeader = createDiv(['table__header', 'table__header_close']);
       tableHeader.setAttribute('data-column', `${createIdList(column)}`);
-      tableHeader.addEventListener('click', (e) => this.openTodo(e));
+      tableHeader.addEventListener('click', (e) => this.actionLabelTodo(e));
       const todoTitle = createText('h5', `${column}`, ['label__todo_list']);
       const btnAddTasks = createBtn('', ['btn_icon', 'btn__add_task_list']);
       const imgAddTasks = createImg(srcImgCollection.addTask, 'icon');
@@ -165,6 +191,10 @@ class BoardViewList {
         });
       }
     });
+    const labelTodo = getElements('.table__header');
+    if (this.isOpenTodo) this.changeOpenCloseTodo(labelTodo[0], 0);
+    if (this.isOpenInProgress) this.changeOpenCloseTodo(labelTodo[1], 1);
+    if (this.isOpenComplete) this.changeOpenCloseTodo(labelTodo[2], 2);
   }
 }
 

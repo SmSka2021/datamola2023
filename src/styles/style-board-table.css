@@ -311,9 +311,10 @@
   .container__view_btn {
     width: 100%;
     display: flex;
-    justify-content: end;
+    justify-content: start;
     column-gap: 2rem;
     padding: 0 20px;
+    margin: 20px 0;
   }
   
   .load__btn {

@@ -8,7 +8,7 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import { createIdList, taskStatusArr } from '../ultilites/field-task';
 import OneTaskViewCard from './one-task-card-view';
-import { getElements } from '../ultilites/get-element';
+import { getElements, getElement } from '../ultilites/get-element';
 
 class TaskFeedView {
   constructor(id) {
@@ -35,6 +35,16 @@ class TaskFeedView {
         handler(oneTask.dataset.id);
       }
     }));
+  }
+
+  bindSetViewBoardList(handler) {
+    const tasksAll = getElement('.btn_list');
+    if (tasksAll) {
+      tasksAll.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
   }
 
   display(tasks) {
@@ -73,7 +83,7 @@ class TaskFeedView {
     btnViewTable.append(imgTable);
     containerViewBtn.append(btnViewList, btnViewTable);
 
-    newsectionTasks.append(sectionTasks, containerViewBtn);
+    newsectionTasks.append(containerViewBtn, sectionTasks);
     parentElem.replaceWith(newsectionTasks);
     taskStatusArr.forEach((column) => {
       const arrTasksStatus = tasks.filter((task) => task.status === column);
