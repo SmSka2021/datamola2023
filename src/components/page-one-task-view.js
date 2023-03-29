@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import {
   createElem,
   createDiv,
@@ -9,6 +10,7 @@ import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
 import srcPriority from '../ultilites/convertor-src';
 import { maxLengthDescription } from '../ultilites/constant';
+import { getElement } from '../ultilites/get-element';
 
 // ----------PAGE ONE TASK  -TaskView---------------- //
 class TaskViewPage {
@@ -16,12 +18,39 @@ class TaskViewPage {
     this.id = id;
   }
 
+  bindAddComment(handler) {
+    const commentForm = getElement('.form');
+    commentForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const newComment = commentForm.newComment.value;
+      const idTask = commentForm.dataset.id;
+      if (newComment.length) {
+        event.preventDefault();
+        handler(idTask, newComment);
+        commentForm.reset();
+      }
+    });
+  }
+
+  bindPrevViewAllTask(handler) {
+    const imgPrev = getElement('.previosView_img');
+    imgPrev.addEventListener('click', (event) => {
+      const btnPrev = event.target.parentElement.classList.contains('previosView');
+      if (btnPrev) {
+        event.stopPropagation();
+        handler();
+      }
+    });
+  }
+
   display(task) {
+    if (!task) return;
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
     newsectionTasks.id = 'main_task';
-    const btnPrevious = createBtn('', ['dark_btn', 'btn']);
-    const imgPrevios = createImg(srcImgCollection.previos, 'icon');
+    const btnPrevious = createBtn('', ['dark_btn', 'btn', 'previosView'], 'button', 'back');
+    const imgPrevios = createImg(srcImgCollection.previos, 'icon', ['previosView_img']);
     btnPrevious.append(imgPrevios);
 
     const sectionOneTask = createElem('section', ['container__one_task']);
@@ -43,10 +72,10 @@ class TaskViewPage {
     containerTitleTask.append(imgPriorityTasks, userNameItem);
 
     const containerBtnTask = createDiv(['container__btn_task']);
-    const btnDel = createBtn('', ['btn_icon', 'delete']);
+    const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDel = createImg(srcImgCollection.delete, 'icon delete');
     btnDel.append(imgDel);
-    const btnEdit = createBtn('', ['btn_icon', 'edit']);
+    const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit');
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
@@ -76,14 +105,16 @@ class TaskViewPage {
       });
     }
     const formElem = createElem('form', ['form']);
+    formElem.setAttribute('data-id', `${task.id}`);
     const formLabel = createElem('label', ['form__label']);
     formLabel.for = 'addComment';
     formLabel.textContent = 'Comment: ';
     const formTextArea = createElem('textarea', ['form__area']);
     formTextArea.name = 'newComment';
     formTextArea.id = 'addComment';
+    formElem.setAttribute('data-id', `${task.id}`);
     formTextArea.maxlength = maxLengthDescription;
-    const btnForm = createBtn('Add', ['light_btn', 'btn']);
+    const btnForm = createBtn('Add', ['light_btn', 'btn'], 'submit', 'add comment');
     formElem.append(formLabel, formTextArea, btnForm);
 
     sectionOneTask.append(

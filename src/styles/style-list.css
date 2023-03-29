@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 20px;
+  flex-grow: 1;
 }
 
 .table__header {
@@ -26,11 +27,11 @@
   font-weight: 700;
   font-size: 2rem;
   margin: 0 auto;
-  color: var(--white-color);
+  color: var(--primary-color); 
 }
 
 .label_open {
-  color: var(--secondary-color);
+  color: var(--white-color); 
 }
 
 .close__todo_btn,
@@ -93,4 +94,12 @@ td {
 
 tbody tr:nth-child(odd) {
   background: var(--grey-light-color);
+}
+.container__view_btn_list {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  column-gap: 2rem;
+  padding: 0 20px;
+  margin: 15px 0;
 }

@@ -341,4 +341,6 @@
   .btn_list img {
     width: 20px;
   }
-  
+  .display_none {
+    display: none;
+  }

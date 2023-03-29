@@ -12,8 +12,8 @@ class TaskCollection {
     return this._tasks;
   }
 
-  set tasks(newTasks) {
-    this._tasks = newTasks.map((task) => new Task(task));
+  settasks(newTasks) {
+    this._tasks = [...newTasks];
   }
 
   get user() {

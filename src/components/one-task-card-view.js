@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import {
   createDiv,
   createText,
@@ -15,14 +16,15 @@ class OneTaskViewCard {
 
   display(taskOne) {
     const parentElem = document.getElementById(this.id);
-
     const task = createDiv(['task']);
+    task.setAttribute('data-id', `${taskOne.id}`);
     const containerTitleTask = createDiv(['container__title_task']);
     const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
     const labelTodo = createDiv(['label__todo']);
     const itemLabelTodo = createText('p', `${taskOne.status}`, []);
     labelTodo.append(itemLabelTodo);
     containerTitleTask.append(taskTitle, labelTodo);
+    task.addEventListener('click', this.actionTask);
 
     const containerDateTask = createDiv(['container__date_task']);
     const taskDate = createText('p', `${convertationDate(taskOne.createdAt)}`, ['task__date']);
@@ -42,12 +44,14 @@ class OneTaskViewCard {
     userNameLabel.append(userNameItem);
 
     const containerBtn = createDiv(['container__btn_delete']);
-    const btnDelete = createBtn('', ['btn_icon', 'delete']);
+    const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
+    btnDelete.setAttribute('data-id', `${taskOne.id}`);
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     btnDelete.append(imgDelete);
 
     const btnEdit = createBtn('', ['btn_icon', 'edit']);
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
+    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit'], 'button', 'edit task');
+    imgEdit.setAttribute('data-id', `${taskOne.id}`);
     btnEdit.append(imgEdit);
     containerBtn.append(btnDelete, btnEdit);
 

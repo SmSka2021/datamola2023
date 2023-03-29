@@ -8,7 +8,7 @@ export const taskStatusObj = {
   complete: 'Complete',
   inProgress: 'In progress',
 };
-export const taskStatusArr = ['To Do', 'Complete', 'In progress'];
+export const taskStatusArr = ['To Do', 'In progress', 'Complete'];
 
 export const createIdList = (str) => {
   if (str === taskStatusObj.toDo) return 'todo';

@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import {
   createElem,
   createDiv,
@@ -7,10 +8,33 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import { createIdList, taskStatusArr } from '../ultilites/field-task';
 import OneTaskViewCard from './one-task-card-view';
+import { getElements } from '../ultilites/get-element';
 
 class TaskFeedView {
   constructor(id) {
     this.id = id;
+  }
+
+  bindDeleteTask(handler) {
+    const btnDelete = getElements('.img_delete');
+    btnDelete.forEach((btn) => btn.addEventListener('click', (event) => {
+      const isBtnDelete = event.target.parentElement.classList.contains('delete');
+      if (isBtnDelete) {
+        event.stopPropagation();
+        handler(event.target.parentElement.dataset.id, 'board-table');
+      }
+    }));
+  }
+
+  bindOpenTask(handler) {
+    const tasksAll = getElements('.task');
+    tasksAll.forEach((task) => task.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const oneTask = event.target.closest('.task');
+      if (oneTask) {
+        handler(oneTask.dataset.id);
+      }
+    }));
   }
 
   display(tasks) {
