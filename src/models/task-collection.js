@@ -50,10 +50,17 @@ class TaskCollection {
 
     return this.tasks
       .filter(
-        (task) => !config.assignee || task.assignee.includes(config.assignee),
+        (task) => !config.name || task.name.toLowerCase().includes(config.name.toLowerCase()),
       )
       .filter(
-        (task) => !config.description || task.description.includes(config.description),
+        (task) => !config.assignee || task.assignee.toLowerCase().includes(
+          config.assignee.toLowerCase(),
+        ),
+      )
+      .filter(
+        (task) => !config.description || task.description.toLowerCase().includes(
+          config.description.toLowerCase(),
+        ),
       )
       .filter(
         (task) => !config.status || task.status === config.status,

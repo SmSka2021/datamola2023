@@ -23,6 +23,7 @@ class FilterView {
   filterData = {
     assignee: null,
     description: null,
+    name: null,
     status: null,
     priority: null,
     isPrivate: null,
@@ -88,6 +89,41 @@ class FilterView {
         this.saveSettingLocalStorage();
         handler(0, 10, this.filterData);
       };
+      getElement('#assignee').onchange = () => {
+        this.stateFilter.assignee = true;
+        this.stateFilter.description = false;
+        this.stateFilter.title = false;
+        this.saveSettingLocalStorage();
+      };
+      getElement('#description').onchange = () => {
+        this.stateFilter.assignee = false;
+        this.stateFilter.description = true;
+        this.stateFilter.title = false;
+        this.saveSettingLocalStorage();
+      };
+      getElement('#title').onchange = () => {
+        this.stateFilter.assignee = false;
+        this.stateFilter.description = false;
+        this.stateFilter.title = true;
+        this.saveSettingLocalStorage();
+      };
+      const searchInput = getElement('.search__input');
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          const valueInput = searchInput.value;
+          if (this.stateFilter.assignee) {
+            this.filterData.assignee = valueInput;
+          }
+          if (this.stateFilter.description) {
+            this.filterData.description = valueInput;
+          }
+          if (this.stateFilter.title) {
+            this.filterData.name = valueInput;
+          }
+          this.saveSettingLocalStorage();
+          handler(0, 10, this.filterData);
+        });
+      }
     });
   }
 
@@ -114,19 +150,31 @@ class FilterView {
     const filterTitle = createText('h5', 'Filter by', ['filter__title']);
 
     const containerSearch = createDiv(['container__search']);
-    const containerSearchBy = createDiv(['container__search_by']);
-    const containerSearchByText = createDiv(['container__search_by_text']);
-    const searchByName = createBtn('name', ['search__by-name']);
-    const spanSlesh = createText('span', ' / ');
-    const searchByTitle = createBtn('title', ['search__by-title']);
-    containerSearchByText.append(searchByName, spanSlesh, searchByTitle);
-    const containerSearchByradios = createDiv(['container__search_by_radios']);
-    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee');
-    const radioSearchByDeckr = createInputRadio('radio', 'search', 'description');
-    containerSearchByradios.append(radioSearchByAssignee, radioSearchByDeckr);
-    containerSearchBy.append(containerSearchByText, containerSearchByradios);
+    const containerSearchRadoisText = createDiv(['container__search__text_radio']);
+
+    const containerSearchByAssignee = createDiv(['container__search_group']);
+    const searchByAssignee = createText('p', 'assignee', ['search__by-name']);
+    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee', this.stateFilter.assignee);
+    containerSearchByAssignee.append(radioSearchByAssignee, searchByAssignee);
+
+    const containerSearchByNameTask = createDiv(['container__search_group']);
+    const searchByTitle = createText('p', 'title', ['search__by-title']);
+    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title', this.stateFilter.title);
+    containerSearchByNameTask.append(radioSearchByTille, searchByTitle);
+
+    const containerSearchByDescr = createDiv(['container__search_group']);
+    const searchByDesc = createText('p', 'description', ['search__by-title']);
+    const radioSearchByDeckr = createInputRadio('radio', 'search', 'description', 'description', this.stateFilter.description);
+    containerSearchByDescr.append(radioSearchByDeckr, searchByDesc);
+
+    containerSearchRadoisText.append(
+      containerSearchByAssignee,
+      containerSearchByNameTask,
+      containerSearchByDescr,
+    );
+
     const inputSearch = createInput('search', ['search__input'], 'enter data');
-    containerSearch.append(containerSearchBy, inputSearch);
+    containerSearch.append(inputSearch, containerSearchRadoisText);
 
     const containerPriority = createDiv(['container__priority']);
     const prioritTitle = createText('p', 'priority', ['priority__title']);
@@ -146,19 +194,19 @@ class FilterView {
 
     const containerPrivacy = createDiv(['container__privacy']);
     const privacyTitle = createText('p', 'privacy', ['priority__title']);
+
     const containerImgAndRadio = createDiv(['container__privacy_img_radios']);
+
     const containerPrivacyImg = createDiv(['container__privacy_img']);
-    const privacyBtn = createBtn('', ['privacy__btn'], 'button', 'privacy');
-    const imgPersonPrivacy = createImg(srcImgCollection.privacyPerson, 'icon');
-    privacyBtn.append(imgPersonPrivacy);
-    const publicBtn = createBtn('', ['privacy__btn'], 'button', 'public');
-    const imgPublicPrivacy = createImg(srcImgCollection.privacyMultiple, 'icon');
-    publicBtn.append(imgPublicPrivacy);
-    containerPrivacyImg.append(privacyBtn, publicBtn);
+    const imgPersonPrivacy = createImg(srcImgCollection.privacyPerson, 'icon', ['img_privacy']);
+    const imgPublicPrivacy = createImg(srcImgCollection.privacyMultiple, 'icon', ['img_privacy']);
+    containerPrivacyImg.append(imgPublicPrivacy, imgPersonPrivacy);
+
     const containerPrivacyRadios = createDiv(['container__privacy_radios']);
     const radioPublic = createInputRadio('radio', 'private', 'public', 'public', this.stateFilter.isPrivate.public);
     const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy', this.stateFilter.isPrivate.privacy);
     containerPrivacyRadios.append(radioPublic, radioPrivate);
+
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
     containerPrivacy.append(privacyTitle, containerImgAndRadio);
     const containerDate = createDiv(['container__privacy']);

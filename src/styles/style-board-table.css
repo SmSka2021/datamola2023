@@ -29,54 +29,61 @@
     font-weight: 700;
     font-size: 24px;
   }
-  
-  .container__search,
-  .container__priority,
-  .container__privacy {
-    display: flex;
-    align-items: center;
+  .container__search {
+    width: 270px;
   }
-  
-  .container__search_by_text>span {
-    font-weight: 700;
-    font-size: 18px;
-  }
-  
-  .search__by-name,
-  .search__by-title {
-    color: var(--primary-color);
-    font-size: 16px;
-    font-weight: 700;
-    background: transparent;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .search__by-name:hover,
-  .search__by-title:hover {
-    color: var(--technic-color);
-  
-  }
-  .container__search_by_radios {
-    display: flex;
-    gap: 30px;    
-    justify-content: center;
-  }
-  .container__privacy_radios {
-    display: flex;
-    gap: 20px;    
-    justify-content: center;
-  }
-  
   .search__input {
-    width: 250px;
-    height: 30px;
+    width: 270px;
+    height: 27px;
     background-color: transparent;
     border: 1px solid var(--technic-color);
     border-radius: 30px;
     background: url("./../assets/icon/search.svg") no-repeat scroll 10px 4px;
-    padding-left: 40px;
-    margin-left: 15px;
+    padding-left: 40px;  
+    margin: 0 0 10px 0; 
+  }
+  .container__search_group, 
+  .container__search__text_radio {
+    display: flex;
+    gap: 5px;
+    margin: 0;
+    padding: 0;    
+    background: transparent;
+    cursor: pointer;
+    border: none;
+  }
+  .container__search__text_radio {
+    gap: 10px;
+  }
+  .container__priority,
+  .container__privacy {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }   
+  .search__by-name,
+  .search__by-title {
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+  } 
+  .search__by-name:hover,
+  .search__by-title:hover {
+    color: var(--technic-color);  
+  }
+  .container__privacy_img_radios {
+    width: 60px;
+  }
+  .container__privacy_radios,
+  .container__privacy_img {
+    width: 100%;
+    display: flex;
+    gap: 15px;    
+    justify-content: center;
+  }
+  .img_privacy:hover {
+    filter: var(--filter-svg-black-blue);
   }
   
   .priority__title {
@@ -84,6 +91,7 @@
     font-size: 16px;
     font-weight: 700;
     margin-right: 15px;
+    margin: 0;
   }
   .container__priority_radios {
     display: flex;
@@ -102,17 +110,7 @@
     width: 15px;
     height: 20px;
   }
-  
-  .privacy__btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .privacy__btn:hover {
-    filter: var(--filter-svg-black-blue);
-  }
-  
+    
   .container__date {
     display: flex;
     flex-direction: column;

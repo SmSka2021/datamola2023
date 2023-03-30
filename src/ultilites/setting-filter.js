@@ -1,6 +1,7 @@
 const settingFilterStart = {
   assignee: false,
   description: false,
+  title: false,
   priority: {
     low: false,
     medium: false,
