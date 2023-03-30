@@ -44,6 +44,17 @@ class TaskViewPage {
     });
   }
 
+  bindDeleteTask(handler) {
+    const btnDelete = getElement('.delete_img');
+    btnDelete.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const isBtnDelete = event.target.parentElement.classList.contains('delete');
+      if (isBtnDelete) {
+        handler(event.target.parentElement.dataset.id, true);
+      }
+    });
+  }
+
   display(task) {
     if (!task) return;
     const parentElem = document.getElementById(this.id);
@@ -73,7 +84,8 @@ class TaskViewPage {
 
     const containerBtnTask = createDiv(['container__btn_task']);
     const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    const imgDel = createImg(srcImgCollection.delete, 'icon delete');
+    btnDel.setAttribute('data-id', `${task.id}`);
+    const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit');

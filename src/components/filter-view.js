@@ -12,24 +12,16 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import { getElement } from '../ultilites/get-element';
 import { priorityTask } from '../ultilites/field-task';
-import settingFilterStart from '../ultilites/setting-filter';
+import { settingFilterStart, filterDataStart } from '../ultilites/setting-filter';
 
 class FilterView {
   constructor(id) {
     this.id = id;
-    this.stateFilter = localStorage.getItem('settingFilter') ? JSON.parse(localStorage.getItem('settingFilter')) : settingFilterStart;
   }
 
-  filterData = {
-    assignee: null,
-    description: null,
-    name: null,
-    status: null,
-    priority: null,
-    isPrivate: null,
-    dateFrom: null,
-    dateTo: null,
-  };
+  stateFilter = localStorage.getItem('settingFilter') ? { ...JSON.parse(localStorage.getItem('settingFilter')) } : { ...settingFilterStart };
+
+  filterData = localStorage.getItem('dataFilter') ? { ...JSON.parse(localStorage.getItem('dataFilter')) } : { ...filterDataStart };
 
   // changeViewImg = (searchBy) => {
   //   if (searchBy === 'assignee') {
@@ -51,6 +43,21 @@ class FilterView {
     const filter = getElement('.form__filter');
     filter.addEventListener('click', (event) => {
       event.stopPropagation();
+
+      getElement('#inputDateFrom').onchange = (e) => {
+        const dateFrom = e.target.value;
+        this.filterData.dateFrom = new Date(dateFrom);
+        this.stateFilter.dateFrom = dateFrom;
+        this.saveSettingLocalStorage();
+        handler(0, 10, this.filterData);
+      };
+      getElement('#inputDateTo').onchange = (e) => {
+        const dateTo = e.target.value;
+        this.filterData.dateTo = new Date(dateTo);
+        this.stateFilter.dateTo = dateTo;
+        this.saveSettingLocalStorage();
+        handler(0, 10, this.filterData);
+      };
       getElement('#low').onchange = () => {
         this.filterData.priority = priorityTask.low;
         this.stateFilter.priority.low = true;
@@ -90,22 +97,46 @@ class FilterView {
         handler(0, 10, this.filterData);
       };
       getElement('#assignee').onchange = () => {
+        const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = true;
         this.stateFilter.description = false;
         this.stateFilter.title = false;
         this.saveSettingLocalStorage();
+        if (valueInput) {
+          this.filterData.assignee = valueInput;
+          this.filterData.description = null;
+          this.filterData.name = null;
+          this.saveSettingLocalStorage();
+          handler(0, 10, this.filterData);
+        }
       };
       getElement('#description').onchange = () => {
+        const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = false;
         this.stateFilter.description = true;
         this.stateFilter.title = false;
         this.saveSettingLocalStorage();
+        if (valueInput) {
+          this.filterData.assignee = null;
+          this.filterData.description = valueInput;
+          this.filterData.name = null;
+          this.saveSettingLocalStorage();
+          handler(0, 10, this.filterData);
+        }
       };
       getElement('#title').onchange = () => {
+        const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = false;
         this.stateFilter.description = false;
         this.stateFilter.title = true;
         this.saveSettingLocalStorage();
+        if (valueInput) {
+          this.filterData.assignee = null;
+          this.filterData.description = null;
+          this.filterData.name = valueInput;
+          this.saveSettingLocalStorage();
+          handler(0, 10, this.filterData);
+        }
       };
       const searchInput = getElement('.search__input');
       if (searchInput) {
@@ -113,30 +144,59 @@ class FilterView {
           const valueInput = searchInput.value;
           if (this.stateFilter.assignee) {
             this.filterData.assignee = valueInput;
+            this.filterData.description = null;
+            this.filterData.name = null;
           }
           if (this.stateFilter.description) {
             this.filterData.description = valueInput;
+            this.filterData.name = null;
+            this.filterData.assignee = null;
           }
           if (this.stateFilter.title) {
             this.filterData.name = valueInput;
+            this.filterData.description = null;
+            this.filterData.assignee = null;
           }
           this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
+          if ((this.stateFilter.assignee || this.stateFilter.description || this.stateFilter.title)
+           && valueInput) {
+            this.saveSettingLocalStorage();
+            handler(0, 10, this.filterData);
+          }
         });
       }
     });
   }
 
   bindResetForm(handler) {
+    document.forms.filterForm.reset();
     const resetBtn = getElement('.reset_btn');
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
         event.stopPropagation();
-        document.forms.filterForm.reset();
+        this.stateFilter = { ...settingFilterStart };
+        this.filterData = { ...filterDataStart };
         this.removeSettingLocalStorage();
-        this.stateFilter = settingFilterStart;
         handler();
       });
+    }
+  }
+
+  settingChecked() {
+    if (this.stateFilter.title) getElement('#title').setAttribute('checked', true);
+    if (this.stateFilter.description) getElement('#description').setAttribute('checked', true);
+    if (this.stateFilter.assignee) getElement('#assignee').setAttribute('checked', true);
+    if (this.stateFilter.priority.low) getElement('#low').setAttribute('checked', true);
+    if (this.stateFilter.priority.medium) getElement('#medium').setAttribute('checked', true);
+    if (this.stateFilter.priority.high) getElement('#high').setAttribute('checked', true);
+    if (this.stateFilter.isPrivate.public) getElement('#public').setAttribute('checked', true);
+    if (this.stateFilter.isPrivate.privacy) getElement('#privacy').setAttribute('checked', true);
+    if (this.stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom);
+    if (this.stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo);
+    if (this.stateFilter.title || this.stateFilter.assignee || this.stateFilter.description) {
+      const value = this.filterData.assignee
+      || this.filterData.description || this.filterData.name;
+      getElement('.search__input').setAttribute('value', value);
     }
   }
 
@@ -154,12 +214,12 @@ class FilterView {
 
     const containerSearchByAssignee = createDiv(['container__search_group']);
     const searchByAssignee = createText('p', 'assignee', ['search__by-name']);
-    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee', this.stateFilter.assignee);
+    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee');
     containerSearchByAssignee.append(radioSearchByAssignee, searchByAssignee);
 
     const containerSearchByNameTask = createDiv(['container__search_group']);
     const searchByTitle = createText('p', 'title', ['search__by-title']);
-    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title', this.stateFilter.title);
+    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title');
     containerSearchByNameTask.append(radioSearchByTille, searchByTitle);
 
     const containerSearchByDescr = createDiv(['container__search_group']);
@@ -185,9 +245,9 @@ class FilterView {
     const imgHightPriority = createImg(srcImgCollection.priority.high, 'icon', ['priority_img']);
     priorityItemsImg.append(imgLowPriority, imgMediumPriority, imgHightPriority);
     const containeRadiosPriority = createDiv(['container__priority_radios']);
-    const radioLow = createInputRadio('radio', 'priority', 'low', 'low', this.stateFilter.priority.low);
-    const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium', this.stateFilter.priority.medium);
-    const radioHigh = createInputRadio('radio', 'priority', 'high', 'high', this.stateFilter.priority.high);
+    const radioLow = createInputRadio('radio', 'priority', 'low', 'low');
+    const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium');
+    const radioHigh = createInputRadio('radio', 'priority', 'high', 'high');
     containeRadiosPriority.append(radioLow, radioMedium, radioHigh);
     containerImgAndRadios.append(priorityItemsImg, containeRadiosPriority);
     containerPriority.append(prioritTitle, containerImgAndRadios);
@@ -203,8 +263,8 @@ class FilterView {
     containerPrivacyImg.append(imgPublicPrivacy, imgPersonPrivacy);
 
     const containerPrivacyRadios = createDiv(['container__privacy_radios']);
-    const radioPublic = createInputRadio('radio', 'private', 'public', 'public', this.stateFilter.isPrivate.public);
-    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy', this.stateFilter.isPrivate.privacy);
+    const radioPublic = createInputRadio('radio', 'private', 'public', 'public');
+    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy');
     containerPrivacyRadios.append(radioPublic, radioPrivate);
 
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
@@ -215,10 +275,12 @@ class FilterView {
     const blockDate = createDiv(['container__date']);
     const labelFrom = createText('label', 'from  ', ['date__label']);
     const inputDateFrom = createInput('date', ['input__date']);
+    inputDateFrom.id = 'inputDateFrom';
     labelFrom.append(inputDateFrom);
 
     const labelTo = createText('label', 'to  ', ['date__label']);
     const inputDateTo = createInput('date', ['input__date']);
+    inputDateTo.id = 'inputDateTo';
     labelTo.append(inputDateTo);
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
@@ -234,6 +296,7 @@ class FilterView {
     );
     newsectionTasks.append(myForm);
     parentElem.replaceWith(newsectionTasks);
+    this.settingChecked();
   }
 }
 export default FilterView;

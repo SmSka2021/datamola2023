@@ -62,8 +62,6 @@ export const createInputRadio = (type, name, value, id, checked = false, classes
   if (classes.length) {
     classes.forEach((classElem) => input.classList.add(classElem));
   }
-  if (checked) {
-    input.checked = true;
-  }
+  input.checked = checked;
   return input;
 };

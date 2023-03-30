@@ -6,7 +6,9 @@ class TaskCollection {
   _user = 'Иванов';
 
   constructor(tasks) {
-    this._tasks = tasks.map((task) => new Task(task));
+    this._tasks = tasks.map((task) => new Task(task)).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
   }
 
   get tasks() {
@@ -14,7 +16,9 @@ class TaskCollection {
   }
 
   settasks(newTasks) {
-    this._tasks = [...newTasks];
+    this._tasks = [...newTasks].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
   }
 
   get user() {
@@ -42,13 +46,13 @@ class TaskCollection {
   }
 
   getPage = (skip = 0, top = 10, filterConfig = {}) => {
-    // const tasksArrSortDate = this.tasks.sort(
-    //   (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-    // );
+    const tasksArrSortDate = this.tasks.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
     const config = { ...filterConfig };
 
-    return this.tasks
+    return tasksArrSortDate
       .filter(
         (task) => !config.name || task.name.toLowerCase().includes(config.name.toLowerCase()),
       )
@@ -71,12 +75,14 @@ class TaskCollection {
       .filter(
         (task) => (typeof config.isPrivate !== 'boolean') || task.isPrivate === config.isPrivate,
       )
-      // .filter(
-      //   (task) => !config.dateFrom || task.createdAt.getTime() >= config.dateFrom.getTime(),
-      // )
-      // .filter(
-      //   (task) => !config.dateTo || task.createdAt.getTime() <= config.dateTo.getTime(),
-      // )
+      .filter(
+        (task) => !config.dateFrom
+         || new Date(task.createdAt).getTime() >= new Date(config.dateFrom).getTime(),
+      )
+      .filter(
+        (task) => !config.dateTo
+        || new Date(task.createdAt).getTime() <= new Date(config.dateTo).getTime(),
+      )
       .splice(skip, top);
   };
 

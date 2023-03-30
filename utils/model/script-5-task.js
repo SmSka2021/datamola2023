@@ -882,386 +882,397 @@ const myTaskArr = [
   },
 ];
   // ------------------class ViewHeader---------------------//
-class HeaderView {
-  constructor(id) {
-    this.id = id;
-  }
+// class HeaderView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  setUser(nameUser) {
-    const elem = document.querySelector('.user__name');
-    elem.textContent = nameUser;
-  }
+//   setUser(nameUser) {
+//     const elem = document.querySelector('.user__name');
+//     elem.textContent = nameUser;
+//   }
 
-  display() {
-    const parentElem = document.getElementById(this.id);
-    const header = createElem('header', ['header']);
-    header.id = 'header';
-    const containerLogo = createDiv(['container__logo']);
-    const imgLogo = createImg(srcImgCollection.logo, 'logo', ['logo__img']);
-    const logoTitle = createText('h3', 'Task Manager', ['logo__title']);
-    containerLogo.append(imgLogo, logoTitle);
+//   display() {
+//     const parentElem = document.getElementById(this.id);
+//     const header = createElem('header', ['header']);
+//     header.id = 'header';
+//     const containerLogo = createDiv(['container__logo']);
+//     const imgLogo = createImg(srcImgCollection.logo, 'logo', ['logo__img']);
+//     const logoTitle = createText('h3', 'Task Manager', ['logo__title']);
+//     containerLogo.append(imgLogo, logoTitle);
 
-    const containerThema = createDiv(['container__thema']);
-    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny']);
-    const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img']);
-    themaBtnLiht.append(imgLightThema);
-    const spanSlesh = createText('span', ' / ');
-    const themaBtnDark = createBtn('', ['thema__btn', 'dark']);
-    const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img']);
-    themaBtnDark.append(imgDarkThema);
-    containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
+//     const containerThema = createDiv(['container__thema']);
+//     const themaBtnLiht = createBtn('', ['thema__btn', 'sunny']);
+//     const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img']);
+//     themaBtnLiht.append(imgLightThema);
+//     const spanSlesh = createText('span', ' / ');
+//     const themaBtnDark = createBtn('', ['thema__btn', 'dark']);
+//     const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img']);
+//     themaBtnDark.append(imgDarkThema);
+//     containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
 
-    const containerAuth = createDiv(['container__authorize']);
-    const containerUserName = createDiv(['container__userName']);
-    const imgIconUser = createImg(srcImgCollection.iconUser, 'icon user', ['user__img']);
-    const itemNameUser = createText('p', 'user', ['user__name']);
-    containerUserName.append(imgIconUser, itemNameUser);
-    const btnLogOut = createBtn('LogOut', ['light_btn', 'btn']);
-    containerAuth.append(containerUserName, btnLogOut);
-    header.append(containerLogo, containerThema, containerAuth);
-    parentElem.replaceWith(header);
-  }
-}
+//     const containerAuth = createDiv(['container__authorize']);
+//     const containerUserName = createDiv(['container__userName']);
+//     const imgIconUser = createImg(srcImgCollection.iconUser, 'icon user', ['user__img']);
+//     const itemNameUser = createText('p', 'user', ['user__name']);
+//     containerUserName.append(imgIconUser, itemNameUser);
+//     const btnLogOut = createBtn('LogOut', ['light_btn', 'btn']);
+//     containerAuth.append(containerUserName, btnLogOut);
+//     header.append(containerLogo, containerThema, containerAuth);
+//     parentElem.replaceWith(header);
+//   }
+// }
 
-//   ****************  ViewFooter   ********** //
+// //   ****************  ViewFooter   ********** //
 
-class FooterView {
-  constructor(id) {
-    this.id = id;
-  }
+// class FooterView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  display() {
-    const parentElem = document.getElementById(this.id);
-    const footer = createElem('footer', ['footer']);
-    footer.id = 'footer';
-    const footerTitle = createText('h5', 'Task Manager', ['footer__title']);
-    const adress = createElem('address', ['container__email']);
-    const myName = createText('p', 'Sviatlana Matskevich', ['name__title']);
-    const imgEmail = createImg(srcImgCollection.email, 'icon email');
-    const ancor = createElem('a', ['email__title']);
-    ancor.textContent = 'Sve-Mac@yandex.ru';
-    ancor.href = 'mailto: Sve-Mac@yandex.ru';
-    adress.append(myName, imgEmail, ancor);
-    const date = createText('p', `${convertationDate(new Date())}`, ['footer__date']);
-    footer.append(footerTitle, adress, date);
-    parentElem.replaceWith(footer);
-  }
-}
+//   display() {
+//     const parentElem = document.getElementById(this.id);
+//     const footer = createElem('footer', ['footer']);
+//     footer.id = 'footer';
+//     const footerTitle = createText('h5', 'Task Manager', ['footer__title']);
+//     const adress = createElem('address', ['container__email']);
+//     const myName = createText('p', 'Sviatlana Matskevich', ['name__title']);
+//     const imgEmail = createImg(srcImgCollection.email, 'icon email');
+//     const ancor = createElem('a', ['email__title']);
+//     ancor.textContent = 'Sve-Mac@yandex.ru';
+//     ancor.href = 'mailto: Sve-Mac@yandex.ru';
+//     adress.append(myName, imgEmail, ancor);
+//     const date = createText('p', `${convertationDate(new Date())}`, ['footer__date']);
+//     footer.append(footerTitle, adress, date);
+//     parentElem.replaceWith(footer);
+//   }
+// }
 
-// *************  class FilterView  ************//
-class FilterView {
-  constructor(id) {
-    this.id = id;
-  }
+// // *************  class FilterView  ************//
+// class FilterView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  display() {
-    const parentElem = document.getElementById(this.id);
+//   display() {
+//     const parentElem = document.getElementById(this.id);
 
-    const newsectionTasks = createElem('section', ['container__filter']);
-    newsectionTasks.id = 'container__filter';
+//     const newsectionTasks = createElem('section', ['container__filter']);
+//     newsectionTasks.id = 'container__filter';
 
-    const filterTitle = createText('h5', 'Filter by', ['filter__title']);
+//     const filterTitle = createText('h5', 'Filter by', ['filter__title']);
 
-    const containerSearch = createDiv(['container__search']);
-    const searchByName = createBtn('name', ['search__by-name']);
-    const spanSlesh = createText('span', ' / ');
-    const searchByTitle = createBtn('title', ['search__by-title']);
-    const inputSearch = createInput('search', ['search__input'], 'enter data');
-    containerSearch.append(searchByName, spanSlesh, searchByTitle, inputSearch);
+//     const containerSearch = createDiv(['container__search']);
+//     const searchByName = createBtn('name', ['search__by-name']);
+//     const spanSlesh = createText('span', ' / ');
+//     const searchByTitle = createBtn('title', ['search__by-title']);
+//     const inputSearch = createInput('search', ['search__input'], 'enter data');
+//     containerSearch.append(searchByName, spanSlesh, searchByTitle, inputSearch);
 
-    const containerPriority = createDiv(['container__priority']);
-    const prioritTitle = createText('p', 'priority', ['priority__title']);
+//     const containerPriority = createDiv(['container__priority']);
+//     const prioritTitle = createText('p', 'priority', ['priority__title']);
 
-    const priorityItems = createDiv(['priority__items']);
-    const btnLowPriority = createBtn('', ['priority__btn', 'priority_low'], 'button', 'low');
-    const btnMediumPriority = createBtn('', ['priority__btn', 'priority_medium'], 'button', 'medium');
-    const btnHightPriority = createBtn('', ['priority__btn', 'priority_height'], 'button', 'hight');
-    priorityItems.append(btnLowPriority, btnMediumPriority, btnHightPriority);
-    containerPriority.append(prioritTitle, priorityItems);
+//     const priorityItems = createDiv(['priority__items']);
+//     const btnLowPriority = createBtn('', ['priority__btn', 'priority_low'], 'button', 'low');
+//     const btnMediumPriority = createBtn(
+//  '', ['priority__btn', 'priority_medium'], 'button', 'medium');
+//     const btnHightPriority = createBtn(
+//  '', ['priority__btn', 'priority_height'], 'button', 'hight');
+//     priorityItems.append(btnLowPriority, btnMediumPriority, btnHightPriority);
+//     containerPriority.append(prioritTitle, priorityItems);
 
-    const containerPrivacy = createDiv(['container__privacy']);
-    const privacyTitle = createText('p', 'privacy', ['priority__title']);
+//     const containerPrivacy = createDiv(['container__privacy']);
+//     const privacyTitle = createText('p', 'privacy', ['priority__title']);
 
-    const privacyBtn = createBtn('', ['privacy__btn'], 'button', 'privacy');
-    const imgPersonPrivacy = createImg(srcImgCollection.privacyPerson, 'icon');
-    privacyBtn.append(imgPersonPrivacy);
-    const publicBtn = createBtn('', ['privacy__btn'], 'button', 'public');
-    const imgPublicPrivacy = createImg(srcImgCollection.privacyMultiple, 'icon');
-    publicBtn.append(imgPublicPrivacy);
-    containerPrivacy.append(privacyTitle, privacyBtn, publicBtn);
+//     const privacyBtn = createBtn('', ['privacy__btn'], 'button', 'privacy');
+//     const imgPersonPrivacy = createImg(srcImgCollection.privacyPerson, 'icon');
+//     privacyBtn.append(imgPersonPrivacy);
+//     const publicBtn = createBtn('', ['privacy__btn'], 'button', 'public');
+//     const imgPublicPrivacy = createImg(srcImgCollection.privacyMultiple, 'icon');
+//     publicBtn.append(imgPublicPrivacy);
+//     containerPrivacy.append(privacyTitle, privacyBtn, publicBtn);
 
-    const containerDate = createDiv(['container__privacy']);
-    const dateTitle = createText('p', 'date', ['priority__title']);
+//     const containerDate = createDiv(['container__privacy']);
+//     const dateTitle = createText('p', 'date', ['priority__title']);
 
-    const blockDate = createDiv(['container__date']);
-    const labelFrom = createText('label', 'from  ', ['date__label']);
-    const inputDateFrom = createInput('date', ['input__date']);
-    labelFrom.append(inputDateFrom);
+//     const blockDate = createDiv(['container__date']);
+//     const labelFrom = createText('label', 'from  ', ['date__label']);
+//     const inputDateFrom = createInput('date', ['input__date']);
+//     labelFrom.append(inputDateFrom);
 
-    const labelTo = createText('label', 'to  ', ['date__label']);
-    const inputDateTo = createInput('date', ['input__date']);
-    labelTo.append(inputDateTo);
-    blockDate.append(labelFrom, labelTo);
-    containerDate.append(dateTitle, blockDate);
-    const resetBtn = createBtn('Reset', ['dark_btn', 'btn']);
+//     const labelTo = createText('label', 'to  ', ['date__label']);
+//     const inputDateTo = createInput('date', ['input__date']);
+//     labelTo.append(inputDateTo);
+//     blockDate.append(labelFrom, labelTo);
+//     containerDate.append(dateTitle, blockDate);
+//     const resetBtn = createBtn('Reset', ['dark_btn', 'btn']);
 
-    newsectionTasks.append(
-      filterTitle,
-      containerSearch,
-      containerPriority,
-      containerPrivacy,
-      containerDate,
-      resetBtn,
-    );
-    parentElem.replaceWith(newsectionTasks);
-  }
-}
+//     newsectionTasks.append(
+//       filterTitle,
+//       containerSearch,
+//       containerPriority,
+//       containerPrivacy,
+//       containerDate,
+//       resetBtn,
+//     );
+//     parentElem.replaceWith(newsectionTasks);
+//   }
+// }
 
-// ------**********----class OneTaskView-------*******--------//
+// // ------**********----class OneTaskView-------*******--------//
 
-class OneTaskView {
-  constructor(id) {
-    this.id = id;
-  }
+// class OneTaskView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  display(taskOne) {
-    const parentElem = document.getElementById(this.id);
+//   display(taskOne) {
+//     const parentElem = document.getElementById(this.id);
 
-    const task = createDiv(['task']);
-    const containerTitleTask = createDiv(['container__title_task']);
-    const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
-    const labelTodo = createDiv(['label__todo']);
-    const itemLabelTodo = createText('p', `${taskOne.status}`, []);
-    labelTodo.append(itemLabelTodo);
-    containerTitleTask.append(taskTitle, labelTodo);
+//     const task = createDiv(['task']);
+//     const containerTitleTask = createDiv(['container__title_task']);
+//     const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
+//     const labelTodo = createDiv(['label__todo']);
+//     const itemLabelTodo = createText('p', `${taskOne.status}`, []);
+//     labelTodo.append(itemLabelTodo);
+//     containerTitleTask.append(taskTitle, labelTodo);
 
-    const containerDateTask = createDiv(['container__date_task']);
-    const taskDate = createText('p', `${convertationDate(taskOne.createdAt)}`, ['task__date']);
-    const imgIsPrivate = createImg(`${taskOne.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
-    containerDateTask.append(taskDate, imgIsPrivate);
+//     const containerDateTask = createDiv(['container__date_task']);
+//     const taskDate = createText('p', `${convertationDate(taskOne.createdAt)}`, ['task__date']);
+//     const imgIsPrivate = createImg(`${taskOne.isPrivate ?
+//  srcImgCollection.private.person : srcImgCollection.private.multiple}`,
+//  'privacy img', ['task__img_privacy']);
+//     containerDateTask.append(taskDate, imgIsPrivate);
 
-    const taskText = createText('p', taskOne.description, ['task__text']);
+//     const taskText = createText('p', taskOne.description, ['task__text']);
 
-    const containerComments = createDiv(['container__comments']);
-    const imgComments = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
-    const countComments = createText('p', `${taskOne.comments.length}`, ['task__date']);
-    containerComments.append(imgComments, countComments);
+//     const containerComments = createDiv(['container__comments']);
+//     const imgComments = createImg(srcImgCollection.comments, 'comments icon',
+//  ['task__img_comment']);
+//     const countComments = createText('p', `${taskOne.comments.length}`, ['task__date']);
+//     containerComments.append(imgComments, countComments);
 
-    const containerInfoTask = createDiv(['container__info_task']);
-    const userNameLabel = createDiv(['label__todo', 'user_name']);
-    const userNameItem = createText('p', `${taskOne.assignee}`, []);
-    userNameLabel.append(userNameItem);
+//     const containerInfoTask = createDiv(['container__info_task']);
+//     const userNameLabel = createDiv(['label__todo', 'user_name']);
+//     const userNameItem = createText('p', `${taskOne.assignee}`, []);
+//     userNameLabel.append(userNameItem);
 
-    const containerBtn = createDiv(['container__btn_delete']);
-    const btnDelete = createBtn('', ['btn_icon', 'delete']);
-    const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
-    btnDelete.append(imgDelete);
+//     const containerBtn = createDiv(['container__btn_delete']);
+//     const btnDelete = createBtn('', ['btn_icon', 'delete']);
+//     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
+//     btnDelete.append(imgDelete);
 
-    const btnEdit = createBtn('', ['btn_icon', 'edit']);
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
-    btnEdit.append(imgEdit);
-    containerBtn.append(btnDelete, btnEdit);
+//     const btnEdit = createBtn('', ['btn_icon', 'edit']);
+//     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
+//     btnEdit.append(imgEdit);
+//     containerBtn.append(btnDelete, btnEdit);
 
-    const imgPriority = createImg(srcPriority(taskOne.priority), 'priority icon', ['task__priority_img']);
-    containerInfoTask.append(userNameLabel, containerBtn, imgPriority);
+//     const imgPriority = createImg(srcPriority(taskOne.priority),
+//  'priority icon', ['task__priority_img']);
+//     containerInfoTask.append(userNameLabel, containerBtn, imgPriority);
 
-    task.append(
-      containerTitleTask,
-      containerDateTask,
-      taskText,
-      containerComments,
-      containerInfoTask,
-    );
-    parentElem.append(task);
-  }
-}
+//     task.append(
+//       containerTitleTask,
+//       containerDateTask,
+//       taskText,
+//       containerComments,
+//       containerInfoTask,
+//     );
+//     parentElem.append(task);
+//   }
+// }
 
-// *****************   class TaskFeedView   *****************//
+// // *****************   class TaskFeedView   *****************//
 
-class TaskFeedView {
-  constructor(id) {
-    this.id = id;
-  }
+// class TaskFeedView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  taskStatus = ['To Do', 'Complete', 'In progress'];
+//   taskStatus = ['To Do', 'Complete', 'In progress'];
 
-  createIdList(str) {
-    if (str === taskStatusObj.toDo) return 'todo';
-    if (str === taskStatusObj.inProgress) return 'inProgress';
-    return 'complete';
-  }
+//   createIdList(str) {
+//     if (str === taskStatusObj.toDo) return 'todo';
+//     if (str === taskStatusObj.inProgress) return 'inProgress';
+//     return 'complete';
+//   }
 
-  display(tasks) {
-    const parentElem = document.getElementById(this.id);
-    const newsectionTasks = createElem('section', ['board']);
-    newsectionTasks.id = 'container__columns';
+//   display(tasks) {
+//     const parentElem = document.getElementById(this.id);
+//     const newsectionTasks = createElem('section', ['board']);
+//     newsectionTasks.id = 'container__columns';
 
-    const sectionTasks = createElem('div', ['container__columns']);
+//     const sectionTasks = createElem('div', ['container__columns']);
 
-    this.taskStatus.forEach((column) => {
-      const columnOne = createDiv(['column']);
+//     this.taskStatus.forEach((column) => {
+//       const columnOne = createDiv(['column']);
 
-      const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
-      const imgAdd = createImg(srcImgCollection.addTask, 'icon');
-      btnAddTask.append(imgAdd);
+//       const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
+//       const imgAdd = createImg(srcImgCollection.addTask, 'icon');
+//       btnAddTask.append(imgAdd);
 
-      const line = createElem('hr', ['line__column']);
-      const list = createElem('ul', ['container__tasks']);
-      const idList = this.createIdList(column);
-      list.id = idList;
+//       const line = createElem('hr', ['line__column']);
+//       const list = createElem('ul', ['container__tasks']);
+//       const idList = this.createIdList(column);
+//       list.id = idList;
 
-      const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
-      const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-      btnMoreTasks.append(imgMoreTasks);
-      columnOne.append(btnAddTask, line, list, btnMoreTasks);
-      sectionTasks.append(columnOne);
-    });
-    const containerViewBtn = createDiv(['container__view_btn']);
+//       const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
+//       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
+//       btnMoreTasks.append(imgMoreTasks);
+//       columnOne.append(btnAddTask, line, list, btnMoreTasks);
+//       sectionTasks.append(columnOne);
+//     });
+//     const containerViewBtn = createDiv(['container__view_btn']);
 
-    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list']);
-    const imgList = createImg(srcImgCollection.viewList, 'icon');
-    btnViewList.append(imgList);
+//     const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list']);
+//     const imgList = createImg(srcImgCollection.viewList, 'icon');
+//     btnViewList.append(imgList);
 
-    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
-    const imgTable = createImg(srcImgCollection.viewTable, 'icon');
-    btnViewTable.append(imgTable);
-    containerViewBtn.append(btnViewList, btnViewTable);
+//     const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
+//     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
+//     btnViewTable.append(imgTable);
+//     containerViewBtn.append(btnViewList, btnViewTable);
 
-    newsectionTasks.append(sectionTasks, containerViewBtn);
-    parentElem.replaceWith(newsectionTasks);
-    this.taskStatus.forEach((column) => {
-      const arrTasksStatus = tasks.filter((task) => task.status === column);
-      if (arrTasksStatus.length) {
-        arrTasksStatus.forEach((task) => {
-          const oneTask = new OneTaskView(this.createIdList(column));
-          oneTask.display(task);
-        });
-      }
-    });
-  }
-}
+//     newsectionTasks.append(sectionTasks, containerViewBtn);
+//     parentElem.replaceWith(newsectionTasks);
+//     this.taskStatus.forEach((column) => {
+//       const arrTasksStatus = tasks.filter((task) => task.status === column);
+//       if (arrTasksStatus.length) {
+//         arrTasksStatus.forEach((task) => {
+//           const oneTask = new OneTaskView(this.createIdList(column));
+//           oneTask.display(task);
+//         });
+//       }
+//     });
+//   }
+// }
 
-// ----------PAGE ONE TASK  -TaskView---------------- //
-class TaskView {
-  constructor(id) {
-    this.id = id;
-  }
+// // ----------PAGE ONE TASK  -TaskView---------------- //
+// class TaskView {
+//   constructor(id) {
+//     this.id = id;
+//   }
 
-  display(task) {
-    const parentElem = document.getElementById(this.id);
-    const newsectionTasks = createElem('section', ['main', 'main_task']);
-    newsectionTasks.id = 'main_task';
-    const btnPrevious = createBtn('', ['dark_btn', 'btn']);
-    const imgPrevios = createImg(srcImgCollection.previos, 'icon');
-    btnPrevious.append(imgPrevios);
+//   display(task) {
+//     const parentElem = document.getElementById(this.id);
+//     const newsectionTasks = createElem('section', ['main', 'main_task']);
+//     newsectionTasks.id = 'main_task';
+//     const btnPrevious = createBtn('', ['dark_btn', 'btn']);
+//     const imgPrevios = createImg(srcImgCollection.previos, 'icon');
+//     btnPrevious.append(imgPrevios);
 
-    const sectionOneTask = createElem('section', ['container__one_task']);
+//     const sectionOneTask = createElem('section', ['container__one_task']);
 
-    const headerTask = createDiv(['header_task']);
+//     const headerTask = createDiv(['header_task']);
 
-    const containerLabel = createDiv(['container__label']);
-    const labelTodo = createDiv(['label__todo']);
-    const todoTitle = createText('p', `${task.status}`);
-    labelTodo.append(todoTitle);
-    const labelUser = createDiv(['label__todo', 'user_name']);
-    const userTitle = createText('p', `${task.assignee}`);
-    labelUser.append(userTitle);
-    containerLabel.append(labelTodo, labelUser);
+//     const containerLabel = createDiv(['container__label']);
+//     const labelTodo = createDiv(['label__todo']);
+//     const todoTitle = createText('p', `${task.status}`);
+//     labelTodo.append(todoTitle);
+//     const labelUser = createDiv(['label__todo', 'user_name']);
+//     const userTitle = createText('p', `${task.assignee}`);
+//     labelUser.append(userTitle);
+//     containerLabel.append(labelTodo, labelUser);
 
-    const containerTitleTask = createDiv(['container__title_one_task']);
-    const imgPriorityTasks = createImg(`${srcPriority(task.priority)}`, 'icon', ['task__priority_img']);
-    const userNameItem = createText('h6', `${task.name}`, ['task__title_one']);
-    containerTitleTask.append(imgPriorityTasks, userNameItem);
+//     const containerTitleTask = createDiv(['container__title_one_task']);
+//     const imgPriorityTasks = createImg(`${srcPriority(task.priority)}`,
+//  'icon', ['task__priority_img']);
+//     const userNameItem = createText('h6', `${task.name}`, ['task__title_one']);
+//     containerTitleTask.append(imgPriorityTasks, userNameItem);
 
-    const containerBtnTask = createDiv(['container__btn_task']);
-    const btnDel = createBtn('', ['btn_icon', 'delete']);
-    const imgDel = createImg(srcImgCollection.delete, 'icon delete');
-    btnDel.append(imgDel);
-    const btnEdit = createBtn('', ['btn_icon', 'edit']);
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit');
-    btnEdit.append(imgEdit);
-    containerBtnTask.append(btnDel, btnEdit);
-    headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
+//     const containerBtnTask = createDiv(['container__btn_task']);
+//     const btnDel = createBtn('', ['btn_icon', 'delete']);
+//     const imgDel = createImg(srcImgCollection.delete, 'icon delete');
+//     btnDel.append(imgDel);
+//     const btnEdit = createBtn('', ['btn_icon', 'edit']);
+//     const imgEdit = createImg(srcImgCollection.edit, 'icon edit');
+//     btnEdit.append(imgEdit);
+//     containerBtnTask.append(btnDel, btnEdit);
+//     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
 
-    const containerDateTask = createDiv(['container__date_task_one']);
-    const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
-    const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
-    containerDateTask.append(taskDateItem, imgIsPrivacy);
+//     const containerDateTask = createDiv(['container__date_task_one']);
+//     const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
+//     const imgIsPrivacy = createImg(`${task.isPrivate ?
+//  srcImgCollection.private.person :
+//  srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
+//     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
-    const deckriptionTask = createText('p', `${task.description}`, ['task__text_one']);
-    const commentsTitle = createText('h6', 'Comments:', ['comments__title']);
-    const commentsList = createElem('ul', ['comments__list']);
-    if (task.comments.length) {
-      task.comments.forEach((comment) => {
-        const containerComment = createElem('li', ['container__comment']);
-        const imgComment = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
-        const commentItem = createDiv(['comment__item']);
-        const commentUserName = createDiv(['comment__user_name']);
-        const commentAuthor = createText('p', `${comment.author}`, ['user__name_item']);
-        const commentDateItem = createText('p', `${convertationDate(comment.createdAt)}`, ['task__date']);
-        commentUserName.append(commentAuthor, commentDateItem);
-        const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
-        commentItem.append(commentUserName, commentText);
-        containerComment.append(imgComment, commentItem);
-        commentsList.append(containerComment);
-      });
-    }
-    const formElem = createElem('form', ['form']);
-    const formLabel = createElem('label', ['form__label']);
-    formLabel.for = 'addComment';
-    formLabel.textContent = 'Comment: ';
-    const formTextArea = createElem('textarea', ['form__area']);
-    formTextArea.name = 'newComment';
-    formTextArea.id = 'addComment';
-    formTextArea.maxlength = maxLengthDescription;
-    const btnForm = createBtn('Add', ['light_btn', 'btn']);
-    formElem.append(formLabel, formTextArea, btnForm);
+//     const deckriptionTask = createText('p', `${task.description}`, ['task__text_one']);
+//     const commentsTitle = createText('h6', 'Comments:', ['comments__title']);
+//     const commentsList = createElem('ul', ['comments__list']);
+//     if (task.comments.length) {
+//       task.comments.forEach((comment) => {
+//         const containerComment = createElem('li', ['container__comment']);
+//         const imgComment = createImg(srcImgCollection.comments,
+//  'comments icon', ['task__img_comment']);
+//         const commentItem = createDiv(['comment__item']);
+//         const commentUserName = createDiv(['comment__user_name']);
+//         const commentAuthor = createText('p', `${comment.author}`, ['user__name_item']);
+//         const commentDateItem = createText('p',
+//  `${convertationDate(comment.createdAt)}`, ['task__date']);
+//         commentUserName.append(commentAuthor, commentDateItem);
+//         const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
+//         commentItem.append(commentUserName, commentText);
+//         containerComment.append(imgComment, commentItem);
+//         commentsList.append(containerComment);
+//       });
+//     }
+//     const formElem = createElem('form', ['form']);
+//     const formLabel = createElem('label', ['form__label']);
+//     formLabel.for = 'addComment';
+//     formLabel.textContent = 'Comment: ';
+//     const formTextArea = createElem('textarea', ['form__area']);
+//     formTextArea.name = 'newComment';
+//     formTextArea.id = 'addComment';
+//     formTextArea.maxlength = maxLengthDescription;
+//     const btnForm = createBtn('Add', ['light_btn', 'btn']);
+//     formElem.append(formLabel, formTextArea, btnForm);
 
-    sectionOneTask.append(
-      headerTask,
-      containerDateTask,
-      deckriptionTask,
-      commentsTitle,
-      commentsList,
-      formElem,
-    );
+//     sectionOneTask.append(
+//       headerTask,
+//       containerDateTask,
+//       deckriptionTask,
+//       commentsTitle,
+//       commentsList,
+//       formElem,
+//     );
 
-    newsectionTasks.append(btnPrevious, sectionOneTask);
-    parentElem.replaceWith(newsectionTasks);
-  }
-}
+//     newsectionTasks.append(btnPrevious, sectionOneTask);
+//     parentElem.replaceWith(newsectionTasks);
+//   }
+// }
 
-// /////////////////////////start CREATE View////////////////////
+// // /////////////////////////start CREATE View////////////////////
 
 const myTasks = new TaskCollection(bigArrTasks);
 
-const myHeader = new HeaderView('header');
-myHeader.display();
-myHeader.setUser('Tom');
+// const myHeader = new HeaderView('header');
+// myHeader.display();
+// myHeader.setUser('Tom');
 
-const filter = new FilterView('container__filter');
+// const filter = new FilterView('container__filter');
 
-const myBoard = new TaskFeedView('container__columns');
+// const myBoard = new TaskFeedView('container__columns');
 
-const renderMainBoard = (arrTask) => {
-  filter.display();
-  myBoard.display(arrTask.tasks);
-};
+// const renderMainBoard = (arrTask) => {
+//   filter.display();
+//   myBoard.display(arrTask.tasks);
+// };
 
-const cleanMainBoard = () => {
-  document.getElementById('container__filter').style.display = 'none';
-  document.getElementById('container__columns').style.display = 'none';
-};
+// const cleanMainBoard = () => {
+//   document.getElementById('container__filter').style.display = 'none';
+//   document.getElementById('container__columns').style.display = 'none';
+// };
 
-const cleanOneTaskPage = () => {
-  document.getElementById('main_task').style.display = 'none';
-};
+// const cleanOneTaskPage = () => {
+//   document.getElementById('main_task').style.display = 'none';
+// };
 
-const footerView = new FooterView('footer');
-footerView.display();
+// const footerView = new FooterView('footer');
+// footerView.display();
 
-renderMainBoard(myTasks);
-cleanOneTaskPage();
+// renderMainBoard(myTasks);
+// cleanOneTaskPage();
 
 //  _____________________ГЛОБАЛЬНЫЕ ФУНКЦИИ_______________  //
 
@@ -1269,33 +1280,33 @@ cleanOneTaskPage();
 
 const setCurrentUser = (user) => {
   myTasks.user = user;
-  myHeader.setUser(user);
+  // myHeader.setUser(user);
 };
 
 //  добавляем новую таску в модель и перерисовываем доску с задачами.
 
 const addTask = (task) => {
   myTasks.add(task);
-  myBoard.display(myTasks.tasks);
+  // myBoard.display(myTasks.tasks);
 };
 
 // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//
 const removeTask = (id) => {
   myTasks.remove(id);
-  myBoard.display(myTasks.tasks);
+  // myBoard.display(myTasks.tasks);
 };
 
 // вызывает getPage с параметрами в модели и отображает соответствующую доску с задачами.
 const getFeed = (skip, top, filterConfig) => {
-  myBoard.display(myTasks.getPage(skip, top, filterConfig));
+  // myBoard.display(myTasks.getPage(skip, top, filterConfig));
 };
 
 // получить таску по айди из модели и отобразить соответствующий TaskView.
-const showTask = (id) => {
-  cleanMainBoard();
-  const myOneTaskView = new TaskView('main_task');
-  myOneTaskView.display(myTasks.get(id));
-};
+// const showTask = (id) => {
+//   cleanMainBoard();
+//   const myOneTaskView = new TaskView('main_task');
+//   myOneTaskView.display(myTasks.get(id));
+// };
 
 // ____________ПРОВЕРКА_______________///
 
@@ -1336,8 +1347,15 @@ console.log(myTasks.user);
 // getFeed(0, 10, { priority: 'Low' });
 // console.log(myTasks.getPage(0, 10, { priority: 'Low' }));
 
-// getFeed(0, 5, { assignee: 'Иванов' });
-// console.log(myTasks.getPage(0, 5, { assignee: 'Иванов' }));
+// getFeed(0, 5, { dateTo: new Date('2023-02-09T23:00:05') });
+console.log(myTasks.getPage(0, 5, {
+  assignee: null,
+  description: null,
+  name: null,
+  status: null,
+  priority: 'Low',
+  isPrivate: false,
+}));
 
 // showTask('10');
 // console.log(myTasks.get('10'));

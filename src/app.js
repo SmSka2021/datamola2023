@@ -113,6 +113,7 @@ class TasksController {
     this.pageOneTask.display(task);
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
+    this.pageOneTask.bindDeleteTask(this.removeTask);
   };
 
   removeElement = (id) => {
@@ -156,9 +157,10 @@ class TasksController {
   };
 
   // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//
-  removeTask = (id) => {
+  removeTask = (id, isNeedRenderFilter) => {
     this.collection.remove(id);
     this.saveLocalStorage('collectionTasks', this.collection.tasks);
+    if (isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
     } else {

@@ -1,4 +1,4 @@
-const settingFilterStart = {
+export const settingFilterStart = {
   assignee: false,
   description: false,
   title: false,
@@ -11,7 +11,15 @@ const settingFilterStart = {
     privacy: false,
     public: false,
   },
-  dateFrom: false,
-  dateTo: false,
+  dateFrom: null,
+  dateTo: null,
 };
-export default settingFilterStart;
+
+export const filterDataStart = {
+  assignee: null,
+  description: null,
+  name: null,
+  status: null,
+  priority: null,
+  isPrivate: null,
+};
