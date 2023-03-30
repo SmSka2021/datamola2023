@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import Task from './task';
 import Comment from './comments';
 
@@ -41,13 +42,13 @@ class TaskCollection {
   }
 
   getPage = (skip = 0, top = 10, filterConfig = {}) => {
-    const tasksArrSortDate = this.tasks.sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-    );
+    // const tasksArrSortDate = this.tasks.sort(
+    //   (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+    // );
 
     const config = { ...filterConfig };
 
-    return tasksArrSortDate
+    return this.tasks
       .filter(
         (task) => !config.assignee || task.assignee.includes(config.assignee),
       )
@@ -63,12 +64,12 @@ class TaskCollection {
       .filter(
         (task) => !config.isPrivate || task.isPrivate === config.isPrivate,
       )
-      .filter(
-        (task) => !config.dateFrom || task.createdAt.getTime() >= config.dateFrom.getTime(),
-      )
-      .filter(
-        (task) => !config.dateTo || task.createdAt.getTime() <= config.dateTo.getTime(),
-      )
+      // .filter(
+      //   (task) => !config.dateFrom || task.createdAt.getTime() >= config.dateFrom.getTime(),
+      // )
+      // .filter(
+      //   (task) => !config.dateTo || task.createdAt.getTime() <= config.dateTo.getTime(),
+      // )
       .splice(skip, top);
   };
 

@@ -28,7 +28,7 @@ class BoardViewList {
       event.stopPropagation();
       const isBtnDelete = event.target.parentElement.classList.contains('delete');
       if (isBtnDelete) {
-        handler(event.target.parentElement.dataset.id, 'board-list');
+        handler(event.target.parentElement.dataset.id);
       }
     }));
   }
@@ -44,10 +44,10 @@ class BoardViewList {
     }));
   }
 
-  bindSetViewBoardTable(handler) {
-    const tasksAll = getElement('.btn_table');
-    if (tasksAll) {
-      tasksAll.addEventListener('click', (event) => {
+  bindSetViewBoardCard(handler) {
+    const btnChangeView = getElement('.btn_table');
+    if (btnChangeView) {
+      btnChangeView.addEventListener('click', (event) => {
         event.stopPropagation();
         handler();
       });

@@ -6,7 +6,7 @@ const srcImgCollection = {
   priority: {
     high: './assets/icon/priority_high.svg',
     medium: './assets/icon/priority_medium.svg',
-    low: './assets/icon/priority_high.svg',
+    low: './assets/icon/priority_low.svg',
   },
   comments: './assets/icon/comment-text.svg',
   delete: './assets/icon/delete.svg',

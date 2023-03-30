@@ -6,6 +6,7 @@ import FilterView from './components/filter-view';
 import TaskFeedView from './components/board-table-view';
 import BoardViewList from './components/board-list-view';
 import TaskViewPage from './components/page-one-task-view';
+import { pathData, pathName } from './ultilites/path';
 
 class TasksController {
   constructor() {
@@ -13,52 +14,85 @@ class TasksController {
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
     this.filter = new FilterView('container__filter');
-    this.boardTableView = new TaskFeedView('container__columns');
+    this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
     this.header.display();
     this.footer.display();
-    this.path = 'board-card';
+    this.path = JSON.parse(localStorage.getItem('path')) || pathData;
     this.restore = () => {
-      console.log(JSON.parse(localStorage.getItem('collectionTasks')));
-      this.collection.settasks(JSON.parse(localStorage.getItem('collectionTasks')));
+      console.log(this.getLocalStorage('collectionTasks'));
+      this.collection.settasks(this.getLocalStorage('collectionTasks'));
     };
     // if (localStorage.getItem('collectionTasks')) this.restore();
   }
 
-  path = '';
-
   renderFilter = () => {
     this.filter.display();
+    this.filter.bindFilter(this.getFeed);
+    this.filter.bindResetForm(this.renderStartPages);
   };
 
-  renderPrewiosPages = () => {
-    if (this.path === 'board-card') {
-      this.renderMainBoardTable();
+  renderStartPages = () => {
+    if (this.path.actuale === pathName.boardCard) {
+      this.renderMainBoardCard();
       this.renderFilter();
     }
-    if (this.path === 'board-list') {
+    if (this.path.actuale === pathName.boardList) {
+      this.renderMainBoardList();
+      this.renderFilter();
+    }
+    if (this.path.actuale === pathName.oneTaskPage) {
+      const idCheckedTask = this.getLocalStorage('idCheckedTask');
+      if (idCheckedTask) this.showTask(idCheckedTask);
+      else this.renderMainBoardCard();
+    }
+  };
+
+  renderPreviosPages = () => {
+    if (this.path.prev === pathName.boardCard) {
+      this.renderMainBoardCard();
+      this.renderFilter();
+    }
+    if (this.path.prev === pathName.boardList) {
       this.renderMainBoardList();
       this.renderFilter();
     }
   };
 
-  renderMainBoardTable = () => {
+  getTasksAfterFilterFromLocal() {
+    const isDataFilter = this.getLocalStorage('dataFilter');
+    if (isDataFilter) {
+      const filterConfig = this.getLocalStorage('dataFilter');
+      return this.collection.getPage(0, 10, filterConfig);
+    }
+    return false;
+  }
+
+  savePathActual(pathNew) {
+    this.path.prev = this.path.actuale;
+    this.path.actuale = pathNew;
+    this.saveLocalStorage('path', this.path);
+  }
+
+  renderMainBoardCard = (tasksFilter) => {
+    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
-    this.path = 'board-card';
-    this.boardTableView.display(this.collection.tasks);
-    this.boardTableView.bindDeleteTask(this.removeTask);
-    this.boardTableView.bindOpenTask(this.showTask);
-    this.boardTableView.bindSetViewBoardList(this.renderMainBoardList);
+    this.savePathActual(pathName.boardCard);
+    this.boardCardView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
+    this.boardCardView.bindDeleteTask(this.removeTask);
+    this.boardCardView.bindOpenTask(this.showTask);
+    this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
   };
 
-  renderMainBoardList = () => {
+  renderMainBoardList = (tasksFilter) => {
+    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
-    this.path = 'board-list';
-    this.boardListView.display(this.collection.tasks);
+    this.savePathActual(pathName.boardList);
+    this.boardListView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
     this.boardListView.bindDeleteTask(this.removeTask);
     this.boardListView.bindOpenTask(this.showTask);
-    this.boardListView.bindSetViewBoardTable(this.renderMainBoardTable);
+    this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
   };
 
   cleanMainBoard = () => {
@@ -73,8 +107,9 @@ class TasksController {
   renderOneTaskPage = (task) => {
     this.removeElement('container__filter');
     this.removeElement('container__columns');
+    this.savePathActual(pathName.oneTaskPage);
     this.pageOneTask.display(task);
-    this.pageOneTask.bindPrevViewAllTask(this.renderPrewiosPages);
+    this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
   };
 
@@ -84,20 +119,23 @@ class TasksController {
   };
 
   display = () => {
-    this.renderMainBoardList();
+    this.renderStartPages();
+    // this.renderMainBoardList();
     // this.renderOneTaskPage(this.collection.tasks[0]);
-    // this.renderMainBoardTable();
-    this.renderFilter();
+    // this.renderMainBoardCard();
+    // this.renderFilter();
   };
   //  _____________________ГЛОБАЛЬНЫЕ ФУНКЦИИ_______________  //
 
-  saveLocalStorage = () => {
-    localStorage.setItem('collectionTasks', JSON.stringify(this.collection.tasks));
+  saveLocalStorage = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
   };
+
+  getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
   addComment = (idTask, textComment) => {
     this.collection.addComment(idTask, textComment);
-    this.saveLocalStorage();
+    this.saveLocalStorage('collectionTasks', this.collection.tasks);
     const task = this.collection.get(idTask);
     this.renderOneTaskPage(task);
   };
@@ -111,29 +149,33 @@ class TasksController {
 
   addTask = (task) => {
     this.collection.add(task);
-    // this.renderMainBoardTable(this.collection.tasks);
+    // this.renderMainBoardCard(this.collection.tasks);
     this.renderMainBoardList(this.collection.tasks);
   };
 
   // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//
-  removeTask = (id, viewBoard) => {
+  removeTask = (id) => {
     this.collection.remove(id);
-    this.saveLocalStorage();
-    if (viewBoard === 'board-table') {
-      this.renderMainBoardTable(this.collection.tasks);
+    this.saveLocalStorage('collectionTasks', this.collection.tasks);
+    if (this.path.actuale === pathName.boardCard) {
+      this.renderMainBoardCard();
     } else {
-      this.renderMainBoardList(this.collection.tasks);
+      this.renderMainBoardList();
     }
   };
 
   // вызывает getPage с параметрами в модели и отображает соответствующую доску с задачами.
   getFeed = (skip, top, filterConfig) => {
-    // this.renderMainBoardTable(this.collection.getPage(skip, top, filterConfig));
-    this.renderMainBoardList(this.collection.getPage(skip, top, filterConfig));
+    if (this.path.actuale === pathName.boardCard) {
+      this.renderMainBoardCard(this.collection.getPage(skip, top, filterConfig));
+    } else {
+      this.renderMainBoardList(this.collection.getPage(skip, top, filterConfig));
+    }
   };
 
   // получить таску по айди из модели и отобразить соответствующий TaskView.
   showTask = (id) => {
+    this.saveLocalStorage('idCheckedTask', id);
     this.renderOneTaskPage(this.collection.get(id));
   };
 }

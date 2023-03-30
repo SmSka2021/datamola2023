@@ -21,7 +21,7 @@ class TaskFeedView {
       const isBtnDelete = event.target.parentElement.classList.contains('delete');
       if (isBtnDelete) {
         event.stopPropagation();
-        handler(event.target.parentElement.dataset.id, 'board-table');
+        handler(event.target.parentElement.dataset.id);
       }
     }));
   }
@@ -38,9 +38,9 @@ class TaskFeedView {
   }
 
   bindSetViewBoardList(handler) {
-    const tasksAll = getElement('.btn_list');
-    if (tasksAll) {
-      tasksAll.addEventListener('click', (event) => {
+    const btnChangeView = getElement('.btn_list');
+    if (btnChangeView) {
+      btnChangeView.addEventListener('click', (event) => {
         event.stopPropagation();
         handler();
       });

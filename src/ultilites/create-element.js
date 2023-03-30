@@ -52,3 +52,18 @@ export const createInput = (type, classes = [], placeholder = null) => {
   }
   return input;
 };
+
+export const createInputRadio = (type, name, value, id, checked = false, classes = []) => {
+  const input = document.createElement('input');
+  input.name = name;
+  input.type = type;
+  input.id = id;
+  input.value = value;
+  if (classes.length) {
+    classes.forEach((classElem) => input.classList.add(classElem));
+  }
+  if (checked) {
+    input.checked = true;
+  }
+  return input;
+};
