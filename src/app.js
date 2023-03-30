@@ -104,10 +104,12 @@ class TasksController {
     this.removeElement('main_task');
   };
 
-  renderOneTaskPage = (task) => {
+  renderOneTaskPage = (task, notSavePath) => {
     this.removeElement('container__filter');
     this.removeElement('container__columns');
-    this.savePathActual(pathName.oneTaskPage);
+    if (!notSavePath) {
+      this.savePathActual(pathName.oneTaskPage);
+    }
     this.pageOneTask.display(task);
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
@@ -137,7 +139,7 @@ class TasksController {
     this.collection.addComment(idTask, textComment);
     this.saveLocalStorage('collectionTasks', this.collection.tasks);
     const task = this.collection.get(idTask);
-    this.renderOneTaskPage(task);
+    this.renderOneTaskPage(task, true);
   };
 
   // добавляем текущего пользователя в хидер и в модель.

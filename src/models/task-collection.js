@@ -62,7 +62,7 @@ class TaskCollection {
         (task) => !config.priority || task.priority === config.priority,
       )
       .filter(
-        (task) => !config.isPrivate || task.isPrivate === config.isPrivate,
+        (task) => (typeof config.isPrivate !== 'boolean') || task.isPrivate === config.isPrivate,
       )
       // .filter(
       //   (task) => !config.dateFrom || task.createdAt.getTime() >= config.dateFrom.getTime(),

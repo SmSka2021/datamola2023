@@ -68,10 +68,24 @@ class FilterView {
       };
       getElement('#high').onchange = () => {
         this.filterData.priority = priorityTask.high;
-        this.saveSettingLocalStorage();
         this.stateFilter.priority.low = false;
         this.stateFilter.priority.medium = false;
         this.stateFilter.priority.high = true;
+        this.saveSettingLocalStorage();
+        handler(0, 10, this.filterData);
+      };
+      getElement('#public').onchange = () => {
+        this.filterData.isPrivate = false;
+        this.stateFilter.isPrivate.privacy = false;
+        this.stateFilter.isPrivate.public = true;
+        this.saveSettingLocalStorage();
+        handler(0, 10, this.filterData);
+      };
+      getElement('#privacy').onchange = () => {
+        this.filterData.isPrivate = true;
+        this.stateFilter.isPrivate.privacy = true;
+        this.stateFilter.isPrivate.public = false;
+        this.saveSettingLocalStorage();
         handler(0, 10, this.filterData);
       };
     });
@@ -142,8 +156,8 @@ class FilterView {
     publicBtn.append(imgPublicPrivacy);
     containerPrivacyImg.append(privacyBtn, publicBtn);
     const containerPrivacyRadios = createDiv(['container__privacy_radios']);
-    const radioPublic = createInputRadio('radio', 'private', 'public');
-    const radioPrivate = createInputRadio('radio', 'private', 'privacy');
+    const radioPublic = createInputRadio('radio', 'private', 'public', 'public', this.stateFilter.isPrivate.public);
+    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy', this.stateFilter.isPrivate.privacy);
     containerPrivacyRadios.append(radioPublic, radioPrivate);
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
     containerPrivacy.append(privacyTitle, containerImgAndRadio);
