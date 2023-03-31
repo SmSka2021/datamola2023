@@ -65,3 +65,13 @@ export const createInputRadio = (type, name, value, id, checked = false, classes
   input.checked = checked;
   return input;
 };
+
+export const createLabel = (forLabel, title, classes = []) => {
+  const label = document.createElement('label');
+  label.for = forLabel;
+  label.textContent = title;
+  if (classes.length) {
+    classes.forEach((classElem) => label.classList.add(classElem));
+  }
+  return label;
+};

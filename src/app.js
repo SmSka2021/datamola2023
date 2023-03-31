@@ -6,6 +6,7 @@ import FilterView from './components/filter-view';
 import TaskFeedView from './components/board-table-view';
 import BoardViewList from './components/board-list-view';
 import TaskViewPage from './components/page-one-task-view';
+import CreateTaskView from './components/create-task-view';
 import { pathData, pathName } from './ultilites/path';
 
 class TasksController {
@@ -14,6 +15,7 @@ class TasksController {
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
     this.filter = new FilterView('container__filter');
+    this.modalCreateTask = new CreateTaskView('create_task');
     this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
@@ -83,6 +85,7 @@ class TasksController {
     this.boardCardView.bindDeleteTask(this.removeTask);
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
+    this.boardCardView.bindAddNewTask(this.openModalCreateTask);
   };
 
   renderMainBoardList = (tasksFilter) => {
@@ -93,6 +96,7 @@ class TasksController {
     this.boardListView.bindDeleteTask(this.removeTask);
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
+    this.boardListView.bindAddNewTask(this.openModalCreateTask);
   };
 
   cleanMainBoard = () => {
@@ -102,6 +106,10 @@ class TasksController {
 
   cleanOneTaskPage = () => {
     this.removeElement('main_task');
+  };
+
+  cleanModalCreateTask = () => {
+    this.removeElement('create_task');
   };
 
   renderOneTaskPage = (task, notSavePath) => {
@@ -116,13 +124,35 @@ class TasksController {
     this.pageOneTask.bindDeleteTask(this.removeTask);
   };
 
+  renderModalCreateTask = () => {
+    this.modalCreateTask.display();
+    this.modalCreateTask.bindCloseModal(this.closeModalCreateTask);
+    this.modalCreateTask.bindGetDataFormModal(this.createNewTask);
+  };
+
+  createNewTask = (data) => {
+    this.addTask(data);
+  };
+
   removeElement = (id) => {
     const elem = document.getElementById(id);
     elem.style.display = 'none';
   };
 
+  openModalCreateTask = () => {
+    this.cleanMainBoard();
+    this.cleanOneTaskPage();
+    this.renderModalCreateTask();
+  };
+
+  closeModalCreateTask = () => {
+    this.cleanModalCreateTask();
+    this.renderStartPages();
+  };
+
   display = () => {
     this.renderStartPages();
+
     // this.renderMainBoardList();
     // this.renderOneTaskPage(this.collection.tasks[0]);
     // this.renderMainBoardCard();
@@ -152,8 +182,12 @@ class TasksController {
 
   addTask = (task) => {
     this.collection.add(task);
+    console.log(this.collection.tasks);
+    this.saveLocalStorage('collectionTasks', this.collection.tasks);
+    this.cleanModalCreateTask();
+    this.renderStartPages();
     // this.renderMainBoardCard(this.collection.tasks);
-    this.renderMainBoardList(this.collection.tasks);
+    // this.renderMainBoardList(this.collection.tasks);
   };
 
   // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//

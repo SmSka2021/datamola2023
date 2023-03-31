@@ -592,18 +592,18 @@ class TaskCollection {
     return this.tasks.find((task) => task.id === id);
   }
 
-  add(name, description, assignee, status, priority, isPrivate) {
-    if (!this.user) return false;
+  add(objData) {
+    if (!this.user || this.user !== objData.assignee) return false;
 
     const newTask = new Task({
       id: new Date().getTime().toString(),
-      name,
-      description,
+      name: objData.name,
+      description: objData.description,
       createdAt: new Date(),
-      assignee,
-      status,
-      priority,
-      isPrivate,
+      assignee: objData.assignee,
+      status: objData.status,
+      priority: objData.priority,
+      isPrivate: objData.isPrivate,
       comments: [],
     });
 
@@ -803,7 +803,7 @@ console.log(myTasks.tasks.length);
 // console.log(myTasks.get('1'));
 
 // console.log(myTasks.getPage(0, 2, { assignee: 'Васильев' }));
-console.log(myTasks.getPage(0, 2, { priority: 'Low' }));
+// console.log(myTasks.getPage(0, 2, { priority: 'Low' }));
 // console.log(myTasks.getPage(0, 3, { status: 'Complete' }));
 // console.log(myTasks.getPage(0, 2, { assignee: 'Петров', status: 'To Do' }));
 // console.log(myTasks.getPage(0, 2, { assignee: 'Петров', status: 'To Do', priority: 'Low' }));
@@ -890,3 +890,13 @@ console.log(myTasks.getPage(0, 2, { priority: 'Low' }));
 // console.log(myTasks.tasks.length);
 // console.log(myTasks.add('Add modal', 'Description', 'Serg', 'Complete', 'Low', 'false'));
 // console.log(myTasks.tasks.length);
+const addY = {
+  assignee: 'Иванов',
+  description: 'м',
+  isPrivate: true,
+  name: 'м',
+  priority: 'High',
+  status: 'To Do',
+};
+console.log(myTasks.add(addY));
+console.log(myTasks.tasks.length);

@@ -56,7 +56,7 @@ class Task {
     const validateDescription = typeof task.description === 'string'
       && task.description.length <= maxLengthDescription
       && task.description.trim().length;
-    const validateCreatedAt = task._createdAt instanceof Date;
+    // const validateCreatedAt = task._createdAt instanceof Date;
     const validateAssignee = typeof task.assignee === 'string'
       && task.assignee.trim().length;
     const validateStatus = typeof task.status === 'string'
@@ -78,7 +78,7 @@ class Task {
       validateId
         && validateName
         && validateDescription
-        && validateCreatedAt
+        // && validateCreatedAt
         && validateAssignee
         && validateStatus
         && validatePriority

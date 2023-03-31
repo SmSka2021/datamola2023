@@ -54,6 +54,16 @@ class BoardViewList {
     }
   }
 
+  bindAddNewTask(handler) {
+    const btnsAddTask = getElements('.btn__add_task_list');
+    if (btnsAddTask) {
+      btnsAddTask.forEach((btn) => btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      }));
+    }
+  }
+
   getStateIsOpenTodo() {
     if (localStorage.getItem('isOpenTodo')) {
       return localStorage.getItem('isOpenTodo') === 'true';

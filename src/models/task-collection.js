@@ -33,13 +33,35 @@ class TaskCollection {
     return this.tasks.find((task) => task.id === id);
   }
 
-  add(task) {
-    if (!this.user) return false;
+  // add(task) {
+  //   if (!this.user) return false;
 
-    const newTask = new Task(task);
+  //   const newTask = new Task(task);
+
+  //   if (Task.validate(newTask)) {
+  //     this.tasks.push(newTask);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  add(objData) {
+    if (!this.user || this.user !== objData.assignee) return false;
+
+    const newTask = new Task({
+      id: new Date().getTime().toString(),
+      name: objData.name,
+      description: objData.description,
+      createdAt: new Date().toISOString(),
+      assignee: objData.assignee,
+      status: objData.status,
+      priority: objData.priority,
+      isPrivate: objData.isPrivate,
+      comments: [],
+    });
 
     if (Task.validate(newTask)) {
-      this.tasks.push(newTask);
+      this.tasks.unshift(newTask);
       return true;
     }
     return false;

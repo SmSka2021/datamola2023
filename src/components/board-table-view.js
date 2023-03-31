@@ -47,6 +47,16 @@ class TaskFeedView {
     }
   }
 
+  bindAddNewTask(handler) {
+    const btnsAddTask = getElements('.btn__add_task');
+    if (btnsAddTask) {
+      btnsAddTask.forEach((btn) => btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      }));
+    }
+  }
+
   display(tasks) {
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);

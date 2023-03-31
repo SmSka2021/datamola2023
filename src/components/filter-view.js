@@ -23,12 +23,6 @@ class FilterView {
 
   filterData = localStorage.getItem('dataFilter') ? { ...JSON.parse(localStorage.getItem('dataFilter')) } : { ...filterDataStart };
 
-  // changeViewImg = (searchBy) => {
-  //   if (searchBy === 'assignee') {
-  //     console.log('ll');
-  //   }
-  // };
-
   saveSettingLocalStorage() {
     localStorage.setItem('settingFilter', JSON.stringify(this.stateFilter));
     localStorage.setItem('dataFilter', JSON.stringify(this.filterData));
@@ -169,10 +163,10 @@ class FilterView {
   }
 
   bindResetForm(handler) {
-    document.forms.filterForm.reset();
     const resetBtn = getElement('.reset_btn');
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
+        document.forms[0].reset();
         event.stopPropagation();
         this.stateFilter = { ...settingFilterStart };
         this.filterData = { ...filterDataStart };
