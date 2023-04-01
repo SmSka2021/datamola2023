@@ -48,15 +48,16 @@ class OneTaskViewList {
     const taskCountComment = createElem('td', []);
     taskCountComment.textContent = task.comments.length;
 
-    const taskEdit = createElem('td', []);
+    const taskEdit = createElem('td', ['td_edit']);
+    taskEdit.setAttribute('data-id', `${task.id}`);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
 
-    const taskDelete = createElem('td', []);
+    const taskDelete = createElem('td', ['td_delit']);
+    taskDelete.setAttribute('data-id', `${task.id}`);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    btnDelete.setAttribute('data-id', `${task.id}`);
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     btnDelete.append(imgDelete);
     taskDelete.append(btnDelete);

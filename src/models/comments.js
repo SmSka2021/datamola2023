@@ -42,14 +42,14 @@ class Comment {
     const validateText = typeof comment.text === 'string'
       && comment.text.length <= maxLengthDescription
       && comment.text.trim().length;
-    const validateCreatedAt = comment._createdAt instanceof Date;
+    // const validateCreatedAt = comment._createdAt instanceof Date;
     const validateAauthor = typeof comment._author === 'string' && comment._author.length;
 
     return !!(
       validateId
         && validateText
         && validateAauthor
-        && validateCreatedAt
+        //  && validateCreatedAt
         && true
     );
   }

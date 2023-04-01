@@ -37,6 +37,7 @@ class FilterView {
     const filter = getElement('.form__filter');
     filter.addEventListener('click', (event) => {
       event.stopPropagation();
+      getElement('.reset_btn').disabled = false;
 
       getElement('#inputDateFrom').onchange = (e) => {
         const dateFrom = e.target.value;
@@ -164,6 +165,7 @@ class FilterView {
 
   bindResetForm(handler) {
     const resetBtn = getElement('.reset_btn');
+    resetBtn.disabled = JSON.stringify(this.stateFilter) === JSON.stringify(settingFilterStart);
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
         document.forms[0].reset();
@@ -177,14 +179,14 @@ class FilterView {
   }
 
   settingChecked() {
-    if (this.stateFilter.title) getElement('#title').setAttribute('checked', true);
-    if (this.stateFilter.description) getElement('#description').setAttribute('checked', true);
-    if (this.stateFilter.assignee) getElement('#assignee').setAttribute('checked', true);
-    if (this.stateFilter.priority.low) getElement('#low').setAttribute('checked', true);
-    if (this.stateFilter.priority.medium) getElement('#medium').setAttribute('checked', true);
-    if (this.stateFilter.priority.high) getElement('#high').setAttribute('checked', true);
-    if (this.stateFilter.isPrivate.public) getElement('#public').setAttribute('checked', true);
-    if (this.stateFilter.isPrivate.privacy) getElement('#privacy').setAttribute('checked', true);
+    if (this.stateFilter.title) getElement('#title').checked = true;
+    if (this.stateFilter.description) getElement('#description').checked = true;
+    if (this.stateFilter.assignee) getElement('#assignee').checked = true;
+    if (this.stateFilter.priority.low) getElement('#low').checked = true;
+    if (this.stateFilter.priority.medium) getElement('#medium').checked = true;
+    if (this.stateFilter.priority.high) getElement('#high').checked = true;
+    if (this.stateFilter.isPrivate.public) getElement('#public').checked = true;
+    if (this.stateFilter.isPrivate.privacy) getElement('#privacy').checked = true;
     if (this.stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom);
     if (this.stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo);
     if (this.stateFilter.title || this.stateFilter.assignee || this.stateFilter.description) {
@@ -279,7 +281,6 @@ class FilterView {
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
     const resetBtn = createBtn('Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
-
     myForm.append(
       filterTitle,
       containerSearch,

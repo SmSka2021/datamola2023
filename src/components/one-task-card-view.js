@@ -45,8 +45,8 @@ class OneTaskViewCard {
 
     const containerBtn = createDiv(['container__btn_delete']);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    btnDelete.setAttribute('data-id', `${taskOne.id}`);
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
+    imgDelete.setAttribute('data-id', `${taskOne.id}`);
     btnDelete.append(imgDelete);
 
     const btnEdit = createBtn('', ['btn_icon', 'edit']);

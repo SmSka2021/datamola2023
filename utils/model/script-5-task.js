@@ -1359,3 +1359,22 @@ console.log(myTasks.getPage(0, 5, {
 
 // showTask('10');
 // console.log(myTasks.get('10'));
+const task = {
+  assignee: 'Иванов',
+  comments: [
+    {
+      _id: '912',
+      text: 'Будет сделано!',
+      _createdAt: '2023-03-09T20:00:00.000Z',
+      _author: 'Иванов',
+    },
+  ],
+  description: 'Необходимо переименовать константу  DELAY_TIME на DELAY_API_TIME',
+  isPrivate: false,
+  name: 'Переименовать константу DELAY_TIME 88',
+  priority: 'High',
+  status: 'To Do',
+  _createdAt: '2023-03-09T20:00:00.000Z',
+  _id: '2',
+};
+console.log(Task.validate(task));

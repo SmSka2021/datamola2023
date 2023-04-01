@@ -9,6 +9,7 @@ import srcImgCollection from '../ultilites/src-img-collection';
 import { createIdList, taskStatusArr } from '../ultilites/field-task';
 import OneTaskViewCard from './one-task-card-view';
 import { getElements, getElement } from '../ultilites/get-element';
+import { pathName } from '../ultilites/path';
 
 class TaskFeedView {
   constructor(id) {
@@ -16,13 +17,10 @@ class TaskFeedView {
   }
 
   bindDeleteTask(handler) {
-    const btnDelete = getElements('.img_delete');
-    btnDelete.forEach((btn) => btn.addEventListener('click', (event) => {
-      const isBtnDelete = event.target.parentElement.classList.contains('delete');
-      if (isBtnDelete) {
-        event.stopPropagation();
-        handler(event.target.parentElement.dataset.id);
-      }
+    const imgDelete = getElements('.img_delete');
+    imgDelete.forEach((btn) => btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      handler(btn.dataset.id);
     }));
   }
 
@@ -53,6 +51,16 @@ class TaskFeedView {
       btnsAddTask.forEach((btn) => btn.addEventListener('click', (event) => {
         event.stopPropagation();
         handler();
+      }));
+    }
+  }
+
+  bindOpenEditTask(handler) {
+    const tdEditTask = getElements('.img_edit');
+    if (tdEditTask) {
+      tdEditTask.forEach((img) => img.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler(img.dataset.id, pathName.boardCard);
       }));
     }
   }

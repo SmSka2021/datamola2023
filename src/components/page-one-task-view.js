@@ -11,6 +11,7 @@ import convertationDate from '../ultilites/convertation-date';
 import srcPriority from '../ultilites/convertor-src';
 import { maxLengthDescription } from '../ultilites/constant';
 import { getElement } from '../ultilites/get-element';
+import { pathName } from '../ultilites/path';
 
 // ----------PAGE ONE TASK  -TaskView---------------- //
 class TaskViewPage {
@@ -20,39 +21,56 @@ class TaskViewPage {
 
   bindAddComment(handler) {
     const commentForm = getElement('.form');
-    commentForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const newComment = commentForm.newComment.value;
-      const idTask = commentForm.dataset.id;
-      if (newComment.length) {
+    if (commentForm) {
+      commentForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        handler(idTask, newComment);
-        commentForm.reset();
-      }
-    });
+        event.stopPropagation();
+        const newComment = commentForm.newComment.value;
+        const idTask = commentForm.dataset.id;
+        if (newComment.length) {
+          event.preventDefault();
+          handler(idTask, newComment);
+          commentForm.reset();
+        }
+      });
+    }
   }
 
   bindPrevViewAllTask(handler) {
     const imgPrev = getElement('.previosView_img');
-    imgPrev.addEventListener('click', (event) => {
-      const btnPrev = event.target.parentElement.classList.contains('previosView');
-      if (btnPrev) {
+    if (imgPrev) {
+      imgPrev.addEventListener('click', (event) => {
         event.stopPropagation();
+        localStorage.removeItem('editTask');
         handler();
-      }
-    });
+      });
+    }
   }
 
   bindDeleteTask(handler) {
     const btnDelete = getElement('.delete_img');
-    btnDelete.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const isBtnDelete = event.target.parentElement.classList.contains('delete');
-      if (isBtnDelete) {
-        handler(event.target.parentElement.dataset.id, true);
-      }
-    });
+    if (btnDelete) {
+      btnDelete.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isBtnDelete = event.target.parentElement.classList.contains('delete');
+        if (isBtnDelete) {
+          handler(event.target.parentElement.dataset.id, true);
+        }
+      });
+    }
+  }
+
+  bindOpenEditTask(handler) {
+    const btnEditTask = getElement('.edit_img_one_task');
+    if (btnEditTask) {
+      btnEditTask.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isBtnEdit = event.target.parentElement.classList.contains('edit');
+        if (isBtnEdit) {
+          handler(event.target.parentElement.dataset.id, pathName.oneTaskPage);
+        }
+      });
+    }
   }
 
   display(task) {
@@ -88,7 +106,8 @@ class TaskViewPage {
     const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit');
+    btnEdit.setAttribute('data-id', `${task.id}`);
+    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['edit_img_one_task']);
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);

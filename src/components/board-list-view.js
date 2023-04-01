@@ -10,6 +10,7 @@ import srcImgCollection from '../ultilites/src-img-collection';
 import { taskStatusArr, arrFieldTask, createIdList } from '../ultilites/field-task';
 import OneTaskViewList from './one-task-view-list';
 import { getElements, getElement } from '../ultilites/get-element';
+import { pathName } from '../ultilites/path';
 
 class BoardViewList {
   constructor(id) {
@@ -23,25 +24,35 @@ class BoardViewList {
   isOpenInProgress = this.getStateIsOpenInProgress();
 
   bindDeleteTask(handler) {
-    const btnDelete = getElements('.img_delete');
-    btnDelete.forEach((btn) => btn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const isBtnDelete = event.target.parentElement.classList.contains('delete');
-      if (isBtnDelete) {
-        handler(event.target.parentElement.dataset.id);
-      }
-    }));
+    const tdDelete = getElements('.td_delit');
+    if (tdDelete) {
+      tdDelete.forEach((btn) => btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const parent = event.target.closest('.td_delit');
+        handler(parent.dataset.id);
+      }));
+    }
+  }
+
+  bindOpenEditTask(handler) {
+    const tdEditTask = getElements('.td_edit');
+    if (tdEditTask) {
+      tdEditTask.forEach((td) => td.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const parent = event.target.closest('.td_edit');
+        handler(parent.dataset.id, pathName.boardList);
+      }));
+    }
   }
 
   bindOpenTask(handler) {
     const tasksAll = getElements('.one_task_list');
-    tasksAll.forEach((task) => task.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const oneTask = event.target.closest('.one_task_list');
-      if (oneTask) {
-        handler(oneTask.dataset.id);
-      }
-    }));
+    if (tasksAll) {
+      tasksAll.forEach((task) => task.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler(task.dataset.id);
+      }));
+    }
   }
 
   bindSetViewBoardCard(handler) {

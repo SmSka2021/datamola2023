@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import {
   createElem,
@@ -22,6 +23,9 @@ class CreateTaskView {
     if (btnCloseModal) {
       btnCloseModal.addEventListener('click', (event) => {
         event.stopPropagation();
+        localStorage.removeItem('editTask');
+        localStorage.removeItem('pathEdit');
+
         handler();
       });
     }
@@ -41,9 +45,50 @@ class CreateTaskView {
           priority: myForm.elements.priority.value,
           isPrivate: myForm.elements.privacy.value === 'true',
         };
-
-        handler(newTask);
+        const isEditTask = localStorage.getItem('editTask');
+        if (isEditTask) {
+          newTask.id = (JSON.parse(isEditTask))._id;
+          handler(newTask, isEditTask);
+        } else {
+          handler(newTask, false);
+        }
       });
+    }
+  }
+
+  resetForm(event) {
+    const btn = event.target;
+    event.stopPropagation();
+    if (btn) {
+      // btn.disabled = true;
+      getElement('.form__task').reset();
+    }
+  }
+
+  settingRadioEditTask() {
+    const editTask = localStorage.getItem('editTask');
+    if (editTask) {
+      const checkedTask = JSON.parse(editTask);
+      if (checkedTask.assignee) getElement('#userNameData').value = checkedTask.assignee;
+      if (checkedTask.name) getElement('#titleTask').value = checkedTask.name;
+      if (checkedTask.description) getElement('#description1').value = checkedTask.description;
+
+      if (checkedTask.priority === priorityTask.high) {
+        getElement('#heigh1').checked = true;
+      }
+      if (checkedTask.priority === priorityTask.medium) getElement('#medium1').checked = true;
+      if (checkedTask.priority === priorityTask.low) getElement('#low1').checked = true;
+
+      if (checkedTask.status === taskStatusObj.toDo) getElement('#todo1').checked = true;
+      if (checkedTask.status === taskStatusObj.inProgress) getElement('#inProcess1').checked = true;
+      if (checkedTask.status === taskStatusObj.complete) getElement('#completed1').checked = true;
+
+      if (checkedTask.isPrivate) getElement('#privacy1').checked = true;
+      if (!checkedTask.isPrivate) getElement('#public1').checked = true;
+    } else {
+      getElement('#todo1').checked = true;
+      getElement('#low1').checked = true;
+      getElement('#privacy1').checked = true;
     }
   }
 
@@ -81,7 +126,7 @@ class CreateTaskView {
     const privacyText = createText('p', 'Privacy', ['label__task_info']);
     const containerRadios = createDiv(['container__radios']);
     const containerRadioPrivate = createDiv(['container__radio']);
-    const radioPrivacy = createInputRadio('radio', 'privacy', true, 'privacy1', true, ['input__task_info']);
+    const radioPrivacy = createInputRadio('radio', 'privacy', true, 'privacy1', false, ['input__task_info']);
     const labePrivate = createLabel('privacy1', 'Private', ['label__task_info', 'radio_label']);
     containerRadioPrivate.append(radioPrivacy, labePrivate);
     const containerRadioPublic = createDiv(['container__radio']);
@@ -96,7 +141,7 @@ class CreateTaskView {
     const statusText = createText('p', 'Status', ['label__task_info', 'label_width']);
     const containerStatus2 = createDiv(['container__radios', 'status_container']);
     const containerTodo = createDiv(['container__radio']);
-    const radioToDo = createInputRadio('radio', 'status', taskStatusObj.toDo, 'todo1', true, ['input__task_info']);
+    const radioToDo = createInputRadio('radio', 'status', taskStatusObj.toDo, 'todo1', false, ['input__task_info']);
     const labelTodo = createLabel('todo1', 'To Do', ['label__task_info', 'radio_label']);
     containerTodo.append(radioToDo, labelTodo);
     const containerProgress = createDiv(['container__radio']);
@@ -114,7 +159,7 @@ class CreateTaskView {
     const priorityText = createText('p', 'Priority', ['label__task_info', 'label_width']);
     const containerPriority2 = createDiv(['container__radios', 'status_container']);
     const containerheight = createDiv(['container__radio']);
-    const radioHigh = createInputRadio('radio', 'priority', priorityTask.high, 'heigh1', true, ['input__task_info']);
+    const radioHigh = createInputRadio('radio', 'priority', priorityTask.high, 'heigh1', false, ['input__task_info']);
     const labelHight = createLabel('heigh1', 'Heigh', ['label__task_info', 'radio_label']);
     containerheight.append(radioHigh, labelHight);
     const containerMedium = createDiv(['container__radio']);
@@ -123,6 +168,7 @@ class CreateTaskView {
     containerMedium.append(radioMedium, labelMedium);
     const containerLow = createDiv(['container__radio']);
     const radioLow = createInputRadio('radio', 'priority', priorityTask.low, 'low1', false, ['input__task_info']);
+    // radioLow.setAttribute('checked', this.settingRadio());
     const labelLow = createLabel('low1', 'Low', ['label__task_info', 'radio_label']);
     containerLow.append(radioLow, labelLow);
     containerPriority2.append(containerLow, containerMedium, containerheight);
@@ -139,6 +185,7 @@ class CreateTaskView {
 
     const containerBtn = createDiv(['form__task_btns']);
     const btnReset = createBtn('Reset', ['light_btn', 'btn', 'form__task_btn'], 'button', 'reset data');
+    btnReset.addEventListener('click', this.resetForm);
     const btnSave = createBtn('Save', ['light_btn', 'btn', 'form__task_btn'], 'submit', 'save new task');
     containerBtn.append(btnReset, btnSave);
 
@@ -154,7 +201,7 @@ class CreateTaskView {
     section.append(containerForm);
     main.append(wrapper, section);
     parentElem.replaceWith(main);
-    // this.settingChecked();
+    this.settingRadioEditTask();
   }
 }
 export default CreateTaskView;

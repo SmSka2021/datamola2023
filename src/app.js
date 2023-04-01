@@ -46,8 +46,10 @@ class TasksController {
     }
     if (this.path.actuale === pathName.oneTaskPage) {
       const idCheckedTask = this.getLocalStorage('idCheckedTask');
-      if (idCheckedTask) this.showTask(idCheckedTask);
-      else this.renderMainBoardCard();
+      if (idCheckedTask) {
+        this.showTask(idCheckedTask);
+        this.path.prev = pathName.boardCard;
+      } else this.renderMainBoardCard();
     }
   };
 
@@ -86,6 +88,7 @@ class TasksController {
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
     this.boardCardView.bindAddNewTask(this.openModalCreateTask);
+    this.boardCardView.bindOpenEditTask(this.openModalCreateTask);
   };
 
   renderMainBoardList = (tasksFilter) => {
@@ -97,6 +100,7 @@ class TasksController {
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
     this.boardListView.bindAddNewTask(this.openModalCreateTask);
+    this.boardListView.bindOpenEditTask(this.openModalCreateTask);
   };
 
   cleanMainBoard = () => {
@@ -122,16 +126,13 @@ class TasksController {
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
     this.pageOneTask.bindDeleteTask(this.removeTask);
+    this.pageOneTask.bindOpenEditTask(this.openModalCreateTask);
   };
 
   renderModalCreateTask = () => {
     this.modalCreateTask.display();
     this.modalCreateTask.bindCloseModal(this.closeModalCreateTask);
-    this.modalCreateTask.bindGetDataFormModal(this.createNewTask);
-  };
-
-  createNewTask = (data) => {
-    this.addTask(data);
+    this.modalCreateTask.bindGetDataFormModal(this.addOrEditTask);
   };
 
   removeElement = (id) => {
@@ -139,7 +140,10 @@ class TasksController {
     elem.style.display = 'none';
   };
 
-  openModalCreateTask = () => {
+  openModalCreateTask = (id) => {
+    if (id) {
+      this.saveLocalStorage('editTask', this.collection.get(id));
+    }
     this.cleanMainBoard();
     this.cleanOneTaskPage();
     this.renderModalCreateTask();
@@ -180,17 +184,33 @@ class TasksController {
   };
   //  добавляем новую таску в модель и перерисовываем доску с задачами.
 
-  addTask = (task) => {
-    this.collection.add(task);
-    console.log(this.collection.tasks);
+  addOrEditTask = (data, isEditTask) => {
+    if (isEditTask) {
+      this.editTask(data);
+    } else {
+      this.addTask(data);
+    }
+  };
+
+  editTask = (data) => {
+    this.collection.edit(data);
+    this.saveLocalStorage('collectionTasks', this.collection.tasks);
+    this.cleanModalCreateTask();
+    //  this.renderStartPages();
+    localStorage.removeItem('editTask');
+    this.renderMainBoardCard();
+  };
+
+  addTask = (data) => {
+    this.collection.add(data);
     this.saveLocalStorage('collectionTasks', this.collection.tasks);
     this.cleanModalCreateTask();
     this.renderStartPages();
-    // this.renderMainBoardCard(this.collection.tasks);
-    // this.renderMainBoardList(this.collection.tasks);
+    localStorage.removeItem('editTask');
+    // this.renderMainBoardCard();
   };
-
   // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//
+
   removeTask = (id, isNeedRenderFilter) => {
     this.collection.remove(id);
     this.saveLocalStorage('collectionTasks', this.collection.tasks);
@@ -214,6 +234,7 @@ class TasksController {
   // получить таску по айди из модели и отобразить соответствующий TaskView.
   showTask = (id) => {
     this.saveLocalStorage('idCheckedTask', id);
+    this.saveLocalStorage('editTask', this.collection.get(id));
     this.renderOneTaskPage(this.collection.get(id));
   };
 }

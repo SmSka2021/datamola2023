@@ -59,7 +59,6 @@ class TaskCollection {
       isPrivate: objData.isPrivate,
       comments: [],
     });
-
     if (Task.validate(newTask)) {
       this.tasks.unshift(newTask);
       return true;
@@ -108,35 +107,29 @@ class TaskCollection {
       .splice(skip, top);
   };
 
-  edit(
-    id,
-    nameNew,
-    descriptionNew,
-    assigneeNew,
-    statusNew,
-    priorityNew,
-    isPrivateNew = false,
-  ) {
-    const cheskTask = this.get(id);
-    if (!this.user || (cheskTask.assignee !== this.user)) return false;
+  edit(objNewData) {
+    const cheskTask = this.get(objNewData.id);
+    if (!this.user
+      || (objNewData.assignee !== this.user)
+      || (cheskTask.assignee !== this.user)
+    ) return false;
 
     const editTaskCopy = {
       ...cheskTask,
-      id: cheskTask.id,
-      name: nameNew || cheskTask.name,
-      description: descriptionNew || cheskTask.description,
-      createdAt: cheskTask.createdAt,
-      assignee: assigneeNew || cheskTask.assignee,
-      status: statusNew || cheskTask.status,
-      priority: priorityNew || cheskTask.priority,
-      isPrivate: (typeof isPrivateNew === 'boolean') ? isPrivateNew : cheskTask.isPrivate,
+      comments: [...cheskTask.comments],
+      name: objNewData.name || cheskTask.name,
+      description: objNewData.description || cheskTask.description,
+      status: objNewData.status || cheskTask.status,
+      priority: objNewData.priority || cheskTask.priority,
+      isPrivate: (typeof isPrivateNew === 'boolean') ? objNewData.isPrivate : cheskTask.isPrivate,
     };
-
+    console.log(editTaskCopy);
     if (!Task.validate(editTaskCopy)) {
+      console.log('Task not validate');
       return false;
     }
-    const index = this.tasks.findIndex((task) => task.id === id);
-    this.tasks.splice(index, 1, new Task(editTaskCopy));
+    const index = this.tasks.findIndex((task) => task._id === objNewData.id);
+    this.tasks.splice(index, 1, editTaskCopy);
     return true;
   }
 
