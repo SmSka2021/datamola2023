@@ -196,9 +196,9 @@ class TasksController {
     this.collection.edit(data);
     this.saveLocalStorage('collectionTasks', this.collection.tasks);
     this.cleanModalCreateTask();
-    //  this.renderStartPages();
+    this.renderStartPages();
     localStorage.removeItem('editTask');
-    this.renderMainBoardCard();
+    // this.renderMainBoardCard();
   };
 
   addTask = (data) => {

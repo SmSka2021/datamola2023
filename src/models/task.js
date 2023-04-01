@@ -4,16 +4,16 @@ import Comment from './comments';
 
 class Task {
   constructor(task) {
-    this._id = task.id;
+    this._id = task.id || `${new Date().getTime().toString()}${task.assignee}`;
     this.name = task.name;
     this.description = task.description;
-    this._createdAt = task.createdAt;
+    this._createdAt = task.createdAt || new Date().toISOString();
     this.assignee = task.assignee;
     this.status = task.status;
     this.priority = task.priority;
     this.isPrivate = task.isPrivate;
     this.comments = task.comments.map(
-      (comment) => new Comment(comment.id, comment.text, comment.createdAt, comment.author),
+      (comment) => new Comment(comment.id, comment.text, comment.createdAt, comment.author) || [],
     );
   }
 

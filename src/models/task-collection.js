@@ -49,7 +49,7 @@ class TaskCollection {
     if (!this.user || this.user !== objData.assignee) return false;
 
     const newTask = new Task({
-      id: new Date().getTime().toString(),
+      id: `${new Date().getTime().toString()}${objData.assignee}`,
       name: objData.name,
       description: objData.description,
       createdAt: new Date().toISOString(),
@@ -108,37 +108,41 @@ class TaskCollection {
   };
 
   edit(objNewData) {
-    const cheskTask = this.get(objNewData.id);
+    const cheskTask = this.get(objNewData.id); // нужно ли _ID черточка
     if (!this.user
       || (objNewData.assignee !== this.user)
       || (cheskTask.assignee !== this.user)
     ) return false;
 
-    const editTaskCopy = {
-      ...cheskTask,
-      comments: [...cheskTask.comments],
+    const editTaskCopy = new Task({
+      id: cheskTask.id,
+      createAt: cheskTask.createdAt,
+      assignee: cheskTask.assignee,
+      comments: [...cheskTask.comments] || [],
       name: objNewData.name || cheskTask.name,
       description: objNewData.description || cheskTask.description,
       status: objNewData.status || cheskTask.status,
       priority: objNewData.priority || cheskTask.priority,
       isPrivate: (typeof isPrivateNew === 'boolean') ? objNewData.isPrivate : cheskTask.isPrivate,
-    };
+    });
     console.log(editTaskCopy);
     if (!Task.validate(editTaskCopy)) {
       console.log('Task not validate');
       return false;
     }
-    const index = this.tasks.findIndex((task) => task._id === objNewData.id);
-    this.tasks.splice(index, 1, editTaskCopy);
+    const index = this.tasks.findIndex((task) => task.id === objNewData.id);
+    this.tasks.splice(+index, 1, editTaskCopy);
     return true;
   }
 
   remove(id) {
-    const index = this.tasks.findIndex((task) => task.id === id);
-
-    if (this.get(id).assignee === this.user) {
-      this.tasks.splice(index, 1);
-      return true;
+    const index = (this.tasks.findIndex((task) => task.id === id)).toString();
+    if (index) {
+      if (this.get(id).assignee === this.user) {
+        this.tasks.splice(+index, 1);
+        return true;
+      }
+      return false;
     }
     return false;
   }
