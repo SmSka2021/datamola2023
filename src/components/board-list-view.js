@@ -17,6 +17,10 @@ class BoardViewList {
     this.id = id;
   }
 
+  checkIsGuest = () => JSON.parse(localStorage.getItem('statusUser'));
+
+  isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
+
   isOpenTodo = this.getStateIsOpenTodo();
 
   isOpenComplete = this.getStateIsOpenComplete();
@@ -46,10 +50,12 @@ class BoardViewList {
   }
 
   bindOpenTask(handler) {
+    if (this.checkIsGuest()) return;
     const tasksAll = getElements('.one_task_list');
     if (tasksAll) {
       tasksAll.forEach((task) => task.addEventListener('click', (event) => {
         event.stopPropagation();
+        if (this.checkIsGuest() || !this.isAuthUser()) return;
         handler(task.dataset.id);
       }));
     }
@@ -162,6 +168,12 @@ class BoardViewList {
       const btnAddTasks = createBtn('', ['btn_icon', 'btn__add_task_list']);
       const imgAddTasks = createImg(srcImgCollection.addTask, 'icon');
       btnAddTasks.append(imgAddTasks);
+      if (this.checkIsGuest()) {
+        btnAddTasks.classList.add('display_none');
+      }
+      if (this.isAuthUser()) {
+        btnAddTasks.classList.remove('display_none');
+      }
 
       const btnOpenTodo = createBtn('', ['btn_icon', 'open__todo_btn']);
       const imgOpenTodo = createImg(srcImgCollection.openTodo, 'icon', ['img_open']);
@@ -183,6 +195,12 @@ class BoardViewList {
         if (field === 'Comments') {
           tableThTitle.innerHTML = `<img src=${srcImgCollection.comments} alt='comments icon'
           class='task__img_comment'>`;
+        }
+        if ((field === 'Edit' || field === 'Delete') && this.checkIsGuest()) {
+          tableThTitle.classList.add('display_none');
+        }
+        if ((field === 'Edit' || field === 'Delete') && this.isAuthUser()) {
+          tableThTitle.classList.remove('display_none');
         }
         tableRowTitle.append(tableThTitle);
       });

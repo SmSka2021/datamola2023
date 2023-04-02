@@ -16,6 +16,10 @@ class TaskFeedView {
     this.id = id;
   }
 
+  checkIsGuest = () => JSON.parse(localStorage.getItem('statusUser'));
+
+  isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
+
   bindDeleteTask(handler) {
     const imgDelete = getElements('.img_delete');
     imgDelete.forEach((btn) => btn.addEventListener('click', (event) => {
@@ -28,6 +32,7 @@ class TaskFeedView {
     const tasksAll = getElements('.task');
     tasksAll.forEach((task) => task.addEventListener('click', (event) => {
       event.stopPropagation();
+      if (this.checkIsGuest() || !this.isAuthUser()) return;
       const oneTask = event.target.closest('.task');
       if (oneTask) {
         handler(oneTask.dataset.id);
@@ -78,6 +83,9 @@ class TaskFeedView {
       const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
       const imgAdd = createImg(srcImgCollection.addTask, 'icon');
       btnAddTask.append(imgAdd);
+      if (this.checkIsGuest) {
+        imgAdd.classList.add('display_none');
+      }
 
       const line = createElem('hr', ['line__column']);
       const list = createElem('ul', ['container__tasks']);

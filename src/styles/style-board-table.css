@@ -145,7 +145,8 @@
 }
 
 .reset_btn:disabled {
-  background: var(--primary-color);
+  background: var(--technic-color);
+
   color: var(--secondary-color);
   cursor: not-allowed;
 }
@@ -156,7 +157,7 @@
 }
 
 .reset_btn {
-  background: var(--technic-color);
+  background: var(--primary-color);
   cursor: pointer;
 }
 

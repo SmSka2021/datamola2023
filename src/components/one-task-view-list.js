@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import {
   createElem,
   createDiv,
@@ -15,6 +16,10 @@ class OneTaskViewList {
   constructor(id) {
     this.id = id;
   }
+
+  checkIsGuest = () => JSON.parse(localStorage.getItem('statusUser'));
+
+  isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
 
   display(task) {
     const parentElem = document.getElementById(this.id);
@@ -54,13 +59,20 @@ class OneTaskViewList {
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
-
     const taskDelete = createElem('td', ['td_delit']);
     taskDelete.setAttribute('data-id', `${task.id}`);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     btnDelete.append(imgDelete);
     taskDelete.append(btnDelete);
+    if (this.checkIsGuest()) {
+      taskEdit.classList.add('display_none');
+      taskDelete.classList.add('display_none');
+    }
+    if (this.isAuthUser()) {
+      taskEdit.classList.remove('display_none');
+      taskDelete.classList.remove('display_none');
+    }
 
     taskRow.append(
       taskTitle,

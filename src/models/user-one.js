@@ -4,10 +4,8 @@ class UserOne {
   constructor(user) {
     this._id = `${new Date().getTime().toString()}${user.password}`;
     this.firstName = user.firstName;
-    this.lastName = user.lastName;
     this.login = user.login;
     this.password = user.password;
-    this.email = user.email;
   }
 
   get id() {
@@ -22,10 +20,8 @@ class UserOne {
     const keysTask = [
       '_id',
       'firstName',
-      'lastName',
       'login',
       'password',
-      'email',
     ];
 
     const isAllKey = keysTask.every((item) => Object.keys(user).includes(item));
@@ -36,20 +32,14 @@ class UserOne {
       && textData.trim().length;
 
     const validateId = (typeof user._id === 'string' && user._id.trim().length);
-    const validateFirstName = validateTextData(user.firstName);
-    const validateLastName = validateTextData(user.lastName);
-    const validateLogin = validateTextData(user.login);
+    const validateFirstName = validateTextData(user.firstName) && (/^([а-яёА-ЯЁ]+|[a-zA-Z]+)$/iu).test(user.firstName);
+    const validateLogin = (/^([a-zA-Z]+)$/iu).test(user.login);
     const validatePassword = (/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{6,}/).test(user.password);
-    const validateEmail = (
-      /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i).test(user.email);
-
     return !!(
       validateId
         && validateFirstName
-        && validateLastName
         && validateLogin
         && validatePassword
-        && validateEmail
         && true
     );
   }

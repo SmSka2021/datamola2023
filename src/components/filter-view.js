@@ -165,10 +165,11 @@ class FilterView {
 
   bindResetForm(handler) {
     const resetBtn = getElement('.reset_btn');
-    resetBtn.disabled = JSON.stringify(this.stateFilter) === JSON.stringify(settingFilterStart);
+    document.forms.filterForm.reset();
+    // resetBtn.disabled = JSON.stringify(this.stateFilter) === JSON.stringify(settingFilterStart);
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
-        document.forms[0].reset();
+        document.forms.filterForm.reset();
         event.stopPropagation();
         this.stateFilter = { ...settingFilterStart };
         this.filterData = { ...filterDataStart };

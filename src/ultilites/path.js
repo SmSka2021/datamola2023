@@ -7,4 +7,6 @@ export const pathName = {
   boardCard: 'board-card',
   boardList: 'board-list',
   oneTaskPage: 'one-task',
+  registration: 'reg',
+  auth: 'auth',
 };

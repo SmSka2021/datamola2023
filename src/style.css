@@ -83,10 +83,13 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
-
+.display_none {
+  display: none;
+}
 
 @import 'styles/style-list.css';
 @import 'styles/style-task.css';
 @import 'styles/style-header-footer.css';
 @import 'styles/style-board-table.css';
 @import 'styles/style-create-task.css';
+@import 'styles/style-registration.css';

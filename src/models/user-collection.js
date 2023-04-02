@@ -3,14 +3,11 @@ import UserOne from './user-one';
 class UserCollection {
   arrPasswordAllUser = [];
 
-  arrEmailAllUser = [];
-
   arrLoginAllUser = [];
 
   constructor(userArr) {
     this._users = userArr.map((user) => new UserOne(user));
     this.users.forEach((user) => {
-      this.arrEmailAllUser.push(user.email);
       this.arrLoginAllUser.push(user.login);
       this.arrPasswordAllUser.push(user.password);
     });
@@ -42,23 +39,12 @@ class UserCollection {
     return false;
   }
 
-  isOriginUserPassword(userPassword) {
-    return !this.arrPasswordAllUser.includes(userPassword) && (/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{6,}/).test(userPassword);
-  }
+  isOriginUserPassword = (userPassword) => !this.arrPasswordAllUser.includes(userPassword);
 
-  isOriginUserEmail(email) {
-    return !this.arrEmailAllUser.includes(email) && (
-      /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i).test(email);
-  }
+  isOriginUserLogin = (login) => !this.arrLoginAllUser.includes(login);
 
-  isOriginUserLogin(login) {
-    return !this.arrLoginAllUser.includes(login);
-  }
-
-  isOriginUserData(user) {
-    return this.isOriginUserPassword(user.password)
-     && this.isOriginUserEmail(user.email) && this.isOriginUserLogin(user.login);
-  }
+  isOriginUserData = (user) => this.isOriginUserPassword(user.password)
+   && this.isOriginUserLogin(user.login);
 
   validateUser(userId) {
     const checkUser = this.getOneUser(userId);
@@ -70,8 +56,6 @@ class UserCollection {
     const editUserCopy = new UserOne({
       id: cheskUser.id,
       firstName: objNewUser.firstName || cheskUser.firstName,
-      lastName: objNewUser.lastName || cheskUser.lastName,
-      email: objNewUser.email || cheskUser.email,
       login: objNewUser.login || cheskUser.login,
       password: objNewUser.password || cheskUser.password,
     });

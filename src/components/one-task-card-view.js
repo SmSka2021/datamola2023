@@ -14,6 +14,10 @@ class OneTaskViewCard {
     this.id = id;
   }
 
+  checkIsGuest = () => JSON.parse(localStorage.getItem('statusUser'));
+
+  isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
+
   display(taskOne) {
     const parentElem = document.getElementById(this.id);
     const task = createDiv(['task']);
@@ -43,7 +47,7 @@ class OneTaskViewCard {
     const userNameItem = createText('p', `${taskOne.assignee}`, []);
     userNameLabel.append(userNameItem);
 
-    const containerBtn = createDiv(['container__btn_delete']);
+    const containerBtn = createDiv(['container__btn_delete', 'hidden_button_delete']);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     imgDelete.setAttribute('data-id', `${taskOne.id}`);
@@ -57,7 +61,12 @@ class OneTaskViewCard {
 
     const imgPriority = createImg(srcPriority(taskOne.priority), 'priority icon', ['task__priority_img']);
     containerInfoTask.append(userNameLabel, containerBtn, imgPriority);
-
+    if (this.checkIsGuest()) {
+      containerBtn.classList.add('display_none');
+    }
+    if (this.isAuthUser()) {
+      containerBtn.classList.remove('display_none');
+    }
     task.append(
       containerTitleTask,
       containerDateTask,

@@ -101,7 +101,7 @@ class CreateTaskView {
     section.id = 'create_task';
 
     const containerForm = createDiv(['container__form_task']);
-    const formTitle = createText('h4', 'Create new Task', ['form__task_title']);
+    const formTitle = createText('h4', `${localStorage.getItem('editTask') ? 'Edit Task' : 'Create new Task'}`, ['form__task_title']);
     const closeModalBtn = createBtn('X', ['form__btn_close'], 'button', 'close modal');
 
     const myForm = createElem('form', ['form__task']);

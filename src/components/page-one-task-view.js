@@ -111,7 +111,6 @@ class TaskViewPage {
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
-
     const containerDateTask = createDiv(['container__date_task_one']);
     const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);

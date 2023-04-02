@@ -26,5 +26,10 @@ const srcImgCollection = {
   email: './assets/icon/email.svg',
   openTodo: './assets/icon/folder-open.svg',
   closeTodo: './assets/icon/closeBtn.svg',
+  avatar0: './assets/icon/vue-color-avatar0.svg',
+  avatar1: './assets/icon/vue-color-avatar1.svg',
+  avatar2: './assets/icon/vue-color-avatar2.svg',
+  avatar3: './assets/icon/vue-color-avatar3.svg',
+  avatar4: './assets/icon/vue-color-avatar4.svg',
 };
 export default srcImgCollection;

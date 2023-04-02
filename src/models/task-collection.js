@@ -125,7 +125,6 @@ class TaskCollection {
       priority: objNewData.priority || cheskTask.priority,
       isPrivate: (typeof isPrivateNew === 'boolean') ? objNewData.isPrivate : cheskTask.isPrivate,
     });
-    console.log(editTaskCopy);
     if (!Task.validate(editTaskCopy)) {
       console.log('Task not validate');
       return false;
