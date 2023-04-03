@@ -10,3 +10,7 @@ export const pathName = {
   profilePage: 'profile-page',
   auth: 'auth',
 };
+export const loadPagesStart = {
+  from: 0,
+  to: 10,
+};

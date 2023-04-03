@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import TaskCollection from './models/task-collection';
@@ -12,7 +13,8 @@ import RegistrationFormView from './components/registration-view';
 import UserCollection from './models/user-collection';
 import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
-import { pathData, pathName } from './ultilites/path';
+import { pathData, pathName, loadPagesStart } from './ultilites/path';
+import { taskStatusObj } from './ultilites/field-task';
 
 class TasksController {
   constructor() {
@@ -52,6 +54,8 @@ class TasksController {
   };
 
   renderStartPages = () => {
+    const loadPages = this.getLocalStorage('loadPages');
+    if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
       this.renderProfilePage();
       return;
@@ -120,10 +124,19 @@ class TasksController {
   };
 
   getTasksAfterFilterFromLocal = () => {
-    const isDataFilter = this.getLocalStorage('dataFilter');
-    if (isDataFilter) {
-      const filterConfig = this.getLocalStorage('dataFilter');
-      return this.collection.getPage(0, 10, filterConfig);
+    const filterConfig = this.getLocalStorage('dataFilter');
+    const isLoadPage = this.getLocalStorage('loadPages');
+    if (!filterConfig) {
+      const statusTodo = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.toDo });
+      const statusInProgr = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.inProgress });
+      const statusCompl = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.complete });
+      return [...statusTodo, ...statusInProgr, ...statusCompl];
+    }
+    if (filterConfig && isLoadPage) {
+      const statusTodoF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.toDo });
+      const statusInProgrF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.inProgress });
+      const statusComplF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.complete });
+      return [...statusTodoF, ...statusInProgrF, ...statusComplF];
     }
     return false;
   };
@@ -172,24 +185,36 @@ class TasksController {
     const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardCard);
-    this.boardCardView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
+    this.boardCardView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
     this.boardCardView.bindDeleteTask(this.removeTask);
     this.boardCardView.bindAddNewTask(this.openModalCreateTask);
     this.boardCardView.bindOpenEditTask(this.openModalCreateTask);
+    this.boardCardView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
   renderMainBoardList = (tasksFilter) => {
     const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardList);
-    this.boardListView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
+    this.boardListView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
     this.boardListView.bindAddNewTask(this.openModalCreateTask);
     this.boardListView.bindOpenEditTask(this.openModalCreateTask);
     this.boardListView.bindDeleteTask(this.removeTask);
+    this.boardListView.bindLoadMoreTasks(this.loadMoreTask);
+  };
+
+  loadMoreTask = () => {
+    console.log('hrttyu');
+    const isLoadPage = this.getLocalStorage('loadPages');
+    const filterConfig = this.getLocalStorage('dataFilter');
+    if (isLoadPage) {
+      this.saveLocalStorage('loadPages', { from: 0, to: isLoadPage.to + 10 });
+    }
+    this.getFeed(0, isLoadPage.to + 10, filterConfig || {});
   };
 
   cleanMainBoard = () => {

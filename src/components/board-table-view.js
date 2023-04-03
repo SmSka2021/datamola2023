@@ -70,6 +70,16 @@ class TaskFeedView {
     }
   }
 
+  bindLoadMoreTasks(handler) {
+    const btnLoadMore = getElement('.load__btn_table');
+    if (btnLoadMore) {
+      btnLoadMore.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler('list_table');
+      });
+    }
+  }
+
   display(tasks) {
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
@@ -108,7 +118,7 @@ class TaskFeedView {
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
 
-    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
+    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
     const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
     btnMoreTasks.append(imgMoreTasks);
     containerViewBtn.append(btnViewList, btnViewTable, btnMoreTasks);

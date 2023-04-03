@@ -71,6 +71,16 @@ class BoardViewList {
     }
   }
 
+  bindLoadMoreTasks(handler) {
+    const btnLoadMore = getElement('.load_view_list');
+    if (btnLoadMore) {
+      btnLoadMore.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler('list_board');
+      });
+    }
+  }
+
   bindAddNewTask(handler) {
     const btnsAddTask = getElements('.btn__add_task_list');
     if (btnsAddTask) {
@@ -155,7 +165,7 @@ class BoardViewList {
     const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'view table');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
-    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn'], 'Load more');
+    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load_view_list'], 'Load more');
     const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
     btnMoreTasks.append(imgMoreTasks);
     containerViewBtn.append(btnViewList, btnViewTable, btnMoreTasks);
