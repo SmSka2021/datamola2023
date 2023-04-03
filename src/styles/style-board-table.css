@@ -172,7 +172,7 @@
 
 .container__columns {
   width: 100%;
-  padding: 20px 40px;
+  padding: 20px 40px 0;
   display: flex;
   justify-content: space-between;
 }
@@ -209,8 +209,7 @@
   width: 98%;
   overflow: hidden;
   overflow-y: auto;
-  max-height: 250px;
-
+  max-height: 285px;
 }
 
 .task {
@@ -335,7 +334,7 @@
   justify-content: start;
   column-gap: 2rem;
   padding: 0 20px;
-  margin: 20px 0;
+  margin: 10px 0 0;
 }
 
 .load__btn {
@@ -345,7 +344,7 @@
   column-gap: 10px;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 .btn_list,

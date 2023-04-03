@@ -97,7 +97,9 @@
   background: var(--irys-color);
   color: var(--primary-color);
 }
-
+.header_for_auth_user {
+  cursor: pointer;
+}
 /*footer*/
 .footer {
   height: 60px;

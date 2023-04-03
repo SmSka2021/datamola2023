@@ -83,8 +83,11 @@ class TaskFeedView {
       const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
       const imgAdd = createImg(srcImgCollection.addTask, 'icon');
       btnAddTask.append(imgAdd);
-      if (this.checkIsGuest) {
+      if (this.checkIsGuest()) {
         imgAdd.classList.add('display_none');
+      }
+      if (this.isAuthUser()) {
+        imgAdd.classList.remove('display_none');
       }
 
       const line = createElem('hr', ['line__column']);
@@ -92,10 +95,7 @@ class TaskFeedView {
       const idList = createIdList(column);
       list.id = idList;
 
-      const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
-      const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-      btnMoreTasks.append(imgMoreTasks);
-      columnOne.append(btnAddTask, line, list, btnMoreTasks);
+      columnOne.append(btnAddTask, line, list);
       sectionTasks.append(columnOne);
     });
     const containerViewBtn = createDiv(['container__view_btn']);
@@ -107,7 +107,11 @@ class TaskFeedView {
     const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
-    containerViewBtn.append(btnViewList, btnViewTable);
+
+    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn']);
+    const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
+    btnMoreTasks.append(imgMoreTasks);
+    containerViewBtn.append(btnViewList, btnViewTable, btnMoreTasks);
 
     newsectionTasks.append(containerViewBtn, sectionTasks);
     parentElem.replaceWith(newsectionTasks);

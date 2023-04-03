@@ -11,6 +11,7 @@ import CreateTaskView from './components/create-task-view';
 import RegistrationFormView from './components/registration-view';
 import UserCollection from './models/user-collection';
 import AuthFormView from './components/auth-view';
+import UserPagesView from './components/user-pages';
 import { pathData, pathName } from './ultilites/path';
 
 class TasksController {
@@ -28,6 +29,7 @@ class TasksController {
     this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
+    this.pageUser = new UserPagesView('container__columns');
     this.isAuth = this.getLocalStorage('auth');
     this.renderHeader();
     this.footer.display();
@@ -50,6 +52,10 @@ class TasksController {
   };
 
   renderStartPages = () => {
+    if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
+      this.renderProfilePage();
+      return;
+    }
     if (!this.isAuth && !this.getLocalStorage('statusUser')) {
       this.renderRegistrationPage();
       return;
@@ -106,7 +112,6 @@ class TasksController {
   setAuthoriseUser = (dataUser) => {
     // ...посылаем на сервер данные
     this.saveLocalStorage('auth', 'true');
-    this.saveLocalStorage('dataUser', dataUser);
     this.isAuth = true;
     localStorage.removeItem('statusUser');
     this.renderHeader();
@@ -129,6 +134,40 @@ class TasksController {
     this.saveLocalStorage('path', this.path);
   };
 
+  renderProfilePage = () => {
+    this.cleanOneTaskPage();
+    this.cleanMainBoard();
+    this.savePathActual(pathName.profilePage);
+    this.pageUser.display();
+    this.pageUser.bindSetEditProfile(this.setEditProfile);
+    this.pageUser.bindSetViewProfile(this.setViewProfile);
+    this.pageUser.bindSetMainPage(this.setMainPage);
+    this.pageUser.bindSetDataFormEditProfile(this.editProfileUser);
+  };
+
+  editProfileUser = (dataUser) => {
+    this.saveLocalStorage('isViewProfile', 'true');
+    this.saveLocalStorage('dataUser', dataUser); // шлём на сервер
+    // сообщаем об успехе или неудаче edit
+    this.renderProfilePage();
+    this.setCurrentUser(dataUser);
+  };
+
+  setEditProfile = () => {
+    this.saveLocalStorage('isViewProfile', 'false');
+    this.renderProfilePage();
+  };
+
+  setMainPage = () => {
+    this.saveLocalStorage('isViewProfile', 'true');
+    this.renderMainBoardCard();
+  };
+
+  setViewProfile = () => {
+    this.saveLocalStorage('isViewProfile', 'true');
+    this.renderProfilePage();
+  };
+
   renderMainBoardCard = (tasksFilter) => {
     const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
@@ -136,11 +175,9 @@ class TasksController {
     this.boardCardView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
-    if (!this.isGuestUser) {
-      this.boardCardView.bindDeleteTask(this.removeTask);
-      this.boardCardView.bindAddNewTask(this.openModalCreateTask);
-      this.boardCardView.bindOpenEditTask(this.openModalCreateTask);
-    }
+    this.boardCardView.bindDeleteTask(this.removeTask);
+    this.boardCardView.bindAddNewTask(this.openModalCreateTask);
+    this.boardCardView.bindOpenEditTask(this.openModalCreateTask);
   };
 
   renderMainBoardList = (tasksFilter) => {
@@ -150,11 +187,9 @@ class TasksController {
     this.boardListView.display(tasksFilter || taskAfterFilter || this.collection.tasks);
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
-    if (!this.isGuestUser) {
-      this.boardListView.bindAddNewTask(this.openModalCreateTask);
-      this.boardListView.bindOpenEditTask(this.openModalCreateTask);
-      this.boardListView.bindDeleteTask(this.removeTask);
-    }
+    this.boardListView.bindAddNewTask(this.openModalCreateTask);
+    this.boardListView.bindOpenEditTask(this.openModalCreateTask);
+    this.boardListView.bindDeleteTask(this.removeTask);
   };
 
   cleanMainBoard = () => {
@@ -174,6 +209,7 @@ class TasksController {
     this.header.display();
     this.header.bindOpenLoginModalHeader(this.renderAuthPage);
     this.header.bindLogOutHeader(this.logOutUser);
+    this.header.bindOpenProfileUserFromHeader(this.renderProfilePage);
   };
 
   logOutUser = () => {
@@ -226,7 +262,7 @@ class TasksController {
     console.log(dataUser, action);
     this.saveLocalStorage('dataUser', dataUser);
     // послать данные на сервер в случа успеха переход на auth
-    this.authModalForm.display();
+    this.renderAuthPage();
     // this.renderStartPages();
     // this.header.display();
   };
@@ -263,8 +299,8 @@ class TasksController {
   // добавляем текущего пользователя в хидер и в модель.
   setCurrentUser = (user = this.getLocalStorage('dataUser')) => {
     if (!user) return;
-    this.collection.user = user.login;
-    this.header.setUser(user.login);
+    this.collection.user = user.firstName;
+    this.header.setUser(user.firstName);
   };
   //  добавляем новую таску в модель и перерисовываем доску с задачами.
 

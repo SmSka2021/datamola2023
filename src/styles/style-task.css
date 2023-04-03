@@ -61,7 +61,10 @@
 
 .comments__list {
   list-style: none;
-  padding: 0;
+  padding: 0;  
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: 145px;
 }
 
 .task__comments_one {
@@ -69,7 +72,7 @@
   font-size: 1.6rem;
   line-height: 20px;
   color: var(--primary-color);
-  margin-top: 5px;
+  margin: 5px 0 0;
 }
 
 .container__comment {

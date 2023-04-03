@@ -187,10 +187,10 @@ class RegistrationFormView {
     </div>
     <div class='container__radio'>
     <input name="avatar" type="radio" class='radio_avatar' value="'./../assets/icon/vue-color-avatar0.svg'" checked>
-    <input name="avatar" type="radio" value='./assets/icon/vue-color-avatar1.svg'>
-    <input name="avatar" type="radio" value='./assets/icon/vue-color-avatar2.svg'>
-    <input name="avatar" type="radio" value='./assets/icon/vue-color-avatar3.svg'>
-    <input name="avatar" type="radio" value='./assets/icon/vue-color-avatar4.svg'>
+    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar1.svg">
+    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar2.svg">
+    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar3.svg">
+    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar4.svg">
     </div>
 </div>
 <div class='form_btns'>

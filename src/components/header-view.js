@@ -34,6 +34,16 @@ class HeaderView {
     }
   }
 
+  bindOpenProfileUserFromHeader(handler) {
+    const btn = getElement('.header_for_auth_user');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   setUser(nameUser) {
     const elem = document.querySelector('.user__name');
