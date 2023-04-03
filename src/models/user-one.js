@@ -6,6 +6,7 @@ class UserOne {
     this.firstName = user.firstName;
     this.login = user.login;
     this.password = user.password;
+    this.avatar = user.avatar;
   }
 
   get id() {
@@ -22,6 +23,7 @@ class UserOne {
       'firstName',
       'login',
       'password',
+      'avatar',
     ];
 
     const isAllKey = keysTask.every((item) => Object.keys(user).includes(item));

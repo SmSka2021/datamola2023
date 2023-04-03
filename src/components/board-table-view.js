@@ -21,6 +21,7 @@ class TaskFeedView {
   isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
 
   bindDeleteTask(handler) {
+    if (!this.isAuthUser()) return;
     const imgDelete = getElements('.img_delete');
     imgDelete.forEach((btn) => btn.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -29,6 +30,7 @@ class TaskFeedView {
   }
 
   bindOpenTask(handler) {
+    if (!this.isAuthUser()) return;
     const tasksAll = getElements('.task');
     tasksAll.forEach((task) => task.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -51,6 +53,7 @@ class TaskFeedView {
   }
 
   bindAddNewTask(handler) {
+    if (!this.isAuthUser()) return;
     const btnsAddTask = getElements('.btn__add_task');
     if (btnsAddTask) {
       btnsAddTask.forEach((btn) => btn.addEventListener('click', (event) => {
@@ -61,6 +64,7 @@ class TaskFeedView {
   }
 
   bindOpenEditTask(handler) {
+    if (!this.isAuthUser()) return;
     const tdEditTask = getElements('.img_edit');
     if (tdEditTask) {
       tdEditTask.forEach((img) => img.addEventListener('click', (event) => {
@@ -90,7 +94,7 @@ class TaskFeedView {
     taskStatusArr.forEach((column) => {
       const columnOne = createDiv(['column']);
 
-      const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn']);
+      const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn'], 'button', 'Add new task');
       const imgAdd = createImg(srcImgCollection.addTask, 'icon');
       btnAddTask.append(imgAdd);
       if (this.checkIsGuest()) {

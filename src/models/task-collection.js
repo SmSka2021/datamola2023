@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable class-methods-use-this */
 import Task from './task';
 import Comment from './comments';
@@ -6,20 +7,32 @@ class TaskCollection {
   _user = 'Иванов';
 
   constructor(tasks) {
-    this._tasks = tasks.map((task) => new Task(task)).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    this.tasks = [];
+    this.restore = () => {
+      if (localStorage.getItem('MyTaskCollection')) {
+        this._tasks = [...JSON.parse(localStorage.getItem('MyTaskCollection'))];
+      } else {
+        this._tasks = tasks.map((task) => new Task(task)).sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+      }
+    };
+    this.restore();
   }
 
   get tasks() {
     return this._tasks;
   }
 
-  settasks(newTasks) {
+  set tasks(tasksMy) {
+    this._tasks = [...tasksMy].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  settasks = (newTasks) => {
     this._tasks = [...newTasks].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
-  }
+  };
 
   get user() {
     return this._user;
@@ -29,24 +42,14 @@ class TaskCollection {
     this._user = name;
   }
 
-  get(id) {
-    return this.tasks.find((task) => task.id === id);
-  }
+  get = (id) => this.tasks.find((task) => task._id === id);
 
-  // add(task) {
-  //   if (!this.user) return false;
+  save = () => {
+    localStorage.setItem('MyTaskCollection', JSON.stringify(this._tasks));
+  };
 
-  //   const newTask = new Task(task);
-
-  //   if (Task.validate(newTask)) {
-  //     this.tasks.push(newTask);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  add(objData) {
-    if (!this.user || this.user !== objData.assignee) return false;
+  add = (objData) => {
+    if (!this.user || (this.user !== objData.assignee)) return false;
 
     const newTask = new Task({
       id: `${new Date().getTime().toString()}${objData.assignee}`,
@@ -61,10 +64,12 @@ class TaskCollection {
     });
     if (Task.validate(newTask)) {
       this.tasks.unshift(newTask);
+      this.save();
       return true;
     }
+    console.log('This Task is invalid');
     return false;
-  }
+  };
 
   getPage = (skip = 0, top = 10, filterConfig = {}) => {
     const tasksArrSortDate = this.tasks.sort(
@@ -107,8 +112,10 @@ class TaskCollection {
       .splice(skip, top);
   };
 
-  edit(objNewData) {
+  edit = (objNewData) => {
+    console.log(objNewData);
     const cheskTask = this.get(objNewData.id); // нужно ли _ID черточка
+    console.log(cheskTask, 'fhd');
     if (!this.user
       || (objNewData.assignee !== this.user)
       || (cheskTask.assignee !== this.user)
@@ -131,46 +138,50 @@ class TaskCollection {
     }
     const index = this.tasks.findIndex((task) => task.id === objNewData.id);
     this.tasks.splice(+index, 1, editTaskCopy);
+    this.save();
     return true;
-  }
+  };
 
-  remove(id) {
+  remove = (id) => {
     const index = (this.tasks.findIndex((task) => task.id === id)).toString();
     if (index) {
       if (this.get(id).assignee === this.user) {
         this.tasks.splice(+index, 1);
+        this.save();
         return true;
       }
       return false;
     }
     return false;
-  }
+  };
 
-  addComment(id, textComment) {
-    const indexTask = this.tasks.findIndex((task) => task.id === id);
+  addComment = (id, textComment) => {
+    const indexTask = this.tasks.findIndex((task) => task._id === id);
     const newComment = new Comment(id, textComment, new Date(), this.user);
     if (Comment.validate(newComment)) {
       this.tasks[indexTask].comments.push(newComment);
+      this.save();
       return true;
     }
     return false;
-  }
+  };
 
-  clear() {
+  clear = () => {
     this.tasks = [];
-  }
+  };
 
-  addAll(tasks) {
+  addAll = (tasks) => {
     const invalidTasks = [];
     tasks.forEach((task) => {
       const taskNew = new Task(task);
       if (Task.validate(taskNew)) {
+        this.save();
         this.tasks.push(taskNew);
       } else {
         invalidTasks.push(taskNew);
       }
     });
     return invalidTasks;
-  }
+  };
 }
 export default TaskCollection;

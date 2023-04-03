@@ -71,7 +71,6 @@ class AuthFormView {
     const btnOpen = getElement('.eye_open_auth');
     const btnClose = getElement('.eye_close_auth');
     const inputPassword = getElement('#password_auth');
-    console.log('ggghhhh');
     if (elem) {
       if (elem.classList.contains('eye_close_auth')) {
         this.hiddenElem([btnOpen, btnClose]);
@@ -94,7 +93,6 @@ class AuthFormView {
           login: myForm.elements.login_auth.value,
           password: myForm.elements.password_auth.value,
         };
-        console.log(dataUser);
         handler(dataUser);
       });
     }

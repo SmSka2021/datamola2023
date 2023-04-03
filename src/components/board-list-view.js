@@ -178,7 +178,7 @@ class BoardViewList {
       tableHeader.setAttribute('data-column', `${createIdList(column)}`);
       tableHeader.addEventListener('click', (e) => this.actionLabelTodo(e));
       const todoTitle = createText('h5', `${column}`, ['label__todo_list']);
-      const btnAddTasks = createBtn('', ['btn_icon', 'btn__add_task_list']);
+      const btnAddTasks = createBtn('', ['btn_icon', 'btn__add_task_list'], 'button', 'Add new task');
       const imgAddTasks = createImg(srcImgCollection.addTask, 'icon');
       btnAddTasks.append(imgAddTasks);
       if (this.checkIsGuest()) {

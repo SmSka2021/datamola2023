@@ -66,9 +66,8 @@ class CreateTaskView {
   }
 
   settingRadioEditTask() {
-    const editTask = localStorage.getItem('editTask');
-    if (editTask) {
-      const checkedTask = JSON.parse(editTask);
+    const checkedTask = JSON.parse(localStorage.getItem('editTask'));
+    if (checkedTask) {
       if (checkedTask.assignee) getElement('#userNameData').value = checkedTask.assignee;
       if (checkedTask.name) getElement('#titleTask').value = checkedTask.name;
       if (checkedTask.description) getElement('#description1').value = checkedTask.description;

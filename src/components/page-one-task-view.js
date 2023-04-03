@@ -102,17 +102,17 @@ class TaskViewPage {
 
     const containerBtnTask = createDiv(['container__btn_task']);
     const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    btnDel.setAttribute('data-id', `${task.id}`);
+    btnDel.setAttribute('data-id', `${task._id}`);
     const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
-    btnEdit.setAttribute('data-id', `${task.id}`);
+    btnEdit.setAttribute('data-id', `${task._id}`);
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['edit_img_one_task']);
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
     const containerDateTask = createDiv(['container__date_task_one']);
-    const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
+    const taskDateItem = createText('p', `${convertationDate(task._createdAt)}`, ['task__date']);
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
@@ -125,8 +125,8 @@ class TaskViewPage {
         const imgComment = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
         const commentItem = createDiv(['comment__item']);
         const commentUserName = createDiv(['comment__user_name']);
-        const commentAuthor = createText('p', `${comment.author}`, ['user__name_item']);
-        const commentDateItem = createText('p', `${convertationDate(comment.createdAt)}`, ['task__date']);
+        const commentAuthor = createText('p', `${comment._author}`, ['user__name_item']);
+        const commentDateItem = createText('p', `${convertationDate(comment._createdAt)}`, ['task__date']);
         commentUserName.append(commentAuthor, commentDateItem);
         const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
         commentItem.append(commentUserName, commentText);
@@ -135,14 +135,14 @@ class TaskViewPage {
       });
     }
     const formElem = createElem('form', ['form']);
-    formElem.setAttribute('data-id', `${task.id}`);
+    formElem.setAttribute('data-id', `${task._id}`);
     const formLabel = createElem('label', ['form__label']);
     formLabel.for = 'addComment';
     formLabel.textContent = 'Comment: ';
     const formTextArea = createElem('textarea', ['form__area']);
     formTextArea.name = 'newComment';
     formTextArea.id = 'addComment';
-    formElem.setAttribute('data-id', `${task.id}`);
+    formElem.setAttribute('data-id', `${task._id}`);
     formTextArea.maxlength = maxLengthDescription;
     const btnForm = createBtn('Add', ['light_btn', 'btn'], 'submit', 'add comment');
     formElem.append(formLabel, formTextArea, btnForm);

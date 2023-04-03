@@ -1,22 +1,19 @@
 import TasksController from './app';
+import TaskCollection from './models/task-collection';
+import UserCollection from './models/user-collection';
 import arrTasks from './ultilites/data';
 import './style.css';
 import arrUsers from './ultilites/users';
 
 const createDataInLocalStorage = () => {
-  if (localStorage.getItem('tasks')) {
-    return;
+  if (!localStorage.getItem('MyTaskCollection')) {
+    localStorage.setItem('MyTaskCollection', JSON.stringify(new TaskCollection(arrTasks).tasks));
   }
-  localStorage.setItem('tasks', JSON.stringify(arrTasks));
+  if (!localStorage.getItem('MyUserCollection')) {
+    localStorage.setItem('MyUserCollection', JSON.stringify(new UserCollection(arrUsers).users));
+  }
 };
 createDataInLocalStorage();
-const createDataUserInLocalStorage = () => {
-  if (localStorage.getItem('users')) {
-    return;
-  }
-  localStorage.setItem('users', JSON.stringify(arrUsers));
-};
-createDataUserInLocalStorage();
 
 const app = new TasksController();
 

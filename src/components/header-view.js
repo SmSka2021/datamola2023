@@ -45,10 +45,12 @@ class HeaderView {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  setUser(nameUser) {
-    const elem = document.querySelector('.user__name');
+  setUser = (nameUser, avatar) => {
+    const elem = getElement('.user__name');
+    const avatarImg = getElement('.user__img');
     elem.textContent = nameUser;
-  }
+    avatarImg.src = avatar;
+  };
 
   setDarkThema = (e) => {
     e.stopPropagation();
@@ -101,15 +103,7 @@ class HeaderView {
     const btnLogOut2 = createBtn('LogIn', ['light_btn', 'btn', 'login_header']);
     containerAuth2.append(containerUserName2, btnLogOut2);
     header.append(containerAuth1, containerAuth2);
-    // if (!this.AuthUser) {
-    //   const containerReg = createDiv(['container__authorize', 'container__reg']);
-    //   const btnReg = createBtn('MainPage', ['light_btn', 'btn', 'btn_header_reg'],
-    //  'button', 'Registration');
-    //   const btnAut = createBtn('LogIn', ['light_btn', 'btn', 'btn_header_auth'],
-    //  'button', 'Authorization');
-    //   containerReg.append(btnReg, btnAut);
-    //   header.append(containerReg);
-    // }
+
     if (this.isAuthUser()) {
       containerAuth1.classList.remove('display_none');
       containerAuth2.classList.add('display_none');

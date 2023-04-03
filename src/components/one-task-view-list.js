@@ -24,7 +24,7 @@ class OneTaskViewList {
   display(task) {
     const parentElem = document.getElementById(this.id);
     const taskRow = createElem('tr', ['one_task_list']);
-    taskRow.setAttribute('data-id', `${task.id}`);
+    taskRow.setAttribute('data-id', `${task._id}`);
     const taskTitle = createElem('td', []);
     taskTitle.textContent = task.name;
 
@@ -48,21 +48,23 @@ class OneTaskViewList {
     taskAssigne.textContent = task.assignee;
 
     const taskDateItem = createElem('td', []);
-    taskDateItem.textContent = convertationDate(task.createdAt);
+    taskDateItem.textContent = convertationDate(task._createdAt);
 
     const taskCountComment = createElem('td', []);
     taskCountComment.textContent = task.comments.length;
 
     const taskEdit = createElem('td', ['td_edit']);
-    taskEdit.setAttribute('data-id', `${task.id}`);
+    taskEdit.setAttribute('data-id', `${task._id}`);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
+    imgEdit.setAttribute('data-id', `${task._id}`);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
     const taskDelete = createElem('td', ['td_delit']);
-    taskDelete.setAttribute('data-id', `${task.id}`);
+    taskDelete.setAttribute('data-id', `${task._id}`);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
+    imgDelete.setAttribute('data-id', `${task._id}`);
     btnDelete.append(imgDelete);
     taskDelete.append(btnDelete);
     if (this.checkIsGuest()) {

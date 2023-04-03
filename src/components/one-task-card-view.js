@@ -21,7 +21,7 @@ class OneTaskViewCard {
   display(taskOne) {
     const parentElem = document.getElementById(this.id);
     const task = createDiv(['task']);
-    task.setAttribute('data-id', `${taskOne.id}`);
+    task.setAttribute('data-id', `${taskOne._id}`);
     const containerTitleTask = createDiv(['container__title_task']);
     const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
     const labelTodo = createDiv(['label__todo']);
@@ -31,7 +31,7 @@ class OneTaskViewCard {
     task.addEventListener('click', this.actionTask);
 
     const containerDateTask = createDiv(['container__date_task']);
-    const taskDate = createText('p', `${convertationDate(taskOne.createdAt)}`, ['task__date']);
+    const taskDate = createText('p', `${convertationDate(taskOne._createdAt)}`, ['task__date']);
     const imgIsPrivate = createImg(`${taskOne.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDate, imgIsPrivate);
 
@@ -50,12 +50,12 @@ class OneTaskViewCard {
     const containerBtn = createDiv(['container__btn_delete', 'hidden_button_delete']);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
-    imgDelete.setAttribute('data-id', `${taskOne.id}`);
+    imgDelete.setAttribute('data-id', `${taskOne._id}`);
     btnDelete.append(imgDelete);
 
     const btnEdit = createBtn('', ['btn_icon', 'edit']);
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit'], 'button', 'edit task');
-    imgEdit.setAttribute('data-id', `${taskOne.id}`);
+    imgEdit.setAttribute('data-id', `${taskOne._id}`);
     btnEdit.append(imgEdit);
     containerBtn.append(btnDelete, btnEdit);
 

@@ -18,10 +18,8 @@ import { taskStatusObj } from './ultilites/field-task';
 
 class TasksController {
   constructor() {
-    this.collection = new TaskCollection(JSON.parse(localStorage.getItem('tasks')));
-    this.myUserCollection = new UserCollection(JSON.parse(localStorage.getItem('users')));
-    this.saveLocalStorage('userCollection', this.myUserCollection.users);
-    this.saveLocalStorage('collection', this.collection.tasks);
+    this.collection = new TaskCollection();
+    this.myUserCollection = new UserCollection();
     this.authModalForm = new AuthFormView('container__columns');
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
@@ -38,11 +36,6 @@ class TasksController {
     this.setCurrentUser();
     this.path = JSON.parse(localStorage.getItem('path')) || pathData;
     this.renderStartPages();
-    this.restore = () => {
-      console.log(this.getLocalStorage('collectionTasks'));
-      this.collection.settasks(this.getLocalStorage('collectionTasks'));
-    };
-    // if (localStorage.getItem('collectionTasks')) this.restore();
   }
 
   isGuestUser = () => this.getLocalStorage('statusUser');
@@ -113,16 +106,6 @@ class TasksController {
     this.authModalForm.bindGetDataFormAuth(this.setAuthoriseUser);
   };
 
-  setAuthoriseUser = (dataUser) => {
-    // ...посылаем на сервер данные
-    this.saveLocalStorage('auth', 'true');
-    this.isAuth = true;
-    localStorage.removeItem('statusUser');
-    this.renderHeader();
-    this.setCurrentUser(dataUser);
-    this.renderStartPages();
-  };
-
   getTasksAfterFilterFromLocal = () => {
     const filterConfig = this.getLocalStorage('dataFilter');
     const isLoadPage = this.getLocalStorage('loadPages');
@@ -159,11 +142,24 @@ class TasksController {
   };
 
   editProfileUser = (dataUser) => {
-    this.saveLocalStorage('isViewProfile', 'true');
-    this.saveLocalStorage('dataUser', dataUser); // шлём на сервер
-    // сообщаем об успехе или неудаче edit
-    this.renderProfilePage();
-    this.setCurrentUser(dataUser);
+    const userId = this.getLocalStorage('userId');
+    const requesData = { ...dataUser, _id: userId };
+    delete requesData.repeatPassword;
+    console.log('данные для запроса', requesData);
+    // шлём на сервер
+    this.myUserCollection.editUser(requesData);
+    const responseServer = this.myUserCollection.editUser(requesData);
+    // сообщаем об успехе или неудаче
+    if (responseServer) {
+      console.log('response server for edit user', responseServer);
+      // this.saveLocalStorage('userCollection', this.myUserCollection.users);
+      this.saveLocalStorage('dataUser', requesData);
+      this.saveLocalStorage('isViewProfile', 'true');
+      this.renderProfilePage();
+      this.setCurrentUser(dataUser);
+    } else {
+      console.log('Ошибка сервера, возможно, такой пользователь уже есть');
+    }
   };
 
   setEditProfile = () => {
@@ -208,7 +204,6 @@ class TasksController {
   };
 
   loadMoreTask = () => {
-    console.log('hrttyu');
     const isLoadPage = this.getLocalStorage('loadPages');
     const filterConfig = this.getLocalStorage('dataFilter');
     if (isLoadPage) {
@@ -283,13 +278,34 @@ class TasksController {
     this.renderStartPages();
   };
 
-  registrationUser = (dataUser, action) => {
-    console.log(dataUser, action);
+  registrationUser = (dataUser) => {
     this.saveLocalStorage('dataUser', dataUser);
     // послать данные на сервер в случа успеха переход на auth
-    this.renderAuthPage();
-    // this.renderStartPages();
-    // this.header.display();
+    const idUser = this.myUserCollection.addUser(dataUser);
+    if (idUser) {
+      // this.saveLocalStorage('userCollection', this.myUserCollection.users);
+      this.saveLocalStorage('userId', idUser);
+      this.renderAuthPage();
+    } else {
+      // показать ошибку
+      console.log('Ошибка сервера');
+    }
+  };
+
+  setAuthoriseUser = (dataUser) => {
+    console.log(dataUser);
+    // ...посылаем на сервер данные, ищем там usera по id
+    const idUser = this.getLocalStorage('userId');
+    const userFromServer = this.myUserCollection.getOneUserById(idUser);
+    if (userFromServer) {
+      this.saveLocalStorage('auth', 'true');
+      this.saveLocalStorage('dataUser', userFromServer[0]);
+      this.isAuth = true;
+      localStorage.removeItem('statusUser');
+      this.renderHeader();
+      this.setCurrentUser(userFromServer);
+      this.renderStartPages();
+    }
   };
 
   logInAsGuest = () => {
@@ -298,14 +314,6 @@ class TasksController {
     this.renderHeader();
   };
 
-  display = () => {
-    this.renderStartPages();
-
-    // this.renderMainBoardList();
-    // this.renderOneTaskPage(this.collection.tasks[0]);
-    // this.renderMainBoardCard();
-    // this.renderFilter();
-  };
   //  _____________________ГЛОБАЛЬНЫЕ ФУНКЦИИ_______________  //
 
   saveLocalStorage = (key, value) => {
@@ -316,20 +324,22 @@ class TasksController {
 
   addComment = (idTask, textComment) => {
     this.collection.addComment(idTask, textComment);
-    this.saveLocalStorage('collectionTasks', this.collection.tasks);
     const task = this.collection.get(idTask);
     this.renderOneTaskPage(task, true);
   };
 
   // добавляем текущего пользователя в хидер и в модель.
-  setCurrentUser = (user = this.getLocalStorage('dataUser')) => {
-    if (!user) return;
-    this.collection.user = user.firstName;
-    this.header.setUser(user.firstName);
+  setCurrentUser = (user) => {
+    const dataUser = this.getLocalStorage('dataUser') || user;
+    if (!dataUser) return;
+    this.collection.user = dataUser.firstName;
+    console.log(dataUser.firstName, dataUser.avatar);
+    this.header.setUser(dataUser.firstName, dataUser.avatar);
   };
   //  добавляем новую таску в модель и перерисовываем доску с задачами.
 
   addOrEditTask = (data, isEditTask) => {
+    console.log(data, isEditTask);
     if (isEditTask) {
       this.editTask(data);
     } else {
@@ -339,7 +349,7 @@ class TasksController {
 
   editTask = (data) => {
     this.collection.edit(data);
-    this.saveLocalStorage('collectionTasks', this.collection.tasks);
+    // this.saveLocalStorage('collectionTasks', this.collection.tasks);
     this.cleanModalCreateTask();
     this.renderStartPages();
     localStorage.removeItem('editTask');
@@ -348,7 +358,6 @@ class TasksController {
 
   addTask = (data) => {
     this.collection.add(data);
-    this.saveLocalStorage('collectionTasks', this.collection.tasks);
     this.cleanModalCreateTask();
     this.renderStartPages();
     localStorage.removeItem('editTask');
@@ -358,7 +367,6 @@ class TasksController {
 
   removeTask = (id, isNeedRenderFilter) => {
     this.collection.remove(id);
-    this.saveLocalStorage('collectionTasks', this.collection.tasks);
     if (isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
