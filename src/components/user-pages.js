@@ -58,35 +58,6 @@ class UserPagesView {
     }
   }
 
-  // openEye = (e) => {
-  //   e.stopPropagation();
-  //   const elem = e.target.parentElement;
-  //   const btnOpen1 = getElement('.eye_open1');
-  //   const btnOpen2 = getElement('.eye_open2');
-  //   const btnClose1 = getElement('.eye_close1');
-  //   const btnClose2 = getElement('.eye_close2');
-  //   const inputPassword1 = getElement('#password1');
-  //   const inputPassword2 = getElement('#password2');
-  //   if (elem) {
-  //     if (elem.classList.contains('eye_close1')) {
-  //       this.hiddenElem([btnOpen1, btnClose1]);
-  //       inputPassword1.type = 'text';
-  //     }
-  //     if (elem.classList.contains('eye_close2')) {
-  //       this.hiddenElem([btnOpen2, btnClose2]);
-  //       inputPassword2.type = 'text';
-  //     }
-  //     if (elem.classList.contains('eye_open1')) {
-  //       this.hiddenElem([btnOpen1, btnClose1]);
-  //       inputPassword1.type = 'password';
-  //     }
-  //     if (elem.classList.contains('eye_open2')) {
-  //       this.hiddenElem([btnOpen2, btnClose2]);
-  //       inputPassword2.type = 'password';
-  //     }
-  //   }
-  // };
-
   bindSetEditProfile(handler) {
     const btnEdit = getElement('.edit_profile_link');
     if (btnEdit) {
