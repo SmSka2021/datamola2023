@@ -1,0 +1,117 @@
+.main_task {
+  padding: 2rem 4rem;
+  justify-content: flex-start;
+  font-family: 'Roboto', sans-serif;
+}
+
+.container__one_task {
+  width: 100%;
+  margin: 1rem auto;
+  padding: 2rem 3rem;
+  background: var(--white-color);
+  border-radius: 5px;
+  box-shadow: var(--shadow);
+}
+
+.header_task {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container__label,
+.container__title_one_task,
+.container__btn_task,
+.container__date_task_one,
+.comment__user_name {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.container__date_task_one {
+  gap: 3.7rem;
+}
+
+.task__title_one {
+  font-weight: 700;
+  font-size: 2.4rem;
+  color: var(--primary-color);
+}
+
+.task__text_one {
+  font-weight: 400;
+  font-size: 1.8rem;
+  line-height: 24px;
+  color: var(--primary-color);
+}
+
+.task__title_one {
+  margin: 0;
+  font-weight: 700;
+  font-size: 2.4rem;
+  color: var(--primary-color);
+}
+
+.comments__title {
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin: 1rem 0;
+}
+
+.comments__list {
+  list-style: none;
+  padding: 0;  
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: 145px;
+}
+
+.task__comments_one {
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 20px;
+  color: var(--primary-color);
+  margin: 5px 0 0;
+}
+
+.container__comment {
+  display: flex;
+  align-items: start;
+  column-gap: 10px;
+  border: 1px solid var(--grey-color);
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  padding: 5px;
+}
+
+.user__name_item {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-color);
+  color: var(--white-color);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.form__label {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.form__area {
+  min-width: 75%;
+  border-radius: 5px;
+  resize: none;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  padding: 5px 10px;
+}
