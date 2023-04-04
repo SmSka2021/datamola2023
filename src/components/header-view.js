@@ -54,12 +54,18 @@ class HeaderView {
 
   setDarkThema = (e) => {
     e.stopPropagation();
-    getElement('.main').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('#main').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('.sunny').classList.toggle('check_btn');
+    getElement('.dark').classList.toggle('check_btn');
   };
 
   setLightThema = (e) => {
     e.stopPropagation();
-    getElement('.main').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('#main').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('.sunny').classList.toggle('check_btn');
+    getElement('.dark').classList.toggle('check_btn');
   };
 
   checkIsGuest = () => localStorage.getItem('statusUser');
@@ -76,12 +82,12 @@ class HeaderView {
     containerLogo.append(imgLogo, logoTitle);
 
     const containerThema = createDiv(['container__thema']);
-    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny']);
+    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny', 'check_btn'], 'button', 'Light theme');
     const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img']);
     imgLightThema.addEventListener('click', this.setLightThema);
     themaBtnLiht.append(imgLightThema);
     const spanSlesh = createText('span', ' / ');
-    const themaBtnDark = createBtn('', ['thema__btn', 'dark']);
+    const themaBtnDark = createBtn('', ['thema__btn', 'dark'], 'button', 'Dark theme');
     const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img']);
     imgDarkThema.addEventListener('click', this.setDarkThema);
     themaBtnDark.append(imgDarkThema);

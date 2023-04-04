@@ -113,9 +113,7 @@ class TaskCollection {
   };
 
   edit = (objNewData) => {
-    console.log(objNewData);
     const cheskTask = this.get(objNewData.id); // нужно ли _ID черточка
-    console.log(cheskTask, 'fhd');
     if (!this.user
       || (objNewData.assignee !== this.user)
       || (cheskTask.assignee !== this.user)
@@ -143,7 +141,7 @@ class TaskCollection {
   };
 
   remove = (id) => {
-    const index = (this.tasks.findIndex((task) => task.id === id)).toString();
+    const index = (this.tasks.findIndex((task) => task._id === id)).toString();
     if (index) {
       if (this.get(id).assignee === this.user) {
         this.tasks.splice(+index, 1);

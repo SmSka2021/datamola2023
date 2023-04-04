@@ -4,6 +4,8 @@
   --technic-color: #7b61ff;
   --secondary-color: #E2E8F6;
   --fuschia-color: #F178B6;
+  --green-color: #1e7e23;
+  --red-color: #dd3333;
   --irys-color: #A5A6F6;
   --grey-color: #807C8D;
   --grey-light-color: rgb(225, 223, 233);
@@ -93,3 +95,4 @@ body {
 @import 'styles/style-board-table.css';
 @import 'styles/style-create-task.css';
 @import 'styles/style-registration.css';
+@import 'styles/style-modal.css';

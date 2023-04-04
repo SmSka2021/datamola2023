@@ -47,11 +47,11 @@
 
 .thema__img:hover {
   filter: invert(48%) sepia(46%) saturate(2587%) hue-rotate(160deg) brightness(93%) contrast(101%);
-
 }
 
-.thema__btn.active .thema__img {
+.check_btn .thema__img {
   filter: invert(48%) sepia(46%) saturate(2587%) hue-rotate(160deg) brightness(93%) contrast(101%);
+  border-bottom: 2px solid white;
 }
 
 .container__authorize {

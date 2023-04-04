@@ -60,8 +60,10 @@ class CreateTaskView {
     const btn = event.target;
     event.stopPropagation();
     if (btn) {
-      // btn.disabled = true;
       getElement('.form__task').reset();
+      getElement('#todo1').checked = true;
+      getElement('#low1').checked = true;
+      getElement('#privacy1').checked = true;
     }
   }
 
@@ -167,7 +169,6 @@ class CreateTaskView {
     containerMedium.append(radioMedium, labelMedium);
     const containerLow = createDiv(['container__radio']);
     const radioLow = createInputRadio('radio', 'priority', priorityTask.low, 'low1', false, ['input__task_info']);
-    // radioLow.setAttribute('checked', this.settingRadio());
     const labelLow = createLabel('low1', 'Low', ['label__task_info', 'radio_label']);
     containerLow.append(radioLow, labelLow);
     containerPriority2.append(containerLow, containerMedium, containerheight);
@@ -185,7 +186,7 @@ class CreateTaskView {
     const containerBtn = createDiv(['form__task_btns']);
     const btnReset = createBtn('Reset', ['light_btn', 'btn', 'form__task_btn'], 'button', 'reset data');
     btnReset.addEventListener('click', this.resetForm);
-    const btnSave = createBtn('Save', ['light_btn', 'btn', 'form__task_btn'], 'submit', 'save new task');
+    const btnSave = createBtn('Save', ['light_btn', 'btn', 'form__task_btn', 'submit_create'], 'submit', 'save new task');
     containerBtn.append(btnReset, btnSave);
 
     myForm.append(

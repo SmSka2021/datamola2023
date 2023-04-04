@@ -13,8 +13,10 @@ import RegistrationFormView from './components/registration-view';
 import UserCollection from './models/user-collection';
 import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
+import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
 import { taskStatusObj } from './ultilites/field-task';
+import MessageModalView from './components/message-modal-view';
 
 class TasksController {
   constructor() {
@@ -26,10 +28,12 @@ class TasksController {
     this.filter = new FilterView('container__filter');
     this.registration = new RegistrationFormView('container__columns');
     this.modalCreateTask = new CreateTaskView('create_task');
+    this.messageModal = new MessageModalView('create_task');
     this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
     this.pageUser = new UserPagesView('container__columns');
+    this.confimModal = new ConfirmModalView('create_task');
     this.isAuth = this.getLocalStorage('auth');
     this.renderHeader();
     this.footer.display();
@@ -152,7 +156,6 @@ class TasksController {
     // сообщаем об успехе или неудаче
     if (responseServer) {
       console.log('response server for edit user', responseServer);
-      // this.saveLocalStorage('userCollection', this.myUserCollection.users);
       this.saveLocalStorage('dataUser', requesData);
       this.saveLocalStorage('isViewProfile', 'true');
       this.renderProfilePage();
@@ -259,6 +262,18 @@ class TasksController {
     this.modalCreateTask.bindGetDataFormModal(this.addOrEditTask);
   };
 
+  renderConfirm = () => {
+    this.confimModal.display();
+    this.confimModal.bindConfirmYes(this.confirmDeleteTask);
+    this.confimModal.bindConfirmNot(this.closeModalCreateTask);
+    this.confimModal.bindCloseConfirm(this.closeModalCreateTask);
+  };
+
+  renderMessageModal = () => {
+    this.messageModal.display();
+    this.messageModal.bindCloseMessageModal(this.closeModalCreateTask);
+  };
+
   removeElement = (id) => {
     const elem = document.getElementById(id);
     elem.style.display = 'none';
@@ -266,6 +281,12 @@ class TasksController {
 
   openModalCreateTask = (id) => {
     if (id) {
+      const assigneeTask = this.collection.get(id).assignee;
+      const userActual = this.collection.user;
+      if (assigneeTask !== userActual) {
+        this.renderMessageModal();
+        return;
+      }
       this.saveLocalStorage('editTask', this.collection.get(id));
     }
     this.cleanMainBoard();
@@ -283,7 +304,6 @@ class TasksController {
     // послать данные на сервер в случа успеха переход на auth
     const idUser = this.myUserCollection.addUser(dataUser);
     if (idUser) {
-      // this.saveLocalStorage('userCollection', this.myUserCollection.users);
       this.saveLocalStorage('userId', idUser);
       this.renderAuthPage();
     } else {
@@ -293,7 +313,7 @@ class TasksController {
   };
 
   setAuthoriseUser = (dataUser) => {
-    console.log(dataUser);
+    console.log(dataUser); // нельзя убрать console, так как dataUser пока не используем- eslint ругается
     // ...посылаем на сервер данные, ищем там usera по id
     const idUser = this.getLocalStorage('userId');
     const userFromServer = this.myUserCollection.getOneUserById(idUser);
@@ -314,8 +334,6 @@ class TasksController {
     this.renderHeader();
   };
 
-  //  _____________________ГЛОБАЛЬНЫЕ ФУНКЦИИ_______________  //
-
   saveLocalStorage = (key, value) => {
     localStorage.setItem(key, JSON.stringify(value));
   };
@@ -328,18 +346,14 @@ class TasksController {
     this.renderOneTaskPage(task, true);
   };
 
-  // добавляем текущего пользователя в хидер и в модель.
   setCurrentUser = (user) => {
     const dataUser = this.getLocalStorage('dataUser') || user;
     if (!dataUser) return;
     this.collection.user = dataUser.firstName;
-    console.log(dataUser.firstName, dataUser.avatar);
     this.header.setUser(dataUser.firstName, dataUser.avatar);
   };
-  //  добавляем новую таску в модель и перерисовываем доску с задачами.
 
   addOrEditTask = (data, isEditTask) => {
-    console.log(data, isEditTask);
     if (isEditTask) {
       this.editTask(data);
     } else {
@@ -349,11 +363,9 @@ class TasksController {
 
   editTask = (data) => {
     this.collection.edit(data);
-    // this.saveLocalStorage('collectionTasks', this.collection.tasks);
     this.cleanModalCreateTask();
     this.renderStartPages();
     localStorage.removeItem('editTask');
-    // this.renderMainBoardCard();
   };
 
   addTask = (data) => {
@@ -361,21 +373,33 @@ class TasksController {
     this.cleanModalCreateTask();
     this.renderStartPages();
     localStorage.removeItem('editTask');
-    // this.renderMainBoardCard();
   };
-  // ------------удаляет таску из модели и перерисовывает доску с задачами.-----//
 
   removeTask = (id, isNeedRenderFilter) => {
-    this.collection.remove(id);
-    if (isNeedRenderFilter) this.renderFilter();
-    if (this.path.actuale === pathName.boardCard) {
-      this.renderMainBoardCard();
+    this.saveLocalStorage('dataRemoveTask', { id, isNeedRenderFilter });
+    const assigneeTask = this.collection.get(id).assignee;
+    const userActual = this.collection.user;
+    if (assigneeTask === userActual) {
+      this.renderConfirm();
     } else {
-      this.renderMainBoardList();
+      this.renderMessageModal();
     }
   };
 
-  // вызывает getPage с параметрами в модели и отображает соответствующую доску с задачами.
+  confirmDeleteTask = () => {
+    this.closeModalCreateTask();
+    const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
+    this.collection.remove(dataDeleteTask.id);
+    if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
+    if (this.path.actuale === pathName.boardCard) {
+      this.renderMainBoardCard();
+      localStorage.removeItem('dataRemoveTask');
+    } else {
+      this.renderMainBoardList();
+      localStorage.removeItem('dataRemoveTask');
+    }
+  };
+
   getFeed = (skip, top, filterConfig) => {
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard(this.collection.getPage(skip, top, filterConfig));
@@ -384,7 +408,6 @@ class TasksController {
     }
   };
 
-  // получить таску по айди из модели и отобразить соответствующий TaskView.
   showTask = (id) => {
     this.saveLocalStorage('idCheckedTask', id);
     this.saveLocalStorage('editTask', this.collection.get(id));
