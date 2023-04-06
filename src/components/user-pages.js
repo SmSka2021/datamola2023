@@ -170,7 +170,7 @@ class UserPagesView {
     const labeUserLogin = createText('p', 'Login:', ['label__user_profile']);
     const userLoginInput = createInput('text', ['input__user_profile', 'login_input']);
     userLoginInput.name = 'profile_login_input';
-    userLoginInput.value = `${dataUser.login}`;
+    userLoginInput.value = `${dataUserServer.login}`;
     userLoginInput.id = 'loginProdileUser';
     userLoginInput.disabled = true;
     userLoginInput.setAttribute('required', true);

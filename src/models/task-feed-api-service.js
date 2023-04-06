@@ -9,6 +9,7 @@ import {
   urlAllUser,
   urlUserProfile,
   urlUserEditProfile,
+  urlAddTasks,
 } from '../ultilites/url-request';
 
 class TaskFeedApiService {
@@ -36,15 +37,22 @@ class TaskFeedApiService {
   }
 
   createPost = (url, data) => {
-    let token = '';
-    if (localStorage.getItem('tokken')) {
-      token = (JSON.parse(localStorage.getItem('tokken'))).token;
-    }
     const myRequest = new Request(`${this.http}/${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
-        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return myRequest;
+  };
+
+  createPostToken = (url, data) => {
+    const myRequest = new Request(`${this.http}/${url}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${(JSON.parse(localStorage.getItem('tokken'))).token}`,
       },
       body: JSON.stringify(data),
     });
@@ -102,15 +110,33 @@ class TaskFeedApiService {
   getTasks = async (from = 0, to = 10) => {
     try {
       const response = await fetch(this.createGet(`tasks?skip=${from}&to=${to}`));
-      if (!response.ok) {
-        console.log('error', response);
-      } else {
+      if (response.ok) {
         const res = await response.json();
         console.log(res);
         return res;
       }
+      if (response.status === 401) {
+        return { status: 401 };
+      }
+      return { status: 400 };
     } catch (er) {
       console.log('error server');
+      return { status: 500 };
+    }
+  };
+
+  getOneTask = async (idTask) => {
+    try {
+      const response = await fetch(this.createGetTokken(`${urlAddTasks}/${idTask}`));
+      if (response.ok) {
+        const res = await response.json();
+        console.log(res);
+        return res;
+      }
+      return { status: 401 };
+    } catch (er) {
+      console.log('error server', er);
+      return { status: 500 };
     }
   };
 
@@ -147,13 +173,9 @@ class TaskFeedApiService {
   editUserProfile = async (dataUser) => {
     try {
       const idUser = JSON.parse(localStorage.getItem('dataUserServer')).id;
-      console.log(idUser);
-      console.log(dataUser);
       const response = await fetch(this.createPatch(`${urlUserEditProfile}/${idUser}`, dataUser));
-      console.log(response);
       if (response.ok) {
         const res = await response.json();
-        console.log(res);
         return res;
       }
       if (response.status === 403) {
@@ -161,7 +183,6 @@ class TaskFeedApiService {
       }
       return { status: 401 };
     } catch (er) {
-      console.log('error server', er);
       return { status: 500 };
     }
   };
@@ -179,7 +200,7 @@ class TaskFeedApiService {
       console.log('This Login or userName is already taken', response);
       return { status: 400 };
     } catch (er) {
-      console.log('error server');
+      console.log('error server', er);
       return { status: 500 };
     }
   };
@@ -197,6 +218,47 @@ class TaskFeedApiService {
         return { status: 401 };
       }
       console.log('This Login or userName is already taken', response);
+      return { status: 400 };
+    } catch (er) {
+      console.log('error server', er);
+      return { status: 500 };
+    }
+  };
+
+  // ------------------------
+
+  addTask = async (task) => {
+    try {
+      const response = await fetch(this.createPostToken(urlAddTasks, task));
+      console.log(response);
+      if (response.ok) {
+        const res = await response.json();
+        console.log(res);
+        return res;
+      }
+      if (response.status === 401) {
+        return { status: 401 };
+      }
+      console.log('This Login or userName is already taken', response);
+      return { status: 400 };
+    } catch (er) {
+      console.log('error server');
+      return { status: 500 };
+    }
+  };
+
+  addComment = async (comment, idTask) => {
+    try {
+      const response = await fetch(this.createPostToken(`${urlAddTasks}/${idTask}/comments`, comment));
+      console.log(response);
+      if (response.ok) {
+        const res = await response.json();
+        console.log(res);
+        return res;
+      }
+      if (response.status === 401) {
+        return { status: 401 };
+      }
       return { status: 400 };
     } catch (er) {
       console.log('error server');

@@ -40,11 +40,12 @@ class CreateTaskView {
         const newTask = {
           name: myForm.elements.titleTask.value,
           description: myForm.elements.description.value,
-          assignee: myForm.elements.userNameData.value,
+          assignee: myForm.elements.usersName.value,
           status: myForm.elements.status.value,
           priority: myForm.elements.priority.value,
           isPrivate: myForm.elements.privacy.value === 'true',
         };
+        console.log(newTask);
         const isEditTask = localStorage.getItem('editTask');
         if (isEditTask) {
           newTask.id = (JSON.parse(isEditTask))._id;
@@ -94,6 +95,7 @@ class CreateTaskView {
   }
 
   display() {
+    const users = JSON.parse(localStorage.getItem('allUsers'));
     const parentElem = document.getElementById(this.id);
     const main = createElem('section', ['container_Modal_create_task']);
     main.id = 'create_task';
@@ -117,12 +119,23 @@ class CreateTaskView {
 
     const containerLineSecond = createDiv(['container__line_second']);
     const containerInputSecond = createDiv(['container__input_second']);
-    const labeUserName = createLabel('userName', 'User Name', ['label__task_info']);
-    const userNameInput = createInput('text', ['input__task_info', 'userName'], 'Enter Name');
-    userNameInput.name = 'userNameData';
-    userNameInput.id = 'userNameData';
-    userNameInput.setAttribute('required', true);
-    containerInputSecond.append(labeUserName, userNameInput);
+
+    const selectText = createText('p', '', ['select_text']);
+    const select = createElem('select', ['container_select']);
+    select.name = 'usersName';
+    users.forEach((user) => {
+      const option = createElem('option', ['option']);
+      option.value = user.id;
+      option.textContent = user.userName;
+      select.append(option);
+    });
+    selectText.append(select);
+    const labeUserName = createLabel('userName', 'Assignee', ['label__task_info']);
+    // const userNameInput = createInput('text', ['input__task_info', 'userName'], 'Enter Name');
+    // userNameInput.name = 'userNameData';
+    // userNameInput.id = 'userNameData';
+    // userNameInput.setAttribute('required', true);
+    containerInputSecond.append(labeUserName, selectText);
     const containerInputSecond2 = createDiv(['container__input_second']);
     const privacyText = createText('p', 'Privacy', ['label__task_info']);
     const containerRadios = createDiv(['container__radios']);

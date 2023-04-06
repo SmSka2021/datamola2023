@@ -24,7 +24,7 @@ class OneTaskViewList {
   display(task) {
     const parentElem = document.getElementById(this.id);
     const taskRow = createElem('tr', ['one_task_list']);
-    taskRow.setAttribute('data-id', `${task._id}`);
+    taskRow.setAttribute('data-id', `${task.id}`);
     const taskTitle = createElem('td', []);
     taskTitle.textContent = task.name;
 
@@ -45,10 +45,10 @@ class OneTaskViewList {
     const imgIsPrivateTask = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     taskPrivacy.append(imgIsPrivateTask);
     const taskAssigne = createElem('td', []);
-    taskAssigne.textContent = task.assignee;
+    taskAssigne.textContent = task.assignee.userName;
 
     const taskDateItem = createElem('td', []);
-    taskDateItem.textContent = convertationDate(task._createdAt);
+    taskDateItem.textContent = convertationDate(task.createdAt);
 
     const taskCountComment = createElem('td', []);
     taskCountComment.textContent = task.comments.length;
@@ -57,14 +57,14 @@ class OneTaskViewList {
     taskEdit.setAttribute('data-id', `${task._id}`);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
-    imgEdit.setAttribute('data-id', `${task._id}`);
+    imgEdit.setAttribute('data-id', `${task.id}`);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
     const taskDelete = createElem('td', ['td_delit']);
-    taskDelete.setAttribute('data-id', `${task._id}`);
+    taskDelete.setAttribute('data-id', `${task.id}`);
     const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
-    imgDelete.setAttribute('data-id', `${task._id}`);
+    imgDelete.setAttribute('data-id', `${task.id}`);
     btnDelete.append(imgDelete);
     taskDelete.append(btnDelete);
     if (this.checkIsGuest()) {

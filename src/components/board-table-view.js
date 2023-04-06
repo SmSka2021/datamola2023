@@ -85,6 +85,7 @@ class TaskFeedView {
   }
 
   display(tasks) {
+    console.log(tasks);
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';

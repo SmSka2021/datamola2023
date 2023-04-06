@@ -29,7 +29,7 @@ class TaskViewPage {
         const idTask = commentForm.dataset.id;
         if (newComment.length) {
           event.preventDefault();
-          handler(idTask, newComment);
+          handler(idTask, { text: newComment });
           commentForm.reset();
         }
       });
@@ -75,6 +75,7 @@ class TaskViewPage {
 
   display(task) {
     if (!task) return;
+    // const users = JSON.parse(localStorage.getItem('allUsers'));
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
     newsectionTasks.id = 'main_task';
@@ -91,7 +92,7 @@ class TaskViewPage {
     const todoTitle = createText('p', `${task.status}`);
     labelTodo.append(todoTitle);
     const labelUser = createDiv(['label__todo', 'user_name']);
-    const userTitle = createText('p', `${task.assignee}`);
+    const userTitle = createText('p', `${task.assignee.userName}`);
     labelUser.append(userTitle);
     containerLabel.append(labelTodo, labelUser);
 
@@ -102,17 +103,17 @@ class TaskViewPage {
 
     const containerBtnTask = createDiv(['container__btn_task']);
     const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    btnDel.setAttribute('data-id', `${task._id}`);
+    btnDel.setAttribute('data-id', `${task.id}`);
     const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
-    btnEdit.setAttribute('data-id', `${task._id}`);
+    btnEdit.setAttribute('data-id', `${task.id}`);
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['edit_img_one_task']);
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
     const containerDateTask = createDiv(['container__date_task_one']);
-    const taskDateItem = createText('p', `${convertationDate(task._createdAt)}`, ['task__date']);
+    const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
@@ -125,8 +126,8 @@ class TaskViewPage {
         const imgComment = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
         const commentItem = createDiv(['comment__item']);
         const commentUserName = createDiv(['comment__user_name']);
-        const commentAuthor = createText('p', `${comment._author}`, ['user__name_item']);
-        const commentDateItem = createText('p', `${convertationDate(comment._createdAt)}`, ['task__date']);
+        const commentAuthor = createText('p', `${comment.creator}`, ['user__name_item']);
+        const commentDateItem = createText('p', `${convertationDate(comment.createdAt)}`, ['task__date']);
         commentUserName.append(commentAuthor, commentDateItem);
         const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
         commentItem.append(commentUserName, commentText);
@@ -135,14 +136,14 @@ class TaskViewPage {
       });
     }
     const formElem = createElem('form', ['form']);
-    formElem.setAttribute('data-id', `${task._id}`);
+    formElem.setAttribute('data-id', `${task.id}`);
     const formLabel = createElem('label', ['form__label']);
     formLabel.for = 'addComment';
     formLabel.textContent = 'Comment: ';
     const formTextArea = createElem('textarea', ['form__area']);
     formTextArea.name = 'newComment';
     formTextArea.id = 'addComment';
-    formElem.setAttribute('data-id', `${task._id}`);
+    formElem.setAttribute('data-id', `${task.id}`);
     formTextArea.maxlength = maxLengthDescription;
     const btnForm = createBtn('Add', ['light_btn', 'btn'], 'submit', 'add comment');
     formElem.append(formLabel, formTextArea, btnForm);

@@ -18,6 +18,7 @@ import { pathData, pathName, loadPagesStart } from './ultilites/path';
 import { taskStatusObj } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
+import Loader from './components/loader';
 import {
   messageDelEdit,
   messageErDublicate,
@@ -25,7 +26,9 @@ import {
   messageEr,
   messageErPassword,
   messageErName,
+  messageAgainAuth,
 } from './ultilites/text-message-user';
+import filterTasks from './ultilites/filter-tasks';
 
 class TasksController {
   constructor() {
@@ -35,6 +38,7 @@ class TasksController {
     this.authModalForm = new AuthFormView('container__columns');
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
+    this.loader = new Loader('loader_section');
     this.filter = new FilterView('container__filter');
     this.registration = new RegistrationFormView('container__columns');
     this.modalCreateTask = new CreateTaskView('create_task');
@@ -60,11 +64,26 @@ class TasksController {
     this.filter.bindResetForm(this.renderStartPages);
   };
 
-  renderStartPages = () => {
-    // this.serviseApi.getUsers();
-    this.serviseApi.getTasks();
-    // this.serviseApi.setRegisterUser();
+  renderLoader = () => {
+    this.loader.display();
+  };
 
+  cleanLoader = () => {
+    this.removeElement('loader_section');
+  };
+
+  getDataUsers = async () => {
+    this.renderLoader();
+    const userProfile = await this.serviseApi.getUserProfile();
+    this.saveLocalStorage('profileUser', userProfile);
+    this.cleanLoader();
+    // const allUsers = await this.serviseApi.getUsers();
+    // this.saveLocalStorage('allUsers', allUsers);
+  };
+
+  renderStartPages = () => {
+    if (!localStorage.getItem('allUsers')) this.getDataUsers();
+    // this.serviseApi.getTasks();
     const loadPages = this.getLocalStorage('loadPages');
     if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
@@ -124,20 +143,26 @@ class TasksController {
     this.authModalForm.bindGetDataFormAuth(this.setAuthoriseUser);
   };
 
-  getTasksAfterFilterFromLocal = () => {
+  getTasksAfterFilterFromLocal = async () => {
     const filterConfig = this.getLocalStorage('dataFilter');
     const isLoadPage = this.getLocalStorage('loadPages');
+    this.renderLoader();
+    const todo = await this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to);
+    this.cleanLoader();
+    if (todo.status === 401) this.renderMessageModal(messageAgainAuth);
+    if (todo.status === 400) this.renderMessageModal(messageEr);
+    if (todo.status === 500) this.renderMessageModal(messageErServer);
     if (!filterConfig) {
-      const statusTodo = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.toDo });
-      const statusInProgr = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.inProgress });
-      const statusCompl = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.complete });
-      return [...statusTodo, ...statusInProgr, ...statusCompl];
+      const statusTodo = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.toDo });
+      const statusInProgress = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.inProgress });
+      const statusComplete = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.complete });
+      return [...statusTodo, ...statusInProgress, ...statusComplete];
     }
     if (filterConfig && isLoadPage) {
-      const statusTodoF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.toDo });
-      const statusInProgrF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.inProgress });
-      const statusComplF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.complete });
-      return [...statusTodoF, ...statusInProgrF, ...statusComplF];
+      const statusTodoFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.toDo });
+      const statusInProgressFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.inProgress });
+      const statusCompleteFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.complete });
+      return [...statusTodoFiltr, ...statusInProgressFiltr, ...statusCompleteFiltr];
     }
     return false;
   };
@@ -160,8 +185,9 @@ class TasksController {
   };
 
   editProfileUser = async (dataUser) => {
+    this.renderLoader();
     const responseServer = await this.serviseApi.editUserProfile(dataUser);
-    console.log('response server for edit user', responseServer);
+    this.cleanLoader();
     // сообщаем об успехе или неудаче messageErName
     if (responseServer.status === 401) this.renderMessageModal(messageEr);
     if (responseServer.status === 403) this.renderMessageModal(messageErName);
@@ -190,11 +216,14 @@ class TasksController {
     this.renderProfilePage();
   };
 
-  renderMainBoardCard = (tasksFilter) => {
-    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
+  renderMainBoardCard = async (tasksFilter) => {
+    this.renderLoader();
+    const taskAfterFilter = await this.getTasksAfterFilterFromLocal();
+    this.cleanLoader();
+    console.log(taskAfterFilter);
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardCard);
-    this.boardCardView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
+    this.boardCardView.display(taskAfterFilter || tasksFilter);
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
     this.boardCardView.bindDeleteTask(this.removeTask);
@@ -203,8 +232,10 @@ class TasksController {
     this.boardCardView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
-  renderMainBoardList = (tasksFilter) => {
-    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
+  renderMainBoardList = async (tasksFilter) => {
+    this.renderLoader();
+    const taskAfterFilter = await this.getTasksAfterFilterFromLocal();
+    this.cleanLoader();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardList);
     this.boardListView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
@@ -248,18 +279,17 @@ class TasksController {
   logOutUser = () => {
     this.auth = false;
     localStorage.removeItem('auth');
-    localStorage.removeItem('dataUser');
     this.path.actuale = pathName.boardCard;
     this.logInAsGuest();
   };
 
-  renderOneTaskPage = (task, notSavePath) => {
+  renderOneTaskPage = (oneTask, notSavePath) => {
     this.removeElement('container__filter');
     this.removeElement('container__columns');
     if (!notSavePath) {
       this.savePathActual(pathName.oneTaskPage);
     }
-    this.pageOneTask.display(task);
+    this.pageOneTask.display(oneTask);
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
     this.pageOneTask.bindDeleteTask(this.removeTask);
@@ -310,7 +340,9 @@ class TasksController {
   };
 
   registrationUser = async (dataUser) => {
+    this.renderLoader();
     const registrDataUser = await this.serviseApi.registrationUser(dataUser);
+    this.cleanLoader();
     if (registrDataUser.status === 400) this.renderMessageModal(messageErDublicate);
     if (registrDataUser.status === 500) this.renderMessageModal(messageErServer);
     if (!registrDataUser.status) {
@@ -323,27 +355,27 @@ class TasksController {
   };
 
   setAuthoriseUser = async (dataUser) => {
-    console.log(dataUser); // нельзя убрать console, так как dataUser пока не используем- eslint ругается
-    // ...посылаем на сервер данные, ищем там usera по id
+    this.renderLoader();
     const authDataUser = await this.serviseApi.authorizeUser(dataUser);
+    this.cleanLoader();
     if (!authDataUser.status) {
       this.saveLocalStorage('auth', 'true');
       this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('tokken', authDataUser);
       this.isAuth = true;
       localStorage.removeItem('statusUser');
+      this.renderLoader();
       const allUsers = await this.serviseApi.getUsers();
+      this.cleanLoader();
       if (allUsers.status === 401) this.renderMessageModal(messageErPassword);
       if (allUsers.status === 500) this.renderMessageModal(messageErServer);
-      console.log(allUsers, dataUser);
       const userThis = allUsers.find((user) => user.login === dataUser.login);
       this.saveLocalStorage('dataUserServer', userThis);
+      this.saveLocalStorage('allUsers', allUsers);
       this.renderHeader();
       // this.setCurrentUser(userThis);
       this.renderStartPages();
     }
-    const userProfile = await this.serviseApi.getUserProfile();
-    this.saveLocalStorage('profileUser', userProfile);
   };
 
   logInAsGuest = () => {
@@ -358,10 +390,12 @@ class TasksController {
 
   getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
-  addComment = (idTask, textComment) => {
-    this.collection.addComment(idTask, textComment);
-    const task = this.collection.get(idTask);
-    this.renderOneTaskPage(task, true);
+  addComment = async (idTask, textComment) => {
+    this.renderLoader();
+    await this.serviseApi.addComment(textComment, idTask);
+    const oneTask = await this.serviseApi.getOneTask(idTask);
+    this.cleanLoader();
+    this.renderOneTaskPage(oneTask, true);
   };
 
   setCurrentUser = () => {
@@ -384,7 +418,9 @@ class TasksController {
   };
 
   addTask = (data) => {
-    this.collection.add(data);
+    const response = this.serviseApi.addTask(data);
+    console.log(response);
+    if (response.status === 500) this.renderMessageModal(messageErServer);
     this.cleanModalCreateTask();
     this.renderStartPages();
     localStorage.removeItem('editTask');
@@ -423,10 +459,13 @@ class TasksController {
     }
   };
 
-  showTask = (id) => {
+  showTask = async (id) => {
+    this.renderLoader();
+    const oneTask = await this.serviseApi.getOneTask(id);
+    this.cleanLoader();
     this.saveLocalStorage('idCheckedTask', id);
-    this.saveLocalStorage('editTask', this.collection.get(id));
-    this.renderOneTaskPage(this.collection.get(id));
+    this.saveLocalStorage('editTask', oneTask);
+    this.renderOneTaskPage(oneTask);
   };
 }
 
