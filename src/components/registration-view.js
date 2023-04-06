@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
+import { convertorImg64 } from '../ultilites/convertation-img-base64';
 import {
   createElem,
   createDiv,
@@ -93,13 +94,15 @@ class RegistrationFormView {
       myForm.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        const imgUser = convertorImg64(myForm.elements.avatar.value);
         const newUser = {
           login: myForm.elements.login.value,
+          userName: myForm.elements.nameUser.value,
           password: myForm.elements.password.value,
-          repeatPassword: myForm.elements.repeatPassword.value,
-          firstName: myForm.elements.nameUser.value,
-          avatar: myForm.elements.avatar.value,
+          retypedPassword: myForm.elements.repeatPassword.value,
+          photo: imgUser,
         };
+        localStorage.setItem('avatar', myForm.elements.avatar.value);
         handler(newUser, 'signUp');
       });
     }
@@ -179,18 +182,18 @@ class RegistrationFormView {
 <div class='container__input avatar_radio'>
     <p class='label__user_info'>Avatar</p>
     <div class='container__avatar'>
-        <img src='./../assets/icon/vue-color-avatar0.svg' alt='icon avatar' />
-        <img src='./../assets/icon/vue-color-avatar1.svg' alt='icon avatar' />
-        <img src='./../assets/icon/vue-color-avatar2.svg' alt='icon avatar' />
-        <img src='./../assets/icon/vue-color-avatar3.svg' alt='icon avatar' />
-        <img src='./../assets/icon/vue-color-avatar4.svg' alt='icon avatar' />       
+        <img src='../assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
+        <img src='../assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
+        <img src='../assets/img/avatar3.png' id='Img3' alt='icon avatar'/>
+        <img src='../assets/img/avatar4.png' id='Img4' alt='icon avatar'/>
+        <img src='../assets/img/avatar5.png' id='Img5' alt='icon avatar'/>     
     </div>
-    <div class='container__radio'>
-    <input name="avatar" type="radio" class='radio_avatar' value="'./../assets/icon/vue-color-avatar0.svg'" checked>
-    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar1.svg">
-    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar2.svg">
-    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar3.svg">
-    <input name="avatar" type="radio" value="./assets/icon/vue-color-avatar4.svg">
+    <div class='container__radio'>   
+    <input name="avatar" type="radio" value='Img1' checked/>
+    <input name="avatar" type="radio" value='Img2'/>
+    <input name="avatar" type="radio" value='Img3'/>
+    <input name="avatar" type="radio" value='Img4'/>
+    <input name="avatar" type="radio" value='Img5'/>
     </div>
 </div>
 <div class='form_btns'>

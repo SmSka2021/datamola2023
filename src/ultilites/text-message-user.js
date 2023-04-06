@@ -1,0 +1,11 @@
+export const messageDelEdit = 'You can edit and delete only your own tasks';
+
+export const messageErDublicate = 'This Login or userName is already taken';
+
+export const messageErServer = 'Server error, please try again later';
+
+export const messageEr = 'Something went wrong, please try again';
+
+export const messageErPassword = 'Password incorrect';
+
+export const messageErName = 'UserName is already taken';

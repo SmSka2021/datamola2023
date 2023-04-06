@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import TasksController from './app';
 import TaskCollection from './models/task-collection';
 import UserCollection from './models/user-collection';

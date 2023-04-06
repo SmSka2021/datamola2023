@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import {
   createElem,
@@ -45,11 +46,16 @@ class HeaderView {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  setUser = (nameUser, avatar) => {
-    const elem = getElement('.user__name');
-    const avatarImg = getElement('.user__img');
-    elem.textContent = nameUser;
-    avatarImg.src = avatar;
+  setUser = () => {
+    if (localStorage.getItem('dataUserServer')) {
+      const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
+      const elem = getElement('.user__name');
+      const avatarImg = getElement('.user__img_avatar');
+      elem.textContent = dataUserServer.userName;
+      avatarImg.src = `data:image/png;base64,${dataUserServer.photo}`;
+    } else {
+      return null;
+    }
   };
 
   setDarkThema = (e) => {
@@ -95,7 +101,7 @@ class HeaderView {
 
     const containerAuth1 = createDiv(['container__authorize', 'header_for_auth_user']);
     const containerUserName1 = createDiv(['container__userName']);
-    const imgIconUser1 = createImg(srcImgCollection.iconUser, 'icon user', ['user__img']);
+    const imgIconUser1 = createImg(srcImgCollection.iconUser, 'icon user', ['user__img_avatar']);
     const itemNameUser1 = createText('p', 'user', ['user__name', 'set_name']);
     containerUserName1.append(imgIconUser1, itemNameUser1);
     const btnLogOut1 = createBtn('LogOut', ['light_btn', 'btn', 'logout_btn_header']);
@@ -125,6 +131,7 @@ class HeaderView {
 
     header.prepend(containerLogo, containerThema);
     parentElem.replaceWith(header);
+    this.setUser();
   }
 }
 export default HeaderView;

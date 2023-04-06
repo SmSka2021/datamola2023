@@ -12,10 +12,10 @@ import {
 import { getElement, getElements } from '../ultilites/get-element';
 import {
   validNameUser,
-  validLogin,
   validPassword,
   validRepeatPassword,
 } from '../ultilites/validation';
+import { convertorImg64 } from '../ultilites/convertation-img-base64';
 
 class UserPagesView {
   constructor(id) {
@@ -25,33 +25,55 @@ class UserPagesView {
 
   validationInput(e) {
     e.stopPropagation();
+    const oldDataPassword = JSON.parse(localStorage.getItem('dataUser')).password;
+    const oldDataServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    // const oldAvatar = localStorage.getItem('avatar');
+    const oldUserName = oldDataServer.userName;
     const elem = e.target;
     const valueUnput = elem.value;
-    const errorLogin = getElement('.error__login_profile');
     const errorPassword = getElement('.error__pasword_profile');
     const errorRepeat = getElement('.error__pasword2_profile');
     const errorUserName = getElement('.error__name_profile');
+    const errorRepeatName = getElement('.error__repeat_name');
+    const errRepeatPassword = getElement('.error__repeat_password');
     const inputPasswordValue = getElement('#passwordProdileUser').value;
+    const inputPasswordValue2 = getElement('#password2ProdileUser').value;
     switch (elem.id) {
       case 'nameProdileUser':
-        if (!validNameUser(valueUnput)
-   && valueUnput.length) errorUserName.classList.remove('display_none');
-        else errorUserName.classList.add('display_none');
-        break;
-      case 'loginProdileUser':
-        if (!validLogin(valueUnput)
-   && valueUnput.length) errorLogin.classList.remove('display_none');
-        else errorLogin.classList.add('display_none');
+        if (!validNameUser(valueUnput) && valueUnput.length) {
+          errorUserName.classList.remove('display_none');
+        } else {
+          errorUserName.classList.add('display_none');
+        }
+        if (oldUserName === valueUnput) {
+          errorRepeatName.classList.remove('display_none');
+        } else {
+          errorRepeatName.classList.add('display_none');
+        }
         break;
       case 'passwordProdileUser':
-        if (!validPassword(valueUnput)
-   && valueUnput.length) errorPassword.classList.remove('display_none');
-        else errorPassword.classList.add('display_none');
+        if (!validPassword(valueUnput) && valueUnput.length) {
+          errorPassword.classList.remove('display_none');
+        } else {
+          errorPassword.classList.add('display_none');
+        }
+        if (oldDataPassword === valueUnput) {
+          errRepeatPassword.classList.remove('display_none');
+        } else {
+          errRepeatPassword.classList.add('display_none');
+        }
+        if (!validRepeatPassword(valueUnput, inputPasswordValue2) && valueUnput.length) {
+          errorRepeat.classList.remove('display_none');
+        } else {
+          errorRepeat.classList.add('display_none');
+        }
         break;
       case 'password2ProdileUser':
-        if (!validRepeatPassword(valueUnput, inputPasswordValue)
-   && valueUnput.length) errorRepeat.classList.remove('display_none');
-        else errorRepeat.classList.add('display_none');
+        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) {
+          errorRepeat.classList.remove('display_none');
+        } else {
+          errorRepeat.classList.add('display_none');
+        }
         break;
       default:
         return true;
@@ -102,12 +124,12 @@ class UserPagesView {
       myForm.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        const imgUser = convertorImg64(myForm.elements.avatar.value);
         const editUser = {
-          login: myForm.elements.profile_login_input.value,
           password: myForm.elements.profile_password_input.value,
-          repeatPassword: myForm.elements.profile_password2_input.value,
-          firstName: myForm.elements.profile_name_input.value,
-          avatar: myForm.elements.avatar.value,
+          retypedPassword: myForm.elements.profile_password2_input.value,
+          userName: myForm.elements.profile_name_input.value,
+          photo: imgUser,
         };
         this.isViewMode = 'true';
         handler(editUser);
@@ -116,14 +138,15 @@ class UserPagesView {
   }
 
   settingRadio() {
-    const src = JSON.parse(localStorage.getItem('dataUser')).avatar;
+    const idImg = localStorage.getItem('avatar');
     getElements('.profile_avatar_radio').forEach((radio) => {
-      if (radio.value === src) radio.checked = true;
+      if (radio.value === idImg) radio.checked = true;
     });
   }
 
   display() {
     const dataUser = JSON.parse(localStorage.getItem('dataUser'));
+    const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['board']);
@@ -149,11 +172,11 @@ class UserPagesView {
     userLoginInput.name = 'profile_login_input';
     userLoginInput.value = `${dataUser.login}`;
     userLoginInput.id = 'loginProdileUser';
+    userLoginInput.disabled = true;
     userLoginInput.setAttribute('required', true);
     userLoginInput.setAttribute('maxlength', '100');
-    const errorLogin = createText('p', 'Only latin letter', ['eror_form_profile', 'error__login_profile', 'display_none']);
     containerInputLogin.append(labeUserLogin, userLoginInput);
-    containerInputLogin0.append(containerInputLogin, errorLogin);
+    containerInputLogin0.append(containerInputLogin);
 
     const containerInputPassword0 = createDiv(['profile_group0']);
     const containerInputPassword = createDiv(['profile_group']);
@@ -164,8 +187,9 @@ class UserPagesView {
     userPasswordInput.id = 'passwordProdileUser';
     userPasswordInput.setAttribute('required', true);
     const errorPassword = createText('p', 'Symbols, large and small latin letters, numbers', ['eror_form_profile', 'error__pasword_profile', 'display_none']);
+    const errorRepeatPassword = createText('p', 'Old password is not new', ['eror_form_profile', 'error__repeat_password', 'display_none']);
     containerInputPassword.append(labeUserPassword, userPasswordInput);
-    containerInputPassword0.append(containerInputPassword, errorPassword);
+    containerInputPassword0.append(containerInputPassword, errorPassword, errorRepeatPassword);
 
     const containerInputPassword20 = createDiv(['profile_group0']);
     const containerInputPassword2 = createDiv(['profile_group']);
@@ -184,22 +208,22 @@ class UserPagesView {
     const labeUserName = createText('p', 'Name User:', ['label__user_profile']);
     const userNameInput = createInput('text', ['input__user_profile']);
     userNameInput.name = 'profile_name_input';
-    userNameInput.value = `${dataUser.firstName}`;
+    userNameInput.value = `${dataUserServer.userName}`;
     userNameInput.id = 'nameProdileUser';
     userNameInput.setAttribute('required', true);
+    const errorRepeat = createText('p', 'Old name is not new', ['eror_form_profile', 'error__repeat_name', 'display_none']);
     const errorNameUser = createText('p', 'Only in Latin or Cyrillic letter', ['eror_form_profile', 'error__name_profile', 'display_none']);
     containerInputName.append(labeUserName, userNameInput);
-    containerInputName0.append(containerInputName, errorNameUser);
+    containerInputName0.append(containerInputName, errorNameUser, errorRepeat);
 
     const containerInputAvatar0 = createDiv(['profile_group0']);
     const containerInputAvatar = createDiv(['profile_group']);
     const labeUserAvatar = createText('p', 'Avatar:', ['label__user_profile']);
-    const imgAvatarUser = createImg(dataUser.avatar, 'avatar', ['profile__img_avatar']);
+    const imgAvatarUser = createImg(`data:image/png;base64,${dataUserServer.photo}`, 'avatar', ['profile__img_avatar']);
     containerInputAvatar.append(labeUserAvatar, imgAvatarUser);
     containerInputAvatar0.append(containerInputAvatar);
 
     if (this.isViewMode === 'true') {
-      userLoginInput.disabled = true;
       userPasswordInput.disabled = true;
       userPasswordInput2.disabled = true;
       userNameInput.disabled = true;
@@ -207,7 +231,6 @@ class UserPagesView {
       viewMode.classList.toggle('view_mode');
       editProf.classList.toggle('edit_profile_btn_link');
     } else {
-      userLoginInput.disabled = false;
       userPasswordInput.disabled = false;
       userPasswordInput2.disabled = false;
       userNameInput.disabled = false;
@@ -218,18 +241,18 @@ class UserPagesView {
       containerInfoUs.insertAdjacentHTML('beforeend', `<div class='profile__avatar_group'>
     <p class='label__user_profile'>Avatar</p>
     <div class='container__avatar'>
-        <img src='./../assets/icon/vue-color-avatar0.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar1.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar2.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar3.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar4.svg' alt='icon avatar' class='profile__img_avatars'/>       
+      <img src='../assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
+      <img src='../assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
+      <img src='../assets/img/avatar3.png' id='Img3' alt='icon avatar'/>
+      <img src='../assets/img/avatar4.png' id='Img4' alt='icon avatar'/>
+      <img src='../assets/img/avatar5.png' id='Img5' alt='icon avatar' />         
     </div>
     <div class='container__radio'>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar0.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar1.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar2.svg"/> 
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar3.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar4.svg"/>  
+      <input name="avatar" type="radio" value='Img1' checked class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img2' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img3' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img4' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img5' class='profile_avatar_radio'/> 
     </div>
 </div>
 <div class='form_btns'>

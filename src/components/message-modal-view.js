@@ -23,7 +23,7 @@ class MessageModalView {
     }
   }
 
-  display() {
+  display(text) {
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['container_Modal_create_task', 'sction__confirm_modal']);
@@ -32,7 +32,7 @@ class MessageModalView {
     const modalContainer = createDiv(['container__confirm_modal']);
     const modal = createDiv(['modal']);
     const btnClose = createBtn('X', ['form__btn_close', 'close_confirm'], 'button', 'Close');
-    const title = createText('h4', 'You can edit and delete only your own tasks', ['confirm__modal_title', 'message_title']);
+    const title = createText('h4', `${text}`, ['confirm__modal_title', 'message_title']);
 
     modal.append(btnClose, title);
     modalContainer.append(modal);

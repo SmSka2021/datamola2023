@@ -17,9 +17,19 @@ import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
 import { taskStatusObj } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
+import TaskFeedApiService from './models/task-feed-api-service';
+import {
+  messageDelEdit,
+  messageErDublicate,
+  messageErServer,
+  messageEr,
+  messageErPassword,
+  messageErName,
+} from './ultilites/text-message-user';
 
 class TasksController {
   constructor() {
+    this.serviseApi = new TaskFeedApiService('http://169.60.206.50:7777/api');
     this.collection = new TaskCollection();
     this.myUserCollection = new UserCollection();
     this.authModalForm = new AuthFormView('container__columns');
@@ -51,6 +61,10 @@ class TasksController {
   };
 
   renderStartPages = () => {
+    // this.serviseApi.getUsers();
+    this.serviseApi.getTasks();
+    // this.serviseApi.setRegisterUser();
+
     const loadPages = this.getLocalStorage('loadPages');
     if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
@@ -145,23 +159,19 @@ class TasksController {
     this.pageUser.bindSetDataFormEditProfile(this.editProfileUser);
   };
 
-  editProfileUser = (dataUser) => {
-    const userId = this.getLocalStorage('userId');
-    const requesData = { ...dataUser, _id: userId };
-    delete requesData.repeatPassword;
-    console.log('данные для запроса', requesData);
-    // шлём на сервер
-    this.myUserCollection.editUser(requesData);
-    const responseServer = this.myUserCollection.editUser(requesData);
-    // сообщаем об успехе или неудаче
-    if (responseServer) {
-      console.log('response server for edit user', responseServer);
-      this.saveLocalStorage('dataUser', requesData);
+  editProfileUser = async (dataUser) => {
+    const responseServer = await this.serviseApi.editUserProfile(dataUser);
+    console.log('response server for edit user', responseServer);
+    // сообщаем об успехе или неудаче messageErName
+    if (responseServer.status === 401) this.renderMessageModal(messageEr);
+    if (responseServer.status === 403) this.renderMessageModal(messageErName);
+    if (responseServer.status === 500) this.renderMessageModal(messageErServer);
+    if (!responseServer.status) {
+      this.saveLocalStorage('dataUserServer', responseServer);
+      this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('isViewProfile', 'true');
       this.renderProfilePage();
-      this.setCurrentUser(dataUser);
-    } else {
-      console.log('Ошибка сервера, возможно, такой пользователь уже есть');
+      this.setCurrentUser();
     }
   };
 
@@ -269,8 +279,8 @@ class TasksController {
     this.confimModal.bindCloseConfirm(this.closeModalCreateTask);
   };
 
-  renderMessageModal = () => {
-    this.messageModal.display();
+  renderMessageModal = (text) => {
+    this.messageModal.display(text);
     this.messageModal.bindCloseMessageModal(this.closeModalCreateTask);
   };
 
@@ -284,7 +294,7 @@ class TasksController {
       const assigneeTask = this.collection.get(id).assignee;
       const userActual = this.collection.user;
       if (assigneeTask !== userActual) {
-        this.renderMessageModal();
+        this.renderMessageModal(messageDelEdit);
         return;
       }
       this.saveLocalStorage('editTask', this.collection.get(id));
@@ -299,33 +309,41 @@ class TasksController {
     this.renderStartPages();
   };
 
-  registrationUser = (dataUser) => {
-    this.saveLocalStorage('dataUser', dataUser);
-    // послать данные на сервер в случа успеха переход на auth
-    const idUser = this.myUserCollection.addUser(dataUser);
-    if (idUser) {
-      this.saveLocalStorage('userId', idUser);
+  registrationUser = async (dataUser) => {
+    const registrDataUser = await this.serviseApi.registrationUser(dataUser);
+    if (registrDataUser.status === 400) this.renderMessageModal(messageErDublicate);
+    if (registrDataUser.status === 500) this.renderMessageModal(messageErServer);
+    if (!registrDataUser.status) {
+      this.saveLocalStorage('dataUser', registrDataUser);
+      this.saveLocalStorage('user', registrDataUser.id);
       this.renderAuthPage();
     } else {
-      // показать ошибку
-      console.log('Ошибка сервера');
+      this.renderMessageModal(messageEr);
     }
   };
 
-  setAuthoriseUser = (dataUser) => {
+  setAuthoriseUser = async (dataUser) => {
     console.log(dataUser); // нельзя убрать console, так как dataUser пока не используем- eslint ругается
     // ...посылаем на сервер данные, ищем там usera по id
-    const idUser = this.getLocalStorage('userId');
-    const userFromServer = this.myUserCollection.getOneUserById(idUser);
-    if (userFromServer) {
+    const authDataUser = await this.serviseApi.authorizeUser(dataUser);
+    if (!authDataUser.status) {
       this.saveLocalStorage('auth', 'true');
-      this.saveLocalStorage('dataUser', userFromServer[0]);
+      this.saveLocalStorage('dataUser', dataUser);
+      this.saveLocalStorage('tokken', authDataUser);
       this.isAuth = true;
       localStorage.removeItem('statusUser');
+      const allUsers = await this.serviseApi.getUsers();
+      if (allUsers.status === 401) this.renderMessageModal(messageErPassword);
+      if (allUsers.status === 500) this.renderMessageModal(messageErServer);
+      console.log(allUsers, dataUser);
+      const userThis = allUsers.find((user) => user.login === dataUser.login);
+      this.saveLocalStorage('dataUserServer', userThis);
       this.renderHeader();
-      this.setCurrentUser(userFromServer);
+      // this.setCurrentUser(userThis);
       this.renderStartPages();
     }
+    const userProfile = await this.serviseApi.getUserProfile();
+    this.saveLocalStorage('profileUser', userProfile);
   };
 
   logInAsGuest = () => {
@@ -346,11 +364,8 @@ class TasksController {
     this.renderOneTaskPage(task, true);
   };
 
-  setCurrentUser = (user) => {
-    const dataUser = this.getLocalStorage('dataUser') || user;
-    if (!dataUser) return;
-    this.collection.user = dataUser.firstName;
-    this.header.setUser(dataUser.firstName, dataUser.avatar);
+  setCurrentUser = () => {
+    this.header.setUser();
   };
 
   addOrEditTask = (data, isEditTask) => {
@@ -382,7 +397,7 @@ class TasksController {
     if (assigneeTask === userActual) {
       this.renderConfirm();
     } else {
-      this.renderMessageModal();
+      this.renderMessageModal(messageDelEdit);
     }
   };
 
