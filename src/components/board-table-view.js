@@ -75,12 +75,13 @@ class TaskFeedView {
   }
 
   bindLoadMoreTasks(handler) {
-    const btnLoadMore = getElement('.load__btn_table');
-    if (btnLoadMore) {
-      btnLoadMore.addEventListener('click', (event) => {
+    const btnsLoadMore = getElements('.load__btn_table');
+    if (btnsLoadMore) {
+      btnsLoadMore.forEach((btn) => btn.addEventListener('click', (event) => {
         event.stopPropagation();
-        handler('list_table');
-      });
+        // console.log(btn.dataset.column);
+        handler();
+      }));
     }
   }
 
@@ -109,7 +110,12 @@ class TaskFeedView {
       const idList = createIdList(column);
       list.id = idList;
 
-      columnOne.append(btnAddTask, line, list);
+      const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
+      const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
+      btnMoreTasks.append(imgMoreTasks);
+      // btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+
+      columnOne.append(btnAddTask, line, list, btnMoreTasks);
       sectionTasks.append(columnOne);
     });
     const containerViewBtn = createDiv(['container__view_btn']);
@@ -122,10 +128,7 @@ class TaskFeedView {
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
 
-    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
-    const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-    btnMoreTasks.append(imgMoreTasks);
-    containerViewBtn.append(btnViewList, btnViewTable, btnMoreTasks);
+    containerViewBtn.append(btnViewList, btnViewTable);
 
     newsectionTasks.append(containerViewBtn, sectionTasks);
     parentElem.replaceWith(newsectionTasks);

@@ -13,7 +13,7 @@ import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
-// import { taskStatusObj } from './ultilites/field-task';
+// import { statusBtn } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
 import Loader from './components/loader';
@@ -183,6 +183,7 @@ class TasksController {
     this.allTasks = [];
     successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
     this.cleanLoader();
+    console.log(this.allTasks);
   };
 
   getTasksAfterFilterFromLocal = () => {
@@ -274,13 +275,25 @@ class TasksController {
     this.boardListView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
-  loadMoreTask = () => {
+  loadMoreTask = (status) => {
     const isLoadPage = this.getLocalStorage('loadPages');
-    const filterConfig = this.getLocalStorage('dataFilter');
-    if (isLoadPage) {
-      this.saveLocalStorage('loadPages', { from: 0, to: isLoadPage.to + 10 });
-    }
-    this.getFeed(0, isLoadPage.to + 10, filterConfig || {});
+    console.log(status);
+    // let moreTask;
+    // if (status === statusBtn.todo) {
+    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 1);
+    //   console.log('обработать ошибки');
+    // }
+    // if (status === statusBtn.complete) {
+    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 2);
+    //   console.log('обработать ошибки');
+    // }
+    // if (status === statusBtn.inProgress) {
+    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 3);
+    //   console.log('обработать ошибки');
+    // }
+    // this.allTasks.push(moreTask);
+    this.renderStartPages();
+    this.saveLocalStorage('loadPages', { from: isLoadPage.to, to: isLoadPage.to + 10 });
   };
 
   cleanMainBoard = () => {

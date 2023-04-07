@@ -182,6 +182,8 @@
   width: 350px;
   display: flex;
   flex-direction: column; 
+  align-items: center;
+  justify-content: space-between;
 }
 
 .btn__add_task {
@@ -208,7 +210,7 @@
   width: 98%;
   overflow: hidden;
   overflow-y: auto;
-  max-height: 285px;
+  max-height: calc(100vh - 410px);
 }
 
 .task {
@@ -343,7 +345,7 @@
   column-gap: 10px;
   align-items: center;
   justify-content: center;
-  /* margin: 0 auto; */
+  margin-top: 10px;
 }
 
 .btn_list,
