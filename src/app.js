@@ -326,14 +326,13 @@ class TasksController {
 
   openModalCreateTask = (id) => {
     if (id) {
-      const assigneeTask = this.task.find((task) => task.id === id).assignee.userName;
+      const assigneeTask = this.allTasks.find((task) => task.id === id).creator.userName;
       const userActual = this.getLocalStorage('dataUserServer').userName;
-      console.log(assigneeTask, userActual);
       if (assigneeTask !== userActual) {
         this.renderMessageModal(messageDelEdit);
         return;
       }
-      this.saveLocalStorage('editTask', this.collection.get(id));
+      this.saveLocalStorage('editTask', this.allTasks.find((task) => task.id === id));
     }
     this.cleanMainBoard();
     this.cleanOneTaskPage();
@@ -342,7 +341,7 @@ class TasksController {
 
   closeModalCreateTask = () => {
     this.cleanModalCreateTask();
-    // this.renderStartPages();
+    this.renderStartPages();
   };
 
   registrationUser = async (dataUser) => {
@@ -410,17 +409,28 @@ class TasksController {
 
   addOrEditTask = (data, isEditTask) => {
     if (isEditTask) {
-      this.editTask(data);
+      this.editTask(data, isEditTask);
     } else {
       this.addTask(data);
     }
   };
 
-  editTask = (data) => {
-    this.collection.edit(data);
-    this.cleanModalCreateTask();
-    this.renderStartPages();
-    localStorage.removeItem('editTask');
+  editTask = async (data, id) => {
+    const creatorTask = this.allTasks.find((task) => task.id === id).creator.userName;
+    const userActual = this.getLocalStorage('dataUserServer').userName;
+    if (creatorTask !== userActual) {
+      this.renderMessageModal(messageDelEdit);
+    } else {
+      this.renderLoader();
+      const response = await this.serviseApi.editTask(id, data);
+      await this.getTasksFromServer();
+      this.cleanLoader();
+      if (response.status === 403) this.renderMessageModal(messageEr);
+      if (response.status === 500) this.renderMessageModal(messageErServer);
+      this.cleanModalCreateTask();
+      this.renderStartPages();
+      localStorage.removeItem('editTask');
+    }
   };
 
   addTask = async (data) => {
@@ -428,6 +438,7 @@ class TasksController {
     const response = await this.serviseApi.addTask(data);
     await this.getTasksFromServer();
     this.cleanLoader();
+    if (response.status === 400) this.renderMessageModal(messageEr);
     if (response.status === 500) this.renderMessageModal(messageErServer);
     this.cleanModalCreateTask();
     this.renderStartPages();
@@ -436,9 +447,9 @@ class TasksController {
 
   removeTask = (id, isNeedRenderFilter) => {
     this.saveLocalStorage('dataRemoveTask', { id, isNeedRenderFilter });
-    const assigneeTask = this.allTasks.find((task) => task.id === id).assignee.userName;
+    const creatorTask = this.allTasks.find((task) => task.id === id).creator.userName;
     const userActual = this.getLocalStorage('dataUserServer').userName;
-    if (assigneeTask === userActual) {
+    if (creatorTask === userActual) {
       this.renderConfirm();
     } else {
       this.renderMessageModal(messageDelEdit);
@@ -452,9 +463,7 @@ class TasksController {
     const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
     if (deleteTask.status === 400) this.renderMessageModal(messageEr);
     if (deleteTask.status === 500) this.renderMessageModal(messageErServer);
-    console.log('fffff');
     await this.getTasksFromServer();
-    console.log('fffff2');
     if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();

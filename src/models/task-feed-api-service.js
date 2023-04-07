@@ -16,11 +16,6 @@ class TaskFeedApiService {
   constructor(http) {
     this.http = http || 'http://169.60.206.50:7777/api';
   }
-  // 'http://169.60.206.50:7777/api/tasks?skip=0&to=10'
-  // http://169.60.206.50:7777/api/user/register'
-  // http://169.60.206.50:7777/api/tasks/{id}'
-  // http://169.60.206.50:7777/api/tasks/{id}/comments'
-  // http://169.60.206.50:7777/api/user/my_profile'
 
   headerRequest() {
     let token = '';
@@ -105,25 +100,25 @@ class TaskFeedApiService {
     return myRequest;
   };
 
-  handleError = (status) => {
-    if (status === 400) {
-      console.log('This Login or userName is already taken');
-      return { status: 400 };
-    }
-    if (status === 500) {
-      console.log('This Login or userName is already taken');
-      return { status: 400 };
+  // ******************************************************************
+  editTask = async (idTask, task) => {
+    try {
+      const response = await fetch(this.createPatch(`${urlAddTasks}/${idTask}`, task));
+      if (response.ok) {
+        const res = await response.json();
+        return res;
+      }
+      return { status: 403 };
+    } catch (er) {
+      return { status: 500 };
     }
   };
-
-  // ******************************************************************
 
   deleteTask = async (idTask) => {
     try {
       const response = await fetch(this.createDelete(`${urlAddTasks}/${idTask}`));
       if (response.ok) {
         const res = await response.json();
-        console.log(res);
         return res;
       }
       return { status: 400 };
@@ -255,16 +250,11 @@ class TaskFeedApiService {
   addTask = async (task) => {
     try {
       const response = await fetch(this.createPostToken(urlAddTasks, task));
-      console.log(response);
+
       if (response.ok) {
         const res = await response.json();
-        console.log(res);
         return res;
       }
-      if (response.status === 401) {
-        return { status: 401 };
-      }
-      console.log('This Login or userName is already taken', response);
       return { status: 400 };
     } catch (er) {
       console.log('error server');

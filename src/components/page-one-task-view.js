@@ -117,7 +117,9 @@ class TaskViewPage {
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
-    const deckriptionTask = createText('p', `${task.description}`, ['task__text_one']);
+    const creatorTask = createText('h6', `Creator task: ${task.creator.userName}`, ['creator']);
+    const deckriptionTitle = createText('span', 'Description: ', ['comments__title']);
+    const deckriptionTask = createText('span', ` ${task.description}`, ['task__text_one']);
     const commentsTitle = createText('h6', 'Comments:', ['comments__title']);
     const commentsList = createElem('ul', ['comments__list']);
     if (task.comments.length) {
@@ -151,6 +153,8 @@ class TaskViewPage {
     sectionOneTask.append(
       headerTask,
       containerDateTask,
+      creatorTask,
+      deckriptionTitle,
       deckriptionTask,
       commentsTitle,
       commentsList,

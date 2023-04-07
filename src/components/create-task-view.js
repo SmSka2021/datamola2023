@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import {
@@ -40,15 +41,15 @@ class CreateTaskView {
         const newTask = {
           name: myForm.elements.titleTask.value,
           description: myForm.elements.description.value,
-          assignee: myForm.elements.usersName.value,
+          assignee: myForm.elements.assignee.value,
           status: myForm.elements.status.value,
           priority: myForm.elements.priority.value,
           isPrivate: myForm.elements.privacy.value === 'true',
         };
         const isEditTask = localStorage.getItem('editTask');
         if (isEditTask) {
-          newTask.id = (JSON.parse(isEditTask))._id;
-          handler(newTask, isEditTask);
+          const idEditTask = (JSON.parse(isEditTask)).id;
+          handler(newTask, idEditTask);
         } else {
           handler(newTask, false);
         }
@@ -70,7 +71,10 @@ class CreateTaskView {
   settingRadioEditTask() {
     const checkedTask = JSON.parse(localStorage.getItem('editTask'));
     if (checkedTask) {
-      if (checkedTask.assignee) getElement('#userNameData').value = checkedTask.assignee;
+      const select = document.querySelector('#select').getElementsByTagName('option');
+      for (let i = 0; i < select.length; i++) {
+        if (select[i].value === checkedTask.assignee.id) select[i].selected = true;
+      }
       if (checkedTask.name) getElement('#titleTask').value = checkedTask.name;
       if (checkedTask.description) getElement('#description1').value = checkedTask.description;
 
@@ -121,7 +125,8 @@ class CreateTaskView {
 
     const selectText = createText('p', '', ['select_text']);
     const select = createElem('select', ['container_select']);
-    select.name = 'usersName';
+    select.id = 'select';
+    select.name = 'assignee';
     users.forEach((user) => {
       const option = createElem('option', ['option']);
       option.value = user.id;

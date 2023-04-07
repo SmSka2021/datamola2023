@@ -30,6 +30,7 @@
 
 .container__date_task_one {
   gap: 3.7rem;
+  margin-bottom: 10px;
 }
 
 .task__title_one {
@@ -50,6 +51,12 @@
   font-weight: 700;
   font-size: 2.4rem;
   color: var(--primary-color);
+}
+.creator {
+  margin: 1rem 0;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--technic-color);
 }
 
 .comments__title {

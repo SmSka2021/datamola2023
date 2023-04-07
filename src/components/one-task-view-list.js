@@ -47,6 +47,9 @@ class OneTaskViewList {
     const taskAssigne = createElem('td', []);
     taskAssigne.textContent = task.assignee.userName;
 
+    const taskCreator = createElem('td', []);
+    taskCreator.textContent = task.creator.userName;
+
     const taskDateItem = createElem('td', []);
     taskDateItem.textContent = convertationDate(task.createdAt);
 
@@ -54,7 +57,7 @@ class OneTaskViewList {
     taskCountComment.textContent = task.comments.length;
 
     const taskEdit = createElem('td', ['td_edit']);
-    taskEdit.setAttribute('data-id', `${task._id}`);
+    taskEdit.setAttribute('data-id', `${task.id}`);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
     imgEdit.setAttribute('data-id', `${task.id}`);
@@ -83,6 +86,7 @@ class OneTaskViewList {
       taskPriority,
       taskPrivacy,
       taskAssigne,
+      taskCreator,
       taskDateItem,
       taskCountComment,
       taskEdit,

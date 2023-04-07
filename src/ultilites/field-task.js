@@ -15,4 +15,4 @@ export const createIdList = (str) => {
   if (str === taskStatusObj.inProgress) return 'inProgress';
   return 'complete';
 };
-export const arrFieldTask = ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Date', 'Comments', 'Edit', 'Delete'];
+export const arrFieldTask = ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];

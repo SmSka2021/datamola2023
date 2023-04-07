@@ -365,3 +365,15 @@
 .display_none {
   display: none;
 }
+.task__title_one_card {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+}
+.creator_card {
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--technic-color);
+}

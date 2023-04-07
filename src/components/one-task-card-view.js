@@ -35,7 +35,10 @@ class OneTaskViewCard {
     const imgIsPrivate = createImg(`${taskOne.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDate, imgIsPrivate);
 
-    const taskText = createText('p', taskOne.description, ['task__text']);
+    const creatorTask = createText('h6', `Creator task: ${taskOne.creator.userName}`, ['creator_card']);
+    const descriptionTitle = createText('span', 'Description:  ', ['task__title_one_card']);
+
+    const taskText = createText('span', taskOne.description, ['task__text']);
 
     const containerComments = createDiv(['container__comments']);
     const imgComments = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
@@ -70,6 +73,8 @@ class OneTaskViewCard {
     task.append(
       containerTitleTask,
       containerDateTask,
+      creatorTask,
+      descriptionTitle,
       taskText,
       containerComments,
       containerInfoTask,

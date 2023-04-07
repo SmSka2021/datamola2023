@@ -1,4 +1,4 @@
-export const messageDelEdit = 'You can edit and delete only your own tasks';
+export const messageDelEdit = 'Only creator can delete or edit task';
 
 export const messageErDublicate = 'This Login or userName is already taken';
 
