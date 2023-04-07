@@ -1,4 +1,4 @@
-const filterTasks = (arr, skip, top, filterConfig = {}) => {
+const filterTasks = (arr, filterConfig = {}) => {
   const tasksArrSortDate = arr.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
@@ -10,7 +10,7 @@ const filterTasks = (arr, skip, top, filterConfig = {}) => {
       (task) => !config.name || task.name.toLowerCase().includes(config.name.toLowerCase()),
     )
     .filter(
-      (task) => !config.assignee || task.assignee.toLowerCase().includes(
+      (task) => !config.assignee || task.assignee.userName.toLowerCase().includes(
         config.assignee.toLowerCase(),
       ),
     )
@@ -18,9 +18,6 @@ const filterTasks = (arr, skip, top, filterConfig = {}) => {
       (task) => !config.description || task.description.toLowerCase().includes(
         config.description.toLowerCase(),
       ),
-    )
-    .filter(
-      (task) => !config.status || task.status === config.status,
     )
     .filter(
       (task) => !config.priority || task.priority === config.priority,
@@ -35,7 +32,6 @@ const filterTasks = (arr, skip, top, filterConfig = {}) => {
     .filter(
       (task) => !config.dateTo
       || new Date(task.createdAt).getTime() <= new Date(config.dateTo).getTime(),
-    )
-    .splice(skip, top);
+    );
 };
 export default filterTasks;

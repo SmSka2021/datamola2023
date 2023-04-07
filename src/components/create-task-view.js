@@ -45,7 +45,6 @@ class CreateTaskView {
           priority: myForm.elements.priority.value,
           isPrivate: myForm.elements.privacy.value === 'true',
         };
-        console.log(newTask);
         const isEditTask = localStorage.getItem('editTask');
         if (isEditTask) {
           newTask.id = (JSON.parse(isEditTask))._id;

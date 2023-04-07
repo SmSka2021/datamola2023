@@ -15,7 +15,7 @@ import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
-import { taskStatusObj } from './ultilites/field-task';
+// import { taskStatusObj } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
 import Loader from './components/loader';
@@ -26,7 +26,7 @@ import {
   messageEr,
   messageErPassword,
   messageErName,
-  messageAgainAuth,
+  // messageAgainAuth,
 } from './ultilites/text-message-user';
 import filterTasks from './ultilites/filter-tasks';
 
@@ -56,6 +56,8 @@ class TasksController {
     this.renderStartPages();
   }
 
+  allTasks = [];
+
   isGuestUser = () => this.getLocalStorage('statusUser');
 
   renderFilter = () => {
@@ -81,11 +83,15 @@ class TasksController {
     // this.saveLocalStorage('allUsers', allUsers);
   };
 
-  renderStartPages = () => {
-    if (!localStorage.getItem('allUsers')) this.getDataUsers();
-    // this.serviseApi.getTasks();
+  renderStartPages = async () => {
     const loadPages = this.getLocalStorage('loadPages');
     if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
+    if (this.isAuth && !this.allTasks.length) {
+      this.renderLoader();
+      await this.getTasksFromServer();
+      this.cleanLoader();
+    }
+    if (!localStorage.getItem('allUsers')) this.getDataUsers();
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
       this.renderProfilePage();
       return;
@@ -107,8 +113,9 @@ class TasksController {
     if ((this.path.actuale === pathName.oneTaskPage) && this.isAuth) {
       const idCheckedTask = this.getLocalStorage('idCheckedTask');
       if (idCheckedTask) {
-        this.showTask(idCheckedTask);
         this.path.prev = pathName.boardCard;
+        this.saveLocalStorage(this.path);
+        this.showTask(idCheckedTask);
       } else this.renderMainBoardCard();
     }
   };
@@ -143,33 +150,38 @@ class TasksController {
     this.authModalForm.bindGetDataFormAuth(this.setAuthoriseUser);
   };
 
-  getTasksAfterFilterFromLocal = async () => {
-    const filterConfig = this.getLocalStorage('dataFilter');
+  getTasksFromServer = async () => {
     const isLoadPage = this.getLocalStorage('loadPages');
     this.renderLoader();
-    const todo = await this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to);
+    const promises = [
+      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 1),
+      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 2),
+      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 3),
+    ];
+    const results = await Promise.allSettled(promises);
+    const successfulPromises = results.filter((p) => p.status === 'fulfilled');
+    this.allTasks = [];
+    successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
     this.cleanLoader();
-    if (todo.status === 401) this.renderMessageModal(messageAgainAuth);
-    if (todo.status === 400) this.renderMessageModal(messageEr);
-    if (todo.status === 500) this.renderMessageModal(messageErServer);
-    if (!filterConfig) {
-      const statusTodo = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.toDo });
-      const statusInProgress = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.inProgress });
-      const statusComplete = filterTasks(todo, isLoadPage.from, isLoadPage.to, { status: taskStatusObj.complete });
-      return [...statusTodo, ...statusInProgress, ...statusComplete];
-    }
-    if (filterConfig && isLoadPage) {
-      const statusTodoFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.toDo });
-      const statusInProgressFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.inProgress });
-      const statusCompleteFiltr = filterTasks(todo, isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.complete });
-      return [...statusTodoFiltr, ...statusInProgressFiltr, ...statusCompleteFiltr];
+  };
+
+  getTasksAfterFilterFromLocal = () => {
+    const filterConfig = this.getLocalStorage('dataFilter');
+    if (!filterConfig) return this.allTasks;
+    if (filterConfig) {
+      return [...filterTasks(this.allTasks, { ...filterConfig })];
     }
     return false;
   };
 
   savePathActual = (pathNew) => {
-    this.path.prev = this.path.actuale;
-    this.path.actuale = pathNew;
+    const path = this.getLocalStorage('path');
+    if (path && (pathNew === pathName.oneTaskPage) && (path.prev === pathName.oneTaskPage)) {
+      this.path.prev = pathName.boardCard;
+    } else {
+      this.path.prev = this.path.actuale;
+      this.path.actuale = pathNew;
+    }
     this.saveLocalStorage('path', this.path);
   };
 
@@ -216,11 +228,8 @@ class TasksController {
     this.renderProfilePage();
   };
 
-  renderMainBoardCard = async (tasksFilter) => {
-    this.renderLoader();
-    const taskAfterFilter = await this.getTasksAfterFilterFromLocal();
-    this.cleanLoader();
-    console.log(taskAfterFilter);
+  renderMainBoardCard = (tasksFilter) => {
+    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardCard);
     this.boardCardView.display(taskAfterFilter || tasksFilter);
@@ -233,12 +242,10 @@ class TasksController {
   };
 
   renderMainBoardList = async (tasksFilter) => {
-    this.renderLoader();
-    const taskAfterFilter = await this.getTasksAfterFilterFromLocal();
-    this.cleanLoader();
+    const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardList);
-    this.boardListView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
+    this.boardListView.display(taskAfterFilter || tasksFilter);
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
     this.boardListView.bindAddNewTask(this.openModalCreateTask);
@@ -283,12 +290,10 @@ class TasksController {
     this.logInAsGuest();
   };
 
-  renderOneTaskPage = (oneTask, notSavePath) => {
+  renderOneTaskPage = (oneTask) => {
     this.removeElement('container__filter');
     this.removeElement('container__columns');
-    if (!notSavePath) {
-      this.savePathActual(pathName.oneTaskPage);
-    }
+    this.savePathActual(pathName.oneTaskPage);
     this.pageOneTask.display(oneTask);
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
@@ -321,8 +326,9 @@ class TasksController {
 
   openModalCreateTask = (id) => {
     if (id) {
-      const assigneeTask = this.collection.get(id).assignee;
-      const userActual = this.collection.user;
+      const assigneeTask = this.task.find((task) => task.id === id).assignee.userName;
+      const userActual = this.getLocalStorage('dataUserServer').userName;
+      console.log(assigneeTask, userActual);
       if (assigneeTask !== userActual) {
         this.renderMessageModal(messageDelEdit);
         return;
@@ -336,7 +342,7 @@ class TasksController {
 
   closeModalCreateTask = () => {
     this.cleanModalCreateTask();
-    this.renderStartPages();
+    // this.renderStartPages();
   };
 
   registrationUser = async (dataUser) => {
@@ -417,9 +423,11 @@ class TasksController {
     localStorage.removeItem('editTask');
   };
 
-  addTask = (data) => {
-    const response = this.serviseApi.addTask(data);
-    console.log(response);
+  addTask = async (data) => {
+    this.renderLoader();
+    const response = await this.serviseApi.addTask(data);
+    await this.getTasksFromServer();
+    this.cleanLoader();
     if (response.status === 500) this.renderMessageModal(messageErServer);
     this.cleanModalCreateTask();
     this.renderStartPages();
@@ -428,8 +436,8 @@ class TasksController {
 
   removeTask = (id, isNeedRenderFilter) => {
     this.saveLocalStorage('dataRemoveTask', { id, isNeedRenderFilter });
-    const assigneeTask = this.collection.get(id).assignee;
-    const userActual = this.collection.user;
+    const assigneeTask = this.allTasks.find((task) => task.id === id).assignee.userName;
+    const userActual = this.getLocalStorage('dataUserServer').userName;
     if (assigneeTask === userActual) {
       this.renderConfirm();
     } else {
@@ -437,18 +445,23 @@ class TasksController {
     }
   };
 
-  confirmDeleteTask = () => {
+  confirmDeleteTask = async () => {
     this.closeModalCreateTask();
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
-    this.collection.remove(dataDeleteTask.id);
+    this.renderLoader();
+    const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
+    if (deleteTask.status === 400) this.renderMessageModal(messageEr);
+    if (deleteTask.status === 500) this.renderMessageModal(messageErServer);
+    console.log('fffff');
+    await this.getTasksFromServer();
+    console.log('fffff2');
     if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
-      localStorage.removeItem('dataRemoveTask');
     } else {
       this.renderMainBoardList();
-      localStorage.removeItem('dataRemoveTask');
     }
+    localStorage.removeItem('dataRemoveTask');
   };
 
   getFeed = (skip, top, filterConfig) => {
@@ -462,6 +475,7 @@ class TasksController {
   showTask = async (id) => {
     this.renderLoader();
     const oneTask = await this.serviseApi.getOneTask(id);
+    if (!this.allTasks) await this.getTasksFromServer();
     this.cleanLoader();
     this.saveLocalStorage('idCheckedTask', id);
     this.saveLocalStorage('editTask', oneTask);

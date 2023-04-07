@@ -47,6 +47,17 @@ class TaskFeedApiService {
     return myRequest;
   };
 
+  createDelete = (url) => {
+    const myRequest = new Request(`${this.http}/${url}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${(JSON.parse(localStorage.getItem('tokken'))).token}`,
+      },
+    });
+    return myRequest;
+  };
+
   createPostToken = (url, data) => {
     const myRequest = new Request(`${this.http}/${url}`, {
       method: 'POST',
@@ -107,12 +118,26 @@ class TaskFeedApiService {
 
   // ******************************************************************
 
-  getTasks = async (from = 0, to = 10) => {
+  deleteTask = async (idTask) => {
     try {
-      const response = await fetch(this.createGet(`tasks?skip=${from}&to=${to}`));
+      const response = await fetch(this.createDelete(`${urlAddTasks}/${idTask}`));
       if (response.ok) {
         const res = await response.json();
         console.log(res);
+        return res;
+      }
+      return { status: 400 };
+    } catch (er) {
+      console.log('error server');
+      return { status: 500 };
+    }
+  };
+
+  getTasks = async (from = 0, to = 10, status = 0) => {
+    try {
+      const response = await fetch(this.createGet(`tasks?skip=${from}&to=${to}&status=${status}`));
+      if (response.ok) {
+        const res = await response.json();
         return res;
       }
       if (response.status === 401) {

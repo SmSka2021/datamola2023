@@ -126,7 +126,7 @@ class TaskViewPage {
         const imgComment = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
         const commentItem = createDiv(['comment__item']);
         const commentUserName = createDiv(['comment__user_name']);
-        const commentAuthor = createText('p', `${comment.creator}`, ['user__name_item']);
+        const commentAuthor = createText('p', `${comment.creator.userName}`, ['user__name_item']);
         const commentDateItem = createText('p', `${convertationDate(comment.createdAt)}`, ['task__date']);
         commentUserName.append(commentAuthor, commentDateItem);
         const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
