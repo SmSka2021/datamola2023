@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
-import TaskCollection from './models/task-collection';
 import HeaderView from './components/header-view';
 import FooterView from './components/footer-view';
 import FilterView from './components/filter-view';
@@ -10,7 +9,6 @@ import BoardViewList from './components/board-list-view';
 import TaskViewPage from './components/page-one-task-view';
 import CreateTaskView from './components/create-task-view';
 import RegistrationFormView from './components/registration-view';
-import UserCollection from './models/user-collection';
 import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
@@ -29,12 +27,11 @@ import {
   // messageAgainAuth,
 } from './ultilites/text-message-user';
 import filterTasks from './ultilites/filter-tasks';
+import { fiveMinutes } from './ultilites/constant';
 
 class TasksController {
   constructor() {
     this.serviseApi = new TaskFeedApiService('http://169.60.206.50:7777/api');
-    this.collection = new TaskCollection();
-    this.myUserCollection = new UserCollection();
     this.authModalForm = new AuthFormView('container__columns');
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
@@ -51,12 +48,21 @@ class TasksController {
     this.isAuth = this.getLocalStorage('auth');
     this.renderHeader();
     this.footer.display();
-    this.setCurrentUser();
     this.path = JSON.parse(localStorage.getItem('path')) || pathData;
     this.renderStartPages();
+    this.updateDataTask();
+    this.setCurrentUser();
   }
 
   allTasks = [];
+
+  allUser = [];
+
+  profileUser = {};
+
+  updateDataTask = () => {
+    setInterval(() => { this.getTasksFromServer(); }, fiveMinutes);
+  };
 
   isGuestUser = () => this.getLocalStorage('statusUser');
 
@@ -74,25 +80,39 @@ class TasksController {
     this.removeElement('loader_section');
   };
 
-  getDataUsers = async () => {
+  getDataUserProfile = async () => {
     this.renderLoader();
     const userProfile = await this.serviseApi.getUserProfile();
-    this.saveLocalStorage('profileUser', userProfile);
+    if (userProfile.status === 401) this.renderMessageModal(messageEr);
+    if (userProfile.status === 500) this.renderMessageModal(messageErServer);
+    else {
+      this.profileUser = userProfile;
+      this.saveLocalStorage('profileUser', userProfile);
+    }
     this.cleanLoader();
-    // const allUsers = await this.serviseApi.getUsers();
-    // this.saveLocalStorage('allUsers', allUsers);
+  };
+
+  getDataUsers = async () => {
+    this.renderLoader();
+    const usersAll = await this.serviseApi.getUsers();
+    if (usersAll.status === 401) this.renderMessageModal(messageEr);
+    if (usersAll.status === 500) this.renderMessageModal(messageErServer);
+    else {
+      this.saveLocalStorage('allUsers', usersAll);
+      this.allUser = usersAll;
+    }
+    this.cleanLoader();
   };
 
   renderStartPages = async () => {
     const loadPages = this.getLocalStorage('loadPages');
     if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
     if (this.isAuth && !this.allTasks.length) {
-      this.renderLoader();
       await this.getTasksFromServer();
-      this.cleanLoader();
     }
-    if (!localStorage.getItem('allUsers')) this.getDataUsers();
+    if (!localStorage.getItem('allUsers') && this.isAuth) this.getDataUsers();
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
+      await this.getDataUserProfile();
       this.renderProfilePage();
       return;
     }
@@ -473,22 +493,26 @@ class TasksController {
     localStorage.removeItem('dataRemoveTask');
   };
 
-  getFeed = (skip, top, filterConfig) => {
+  getFeed = () => {
     if (this.path.actuale === pathName.boardCard) {
-      this.renderMainBoardCard(this.collection.getPage(skip, top, filterConfig));
+      this.renderMainBoardCard();
     } else {
-      this.renderMainBoardList(this.collection.getPage(skip, top, filterConfig));
+      this.renderMainBoardList();
     }
   };
 
   showTask = async (id) => {
     this.renderLoader();
     const oneTask = await this.serviseApi.getOneTask(id);
-    if (!this.allTasks) await this.getTasksFromServer();
     this.cleanLoader();
-    this.saveLocalStorage('idCheckedTask', id);
-    this.saveLocalStorage('editTask', oneTask);
-    this.renderOneTaskPage(oneTask);
+    if (oneTask.status === 400) this.renderMessageModal(messageEr);
+    if (oneTask.status === 500) this.renderMessageModal(messageErServer);
+    if (!this.allTasks) await this.getTasksFromServer();
+    else {
+      this.saveLocalStorage('idCheckedTask', id);
+      this.saveLocalStorage('editTask', oneTask);
+      this.renderOneTaskPage(oneTask);
+    }
   };
 }
 

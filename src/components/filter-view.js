@@ -44,54 +44,54 @@ class FilterView {
         this.filterData.dateFrom = new Date(dateFrom);
         this.stateFilter.dateFrom = dateFrom;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
       getElement('#inputDateTo').onchange = (e) => {
         const dateTo = e.target.value;
         this.filterData.dateTo = new Date(dateTo);
         this.stateFilter.dateTo = dateTo;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#low').onchange = () => {
+      getElement('#low0').onchange = () => {
         this.filterData.priority = priorityTask.low;
         this.stateFilter.priority.low = true;
         this.stateFilter.priority.medium = false;
         this.stateFilter.priority.high = false;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#medium').onchange = () => {
+      getElement('#medium0').onchange = () => {
         this.filterData.priority = priorityTask.medium;
         this.stateFilter.priority.low = false;
         this.stateFilter.priority.medium = true;
         this.stateFilter.priority.high = false;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#high').onchange = () => {
+      getElement('#high0').onchange = () => {
         this.filterData.priority = priorityTask.high;
         this.stateFilter.priority.low = false;
         this.stateFilter.priority.medium = false;
         this.stateFilter.priority.high = true;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#public').onchange = () => {
+      getElement('#public0').onchange = () => {
         this.filterData.isPrivate = false;
         this.stateFilter.isPrivate.privacy = false;
         this.stateFilter.isPrivate.public = true;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#privacy').onchange = () => {
+      getElement('#privacy0').onchange = () => {
         this.filterData.isPrivate = true;
         this.stateFilter.isPrivate.privacy = true;
         this.stateFilter.isPrivate.public = false;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        handler();
       };
-      getElement('#assignee').onchange = () => {
+      getElement('#assignee0').onchange = () => {
         const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = true;
         this.stateFilter.description = false;
@@ -102,10 +102,10 @@ class FilterView {
           this.filterData.description = null;
           this.filterData.name = null;
           this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
+          handler();
         }
       };
-      getElement('#description').onchange = () => {
+      getElement('#description0').onchange = () => {
         const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = false;
         this.stateFilter.description = true;
@@ -116,10 +116,10 @@ class FilterView {
           this.filterData.description = valueInput;
           this.filterData.name = null;
           this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
+          handler();
         }
       };
-      getElement('#title').onchange = () => {
+      getElement('#title0').onchange = () => {
         const valueInput = getElement('.search__input').value;
         this.stateFilter.assignee = false;
         this.stateFilter.description = false;
@@ -130,7 +130,7 @@ class FilterView {
           this.filterData.description = null;
           this.filterData.name = valueInput;
           this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
+          handler();
         }
       };
       const searchInput = getElement('.search__input');
@@ -156,7 +156,7 @@ class FilterView {
           if ((this.stateFilter.assignee || this.stateFilter.description || this.stateFilter.title)
            && valueInput) {
             this.saveSettingLocalStorage();
-            handler(0, 10, this.filterData);
+            handler();
           }
         });
       }
@@ -180,19 +180,21 @@ class FilterView {
   }
 
   settingChecked() {
-    if (this.stateFilter.title) getElement('#title').checked = true;
-    if (this.stateFilter.description) getElement('#description').checked = true;
-    if (this.stateFilter.assignee) getElement('#assignee').checked = true;
-    if (this.stateFilter.priority.low) getElement('#low').checked = true;
-    if (this.stateFilter.priority.medium) getElement('#medium').checked = true;
-    if (this.stateFilter.priority.high) getElement('#high').checked = true;
-    if (this.stateFilter.isPrivate.public) getElement('#public').checked = true;
-    if (this.stateFilter.isPrivate.privacy) getElement('#privacy').checked = true;
-    if (this.stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom);
-    if (this.stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo);
-    if (this.stateFilter.title || this.stateFilter.assignee || this.stateFilter.description) {
-      const value = this.filterData.assignee
-      || this.filterData.description || this.filterData.name;
+    const stateFilter = JSON.parse(localStorage.getItem('settingFilter'));
+    const filterData = JSON.parse(localStorage.getItem('dataFilter'));
+    if (!stateFilter) return;
+    if (stateFilter.title) getElement('#title0').setAttribute('checked', 'true');
+    if (stateFilter.description) getElement('#description0').setAttribute('checked', 'true');
+    if (stateFilter.assignee) getElement('#assignee0').setAttribute('checked', 'true');
+    if (stateFilter.priority.low) getElement('#low0').setAttribute('checked', 'true');
+    if (stateFilter.priority.medium) getElement('#medium0').setAttribute('checked', 'true');
+    if (stateFilter.priority.high) getElement('#high0').setAttribute('checked', 'true');
+    if (stateFilter.isPrivate.public) getElement('#public0').setAttribute('checked', 'true');
+    if (stateFilter.isPrivate.privacy) getElement('#privacy0').setAttribute('checked', 'true');
+    if (stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom);
+    if (stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo);
+    if (stateFilter.title || stateFilter.assignee || stateFilter.description) {
+      const value = filterData.assignee || filterData.description || filterData.name;
       getElement('.search__input').setAttribute('value', value);
     }
   }
@@ -211,17 +213,17 @@ class FilterView {
 
     const containerSearchByAssignee = createDiv(['container__search_group']);
     const searchByAssignee = createText('p', 'assignee', ['search__by-name']);
-    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee');
+    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee0');
     containerSearchByAssignee.append(radioSearchByAssignee, searchByAssignee);
 
     const containerSearchByNameTask = createDiv(['container__search_group']);
     const searchByTitle = createText('p', 'title', ['search__by-title']);
-    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title');
+    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title0');
     containerSearchByNameTask.append(radioSearchByTille, searchByTitle);
 
     const containerSearchByDescr = createDiv(['container__search_group']);
     const searchByDesc = createText('p', 'description', ['search__by-title']);
-    const radioSearchByDeckr = createInputRadio('radio', 'search', 'description', 'description', this.stateFilter.description);
+    const radioSearchByDeckr = createInputRadio('radio', 'search', 'description', 'description0');
     containerSearchByDescr.append(radioSearchByDeckr, searchByDesc);
 
     containerSearchRadoisText.append(
@@ -242,9 +244,9 @@ class FilterView {
     const imgHightPriority = createImg(srcImgCollection.priority.high, 'icon', ['priority_img']);
     priorityItemsImg.append(imgLowPriority, imgMediumPriority, imgHightPriority);
     const containeRadiosPriority = createDiv(['container__priority_radios']);
-    const radioLow = createInputRadio('radio', 'priority', 'low', 'low');
-    const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium');
-    const radioHigh = createInputRadio('radio', 'priority', 'high', 'high');
+    const radioLow = createInputRadio('radio', 'priority', 'low', 'low0');
+    const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium0');
+    const radioHigh = createInputRadio('radio', 'priority', 'high', 'high0');
     containeRadiosPriority.append(radioLow, radioMedium, radioHigh);
     containerImgAndRadios.append(priorityItemsImg, containeRadiosPriority);
     containerPriority.append(prioritTitle, containerImgAndRadios);
@@ -260,8 +262,8 @@ class FilterView {
     containerPrivacyImg.append(imgPublicPrivacy, imgPersonPrivacy);
 
     const containerPrivacyRadios = createDiv(['container__privacy_radios']);
-    const radioPublic = createInputRadio('radio', 'private', 'public', 'public');
-    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy');
+    const radioPublic = createInputRadio('radio', 'private', 'public', 'public0');
+    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy0');
     containerPrivacyRadios.append(radioPublic, radioPrivate);
 
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
