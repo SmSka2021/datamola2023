@@ -23,9 +23,11 @@ import {
   messageErServer,
   messageEr,
   messageErPassword,
-  messageErName,
+  // messageErName,
   messageNoMoreTasks,
-  // messageAgainAuth,
+  messagePrivateTask,
+  messageAgainAuth,
+  messageIncorrectData,
 } from './ultilites/text-message-user';
 import filterTasks from './ultilites/filter-tasks';
 import { fiveMinutes } from './ultilites/constant';
@@ -53,6 +55,8 @@ class TasksController {
     this.renderStartPages();
     this.updateDataTask();
     this.setCurrentUser();
+    this.saveLocalStorage('loadPages', loadPagesStart);
+    localStorage.removeItem('hideBtnsLoad');
   }
 
   allTasks = [];
@@ -62,8 +66,7 @@ class TasksController {
   profileUser = {};
 
   updateDataTask = () => {
-    const uddateTask = setInterval(() => { this.getTasksFromServer(); }, fiveMinutes);
-    setTimeout(() => uddateTask(), fiveMinutes);
+    setTimeout(setInterval(() => { this.getTasksFromServer(); }, fiveMinutes), fiveMinutes);
   };
 
   isGuestUser = () => this.getLocalStorage('statusUser');
@@ -86,7 +89,7 @@ class TasksController {
     this.renderLoader();
     const userProfile = await this.serviseApi.getUserProfile();
     this.handlerError(userProfile);
-    if (!userProfile.status) {
+    if (!userProfile.error) {
       this.profileUser = userProfile;
       this.saveLocalStorage('profileUser', userProfile);
     }
@@ -97,7 +100,7 @@ class TasksController {
     this.renderLoader();
     const usersAll = await this.serviseApi.getUsers();
     this.handlerError(usersAll);
-    if (!usersAll.status) {
+    if (!usersAll.error) {
       this.saveLocalStorage('allUsers', usersAll);
       this.allUser = usersAll;
     }
@@ -105,8 +108,6 @@ class TasksController {
   };
 
   renderStartPages = async () => {
-    const loadPages = this.getLocalStorage('loadPages');
-    if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
     if (this.isAuth && !this.allTasks.length) {
       await this.getTasksFromServer();
     }
@@ -179,6 +180,7 @@ class TasksController {
       this.serviseApi.getTasks(isLoadPage.complete.from, isLoadPage.complete.to, 3),
     ];
     const results = await Promise.allSettled(promises);
+    this.allTasks = [];
     const successfulPromises = results.filter((promis) => promis.status === 'fulfilled');
     successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
     this.cleanLoader();
@@ -196,7 +198,7 @@ class TasksController {
 
   savePathActual = (pathNew) => {
     const path = this.getLocalStorage('path');
-    if (path && (pathNew === pathName.oneTaskPage) && (path.prev === pathName.oneTaskPage)) {
+    if (path && (pathNew === pathName.oneTaskPage) && (path.actuale === pathName.oneTaskPage)) {
       this.path.prev = pathName.boardCard;
     } else {
       this.path.prev = this.path.actuale;
@@ -217,11 +219,13 @@ class TasksController {
   };
 
   handlerError = (response) => {
-    if (response.status === 401) this.renderMessageModal(messageEr);
-    if (response.status === 500) this.renderMessageModal(messageErServer);
-    if (response.status === 403) this.renderMessageModal(messageErName);
-    if (response.status === 400) this.renderMessageModal(messageErDublicate);
-    if (response.status === 402) this.renderMessageModal(messageErPassword);
+    this.cleanLoader();
+    if (response.error === 404) this.renderMessageModal(messageAgainAuth);
+    if (response.error === 401) this.renderMessageModal(messageEr);
+    if (response.error === 500) this.renderMessageModal(messageErServer);
+    if (response.error === 405) this.renderMessageModal(messageIncorrectData);
+    if (response.error === 400) this.renderMessageModal(messageErDublicate);
+    if (response.error === 402) this.renderMessageModal(messageErPassword);
   };
 
   editProfileUser = async (dataUser) => {
@@ -230,7 +234,7 @@ class TasksController {
     this.cleanLoader();
     // сообщаем об успехе или неудаче messageErName
     this.handlerError(responseServer);
-    if (!responseServer.status) {
+    if (!responseServer.error) {
       this.saveLocalStorage('dataUserServer', responseServer);
       this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('isViewProfile', 'true');
@@ -282,19 +286,19 @@ class TasksController {
 
   loadMoreTask = async (status) => {
     const isLoadPage = this.getLocalStorage('loadPages');
-    console.log(status);
     let moreTask;
     this.renderLoader();
     if (status === statusBtn.todo) {
       moreTask = await this.serviseApi.getTasks(isLoadPage.todo.to, isLoadPage.todo.to + 10, 1);
       this.handlerError(moreTask);
-      if (!moreTask.status) {
+      if (!moreTask.error) {
         console.log(moreTask);
         isLoadPage.todo = { from: 0, to: isLoadPage.todo.to + 10 };
         const lengthAllTaskOld = this.allTasks.length;
         this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
+          window.scrollTo(0, 0);
           this.saveLocalStorage('hideBtnsLoad', { todo: true });
           this.renderMessageModal(messageNoMoreTasks);
         }
@@ -303,13 +307,14 @@ class TasksController {
     if (status === statusBtn.inProgress) {
       moreTask = this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
       this.handlerError(moreTask);
-      if (!moreTask.status) {
-        isLoadPage.inProgress = { from: 0, to: isLoadPage.todo.to + 10 };
+      if (!moreTask.error) {
+        isLoadPage.inProgress = { from: 0, to: isLoadPage.inProgress.to + 10 };
         const lengthAllTaskOld = this.allTasks.length;
-        this.allTasks.concat(...moreTask);
+        this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
           this.saveLocalStorage('hideBtnsLoad', { inProgress: true });
+          window.scrollTo(0, 0);
           this.renderMessageModal(messageNoMoreTasks);
         }
       }
@@ -317,17 +322,19 @@ class TasksController {
     if (status === statusBtn.complete) {
       moreTask = this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
       this.handlerError(moreTask);
-      if (!moreTask.status) {
-        isLoadPage.complete = { from: 0, to: isLoadPage.todo.to + 10 };
+      if (!moreTask.error) {
+        isLoadPage.complete = { from: 0, to: isLoadPage.complete.to + 10 };
         const lengthAllTaskOld = this.allTasks.length;
-        this.allTasks.concat(...moreTask);
+        this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
           this.saveLocalStorage('hideBtnsLoad', { complete: true });
+          window.scrollTo(0, 0);
           this.renderMessageModal(messageNoMoreTasks);
         }
       }
     }
+    console.log(this.allTasks);
     this.cleanLoader();
     this.renderStartPages();
     this.saveLocalStorage('loadPages', isLoadPage);
@@ -419,20 +426,19 @@ class TasksController {
     const registrDataUser = await this.serviseApi.registrationUser(dataUser);
     this.cleanLoader();
     this.handlerError(registrDataUser);
-    if (!registrDataUser.status) {
+    console.log(registrDataUser);
+    if (!registrDataUser.error) {
       this.saveLocalStorage('dataUser', registrDataUser);
       this.saveLocalStorage('user', registrDataUser.id);
       this.renderAuthPage();
-    } else {
-      this.renderMessageModal(messageEr);
     }
   };
 
   setAuthoriseUser = async (dataUser) => {
     this.renderLoader();
     const authDataUser = await this.serviseApi.authorizeUser(dataUser);
-    this.cleanLoader();
-    if (!authDataUser.status) {
+    this.handlerError(authDataUser);
+    if (!authDataUser.error) {
       this.saveLocalStorage('auth', 'true');
       this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('tokken', authDataUser);
@@ -440,16 +446,15 @@ class TasksController {
       localStorage.removeItem('statusUser');
       this.renderLoader();
       const allUsers = await this.serviseApi.getUsers();
-      this.cleanLoader();
       this.handlerError(allUsers);
-      if (!allUsers.status) {
+      if (!allUsers.error) {
         const userThis = allUsers.find((user) => user.login === dataUser.login);
         this.saveLocalStorage('dataUserServer', userThis);
         this.saveLocalStorage('allUsers', allUsers);
-        this.renderHeader();
-        // this.setCurrentUser(userThis);
-        this.renderStartPages();
       }
+      this.renderHeader();
+      // this.setCurrentUser(userThis);
+      this.renderStartPages();
     }
   };
 
@@ -467,10 +472,16 @@ class TasksController {
 
   addComment = async (idTask, textComment) => {
     this.renderLoader();
-    await this.serviseApi.addComment(textComment, idTask);
-    const oneTask = await this.serviseApi.getOneTask(idTask);
-    this.cleanLoader();
-    this.renderOneTaskPage(oneTask, true);
+    const response = await this.serviseApi.addComment(textComment, idTask);
+    this.handlerError(response);
+    if (!response.error) {
+      const oneTask = await this.serviseApi.getOneTask(idTask);
+      this.handlerError(oneTask);
+      if (!oneTask.error) {
+        this.cleanLoader();
+        this.renderOneTaskPage(oneTask, true);
+      }
+    }
   };
 
   setCurrentUser = () => {
@@ -496,7 +507,7 @@ class TasksController {
       await this.getTasksFromServer();
       this.cleanLoader();
       this.handlerError(response);
-      if (!response.status) {
+      if (!response.error) {
         this.cleanModalCreateTask();
         this.renderStartPages();
         localStorage.removeItem('editTask');
@@ -510,7 +521,7 @@ class TasksController {
     await this.getTasksFromServer();
     this.cleanLoader();
     this.handlerError(response);
-    if (!response.status) {
+    if (!response.error) {
       this.cleanModalCreateTask();
       this.renderStartPages();
       localStorage.removeItem('editTask');
@@ -542,6 +553,7 @@ class TasksController {
       this.renderMainBoardList();
     }
     localStorage.removeItem('dataRemoveTask');
+    localStorage.removeItem('editTask');
   };
 
   getFeed = () => {
@@ -552,16 +564,30 @@ class TasksController {
     }
   };
 
-  showTask = async (id) => {
-    this.renderLoader();
-    const oneTask = await this.serviseApi.getOneTask(id);
-    this.cleanLoader();
-    this.handlerError(oneTask);
-    if (!oneTask.status) {
-      if (!this.allTasks) await this.getTasksFromServer();
-      this.saveLocalStorage('idCheckedTask', id);
-      this.saveLocalStorage('editTask', oneTask);
-      this.renderOneTaskPage(oneTask);
+  showTask = async (idTask) => {
+    const id = idTask || this.getLocalStorage('idCheckedTask');
+    const taskChecked = this.allTasks.find((task) => task.id === idTask);
+    const isPrivateTask = taskChecked.isPrivate;
+    const assigneeTask = taskChecked.assignee.userName;
+    const creatorTask = taskChecked.creator.userName;
+    const thisUser = this.getLocalStorage('dataUserServer').userName;
+    console.log(taskChecked, assigneeTask, creatorTask, thisUser);
+
+    if (isPrivateTask && (thisUser !== creatorTask) && (thisUser !== assigneeTask)) {
+      this.renderMessageModal(messagePrivateTask);
+    } else {
+      this.renderLoader();
+      const oneTask = await this.serviseApi.getOneTask(id);
+      this.cleanLoader();
+      this.handlerError(oneTask);
+      if (!oneTask.error) {
+        if (!this.allTasks) {
+          await this.getTasksFromServer();
+        }
+        this.saveLocalStorage('idCheckedTask', id);
+        this.saveLocalStorage('editTask', oneTask);
+        this.renderOneTaskPage(oneTask);
+      }
     }
   };
 }

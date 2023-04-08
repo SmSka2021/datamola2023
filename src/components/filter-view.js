@@ -153,8 +153,7 @@ class FilterView {
             this.filterData.assignee = null;
           }
           this.saveSettingLocalStorage();
-          if ((this.stateFilter.assignee || this.stateFilter.description || this.stateFilter.title)
-           && valueInput) {
+          if (this.stateFilter.assignee || this.stateFilter.description || this.stateFilter.title) {
             this.saveSettingLocalStorage();
             handler();
           }

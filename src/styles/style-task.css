@@ -26,6 +26,10 @@
   display: flex;
   align-items: center;
   gap: 2rem;
+  max-width: 70%;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .container__date_task_one {
@@ -34,9 +38,13 @@
 }
 
 .task__title_one {
+  margin: 0;
   font-weight: 700;
   font-size: 2.4rem;
-  color: var(--primary-color);
+  color: var(--primary-color); 
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task__text_one {
@@ -44,14 +52,12 @@
   font-size: 1.8rem;
   line-height: 24px;
   color: var(--primary-color);
+  max-width: 70%;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.task__title_one {
-  margin: 0;
-  font-weight: 700;
-  font-size: 2.4rem;
-  color: var(--primary-color);
-}
 .creator {
   margin: 1rem 0;
   font-weight: 700;

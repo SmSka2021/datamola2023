@@ -84,6 +84,18 @@ class TaskFeedView {
     }
   }
 
+  checkIsHideBtnLoad = () => {
+    const isHideBtnsLoad = JSON.parse(localStorage.getItem('hideBtnsLoad'));
+    if (isHideBtnsLoad) {
+      const loadBths = getElements('.load__btn_table');
+      loadBths.forEach((btn) => {
+        if (btn.dataset.column && isHideBtnsLoad[btn.dataset.column]) {
+          btn.classList.add('display_none');
+        }
+      });
+    }
+  };
+
   display(tasks) {
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
@@ -119,11 +131,11 @@ class TaskFeedView {
     });
     const containerViewBtn = createDiv(['container__view_btn']);
 
-    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list']);
+    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list'], 'button', 'view list');
     const imgList = createImg(srcImgCollection.viewList, 'icon');
     btnViewList.append(imgList);
 
-    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table']);
+    const btnViewTable = createBtn('', ['check_btn', 'btn', 'btn_table'], 'button', 'view card');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
 
@@ -140,6 +152,7 @@ class TaskFeedView {
         });
       }
     });
+    this.checkIsHideBtnLoad();
   }
 }
 

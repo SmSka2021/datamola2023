@@ -15,7 +15,7 @@ import {
   validPassword,
   validRepeatPassword,
 } from '../ultilites/validation';
-import { convertorImg64 } from '../ultilites/convertation-img-base64';
+import convertorImg64 from '../ultilites/convertation-img-base64';
 
 class UserPagesView {
   constructor(id) {

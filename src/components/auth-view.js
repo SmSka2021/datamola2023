@@ -138,7 +138,7 @@ class AuthFormView {
 <div class='form_btns'>
     <div class='action__form_btns'>
         <button type='button' class='light_btn btn form_btn reset_auth'>Reset</button>
-        <button type='submit' class='light_btn btn form_btn'>Save</button>
+        <button type='submit' class='light_btn btn form_btn'>LogIn</button>
     </div>   
 </div>`);
 

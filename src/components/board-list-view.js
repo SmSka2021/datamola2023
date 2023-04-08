@@ -171,10 +171,10 @@ class BoardViewList {
     newsectionTasks.id = 'container__columns';
 
     const containerViewBtn = createDiv(['container__view_btn_list']);
-    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list'], 'view list');
+    const btnViewList = createBtn('', ['check_btn', 'btn', 'btn_list'], 'button', 'view list');
     const imgList = createImg(srcImgCollection.viewList, 'icon', ['img_viewList']);
     btnViewList.append(imgList);
-    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'view table');
+    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'button', 'view table');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
     // const btnMoreTasks = createBtn('Load more',
@@ -236,7 +236,7 @@ class BoardViewList {
       tableTodo.append(tableThead, tableBody);
       tableTodo.hidden = true;
 
-      const btnMoreTasks = createBtn('Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list']);
+      const btnMoreTasks = createBtn('Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list'], 'button', 'Load more tasks');
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);

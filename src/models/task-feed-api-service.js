@@ -108,9 +108,9 @@ class TaskFeedApiService {
         const res = await response.json();
         return res;
       }
-      return { status: 403 };
+      return { error: 403 };
     } catch (er) {
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -121,10 +121,10 @@ class TaskFeedApiService {
         const res = await response.json();
         return res;
       }
-      return { status: 400 };
+      return { error: 400 };
     } catch (er) {
       console.log('error server');
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -136,12 +136,12 @@ class TaskFeedApiService {
         return res;
       }
       if (response.status === 401) {
-        return { status: 401 };
+        return { error: 401 };
       }
-      return { status: 400 };
+      return { error: 400 };
     } catch (er) {
       console.log('error server');
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -152,10 +152,10 @@ class TaskFeedApiService {
         const res = await response.json();
         return res;
       }
-      return { status: 401 };
+      return { error: 401 };
     } catch (er) {
       console.log('error server', er);
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -166,10 +166,10 @@ class TaskFeedApiService {
         const res = await response.json();
         return res;
       }
-      return { status: 401 };
+      return { error: 401 };
     } catch (er) {
       console.log('error server', er);
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -181,10 +181,10 @@ class TaskFeedApiService {
         console.log(res);
         return res;
       }
-      return { status: 401 };
+      return { error: 401 };
     } catch (er) {
       console.log('error server', er);
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -197,11 +197,11 @@ class TaskFeedApiService {
         return res;
       }
       if (response.status === 403) {
-        return { status: 403 };
+        return { error: 403 };
       }
-      return { status: 401 };
+      return { error: 401 };
     } catch (er) {
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -215,11 +215,14 @@ class TaskFeedApiService {
         console.log(res);
         return res;
       }
-      console.log('This Login or userName is already taken', response);
-      return { status: 400 };
+      if (response.status === 400) {
+        console.log('This Login or userName is already taken', response);
+        return { error: 400 };
+      }
+      return { error: 401 };
     } catch (er) {
       console.log('error server', er);
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -231,13 +234,12 @@ class TaskFeedApiService {
         return res;
       }
       if (response.status === 401) {
-        return { status: 402 };
+        return { error: 405 };
       }
-      console.log('This Login or userName is already taken', response);
-      return { status: 400 };
+      return { error: 400 };
     } catch (er) {
       console.log('error server', er);
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -251,10 +253,10 @@ class TaskFeedApiService {
         const res = await response.json();
         return res;
       }
-      return { status: 400 };
+      return { error: 400 };
     } catch (er) {
       console.log('error server');
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 
@@ -266,12 +268,12 @@ class TaskFeedApiService {
         return res;
       }
       if (response.status === 401) {
-        return { status: 401 };
+        return { error: 404 };
       }
-      return { status: 400 };
+      return { error: 400 };
     } catch (er) {
       console.log('error server');
-      return { status: 500 };
+      return { error: 500 };
     }
   };
 }

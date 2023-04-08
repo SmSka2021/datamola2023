@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
-import { convertorImg64 } from '../ultilites/convertation-img-base64';
+import convertorImg64 from '../ultilites/convertation-img-base64';
 import {
   createElem,
   createDiv,
@@ -38,8 +38,16 @@ class RegistrationFormView {
         else errorLogin.classList.add('display_none');
         break;
       case 'password1':
-        if (!validPassword(valueUnput) && valueUnput.length) errorPassword.classList.remove('display_none');
-        else errorPassword.classList.add('display_none');
+        if (!validPassword(valueUnput) && valueUnput.length) {
+          errorPassword.classList.remove('display_none');
+        } else {
+          errorPassword.classList.add('display_none');
+        }
+        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) {
+          errorRepeat.classList.remove('display_none');
+        } else {
+          errorRepeat.classList.add('display_none');
+        }
         break;
       case 'password2':
         if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) errorRepeat.classList.remove('display_none');
