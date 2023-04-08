@@ -13,7 +13,7 @@ import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
-// import { statusBtn } from './ultilites/field-task';
+import { statusBtn } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
 import Loader from './components/loader';
@@ -24,6 +24,7 @@ import {
   messageEr,
   messageErPassword,
   messageErName,
+  messageNoMoreTasks,
   // messageAgainAuth,
 } from './ultilites/text-message-user';
 import filterTasks from './ultilites/filter-tasks';
@@ -61,7 +62,8 @@ class TasksController {
   profileUser = {};
 
   updateDataTask = () => {
-    setInterval(() => { this.getTasksFromServer(); }, fiveMinutes);
+    const uddateTask = setInterval(() => { this.getTasksFromServer(); }, fiveMinutes);
+    setTimeout(() => uddateTask(), fiveMinutes);
   };
 
   isGuestUser = () => this.getLocalStorage('statusUser');
@@ -83,9 +85,8 @@ class TasksController {
   getDataUserProfile = async () => {
     this.renderLoader();
     const userProfile = await this.serviseApi.getUserProfile();
-    if (userProfile.status === 401) this.renderMessageModal(messageEr);
-    if (userProfile.status === 500) this.renderMessageModal(messageErServer);
-    else {
+    this.handlerError(userProfile);
+    if (!userProfile.status) {
       this.profileUser = userProfile;
       this.saveLocalStorage('profileUser', userProfile);
     }
@@ -95,9 +96,8 @@ class TasksController {
   getDataUsers = async () => {
     this.renderLoader();
     const usersAll = await this.serviseApi.getUsers();
-    if (usersAll.status === 401) this.renderMessageModal(messageEr);
-    if (usersAll.status === 500) this.renderMessageModal(messageErServer);
-    else {
+    this.handlerError(usersAll);
+    if (!usersAll.status) {
       this.saveLocalStorage('allUsers', usersAll);
       this.allUser = usersAll;
     }
@@ -174,13 +174,12 @@ class TasksController {
     const isLoadPage = this.getLocalStorage('loadPages');
     this.renderLoader();
     const promises = [
-      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 1),
-      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 2),
-      this.serviseApi.getTasks(isLoadPage.from, isLoadPage.to, 3),
+      this.serviseApi.getTasks(isLoadPage.todo.from, isLoadPage.todo.to, 1),
+      this.serviseApi.getTasks(isLoadPage.inProgress.from, isLoadPage.inProgress.to, 2),
+      this.serviseApi.getTasks(isLoadPage.complete.from, isLoadPage.complete.to, 3),
     ];
     const results = await Promise.allSettled(promises);
-    const successfulPromises = results.filter((p) => p.status === 'fulfilled');
-    this.allTasks = [];
+    const successfulPromises = results.filter((promis) => promis.status === 'fulfilled');
     successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
     this.cleanLoader();
     console.log(this.allTasks);
@@ -217,14 +216,20 @@ class TasksController {
     this.pageUser.bindSetDataFormEditProfile(this.editProfileUser);
   };
 
+  handlerError = (response) => {
+    if (response.status === 401) this.renderMessageModal(messageEr);
+    if (response.status === 500) this.renderMessageModal(messageErServer);
+    if (response.status === 403) this.renderMessageModal(messageErName);
+    if (response.status === 400) this.renderMessageModal(messageErDublicate);
+    if (response.status === 402) this.renderMessageModal(messageErPassword);
+  };
+
   editProfileUser = async (dataUser) => {
     this.renderLoader();
     const responseServer = await this.serviseApi.editUserProfile(dataUser);
     this.cleanLoader();
     // сообщаем об успехе или неудаче messageErName
-    if (responseServer.status === 401) this.renderMessageModal(messageEr);
-    if (responseServer.status === 403) this.renderMessageModal(messageErName);
-    if (responseServer.status === 500) this.renderMessageModal(messageErServer);
+    this.handlerError(responseServer);
     if (!responseServer.status) {
       this.saveLocalStorage('dataUserServer', responseServer);
       this.saveLocalStorage('dataUser', dataUser);
@@ -275,25 +280,57 @@ class TasksController {
     this.boardListView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
-  loadMoreTask = (status) => {
+  loadMoreTask = async (status) => {
     const isLoadPage = this.getLocalStorage('loadPages');
     console.log(status);
-    // let moreTask;
-    // if (status === statusBtn.todo) {
-    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 1);
-    //   console.log('обработать ошибки');
-    // }
-    // if (status === statusBtn.complete) {
-    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 2);
-    //   console.log('обработать ошибки');
-    // }
-    // if (status === statusBtn.inProgress) {
-    //   moreTask = this.serviseApi.getTasks(isLoadPage.to, isLoadPage.to + 10, 3);
-    //   console.log('обработать ошибки');
-    // }
-    // this.allTasks.push(moreTask);
+    let moreTask;
+    this.renderLoader();
+    if (status === statusBtn.todo) {
+      moreTask = await this.serviseApi.getTasks(isLoadPage.todo.to, isLoadPage.todo.to + 10, 1);
+      this.handlerError(moreTask);
+      if (!moreTask.status) {
+        console.log(moreTask);
+        isLoadPage.todo = { from: 0, to: isLoadPage.todo.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.push(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          this.saveLocalStorage('hideBtnsLoad', { todo: true });
+          this.renderMessageModal(messageNoMoreTasks);
+        }
+      }
+    }
+    if (status === statusBtn.inProgress) {
+      moreTask = this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
+      this.handlerError(moreTask);
+      if (!moreTask.status) {
+        isLoadPage.inProgress = { from: 0, to: isLoadPage.todo.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.concat(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          this.saveLocalStorage('hideBtnsLoad', { inProgress: true });
+          this.renderMessageModal(messageNoMoreTasks);
+        }
+      }
+    }
+    if (status === statusBtn.complete) {
+      moreTask = this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
+      this.handlerError(moreTask);
+      if (!moreTask.status) {
+        isLoadPage.complete = { from: 0, to: isLoadPage.todo.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.concat(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          this.saveLocalStorage('hideBtnsLoad', { complete: true });
+          this.renderMessageModal(messageNoMoreTasks);
+        }
+      }
+    }
+    this.cleanLoader();
     this.renderStartPages();
-    this.saveLocalStorage('loadPages', { from: isLoadPage.to, to: isLoadPage.to + 10 });
+    this.saveLocalStorage('loadPages', isLoadPage);
   };
 
   cleanMainBoard = () => {
@@ -381,8 +418,7 @@ class TasksController {
     this.renderLoader();
     const registrDataUser = await this.serviseApi.registrationUser(dataUser);
     this.cleanLoader();
-    if (registrDataUser.status === 400) this.renderMessageModal(messageErDublicate);
-    if (registrDataUser.status === 500) this.renderMessageModal(messageErServer);
+    this.handlerError(registrDataUser);
     if (!registrDataUser.status) {
       this.saveLocalStorage('dataUser', registrDataUser);
       this.saveLocalStorage('user', registrDataUser.id);
@@ -405,14 +441,15 @@ class TasksController {
       this.renderLoader();
       const allUsers = await this.serviseApi.getUsers();
       this.cleanLoader();
-      if (allUsers.status === 401) this.renderMessageModal(messageErPassword);
-      if (allUsers.status === 500) this.renderMessageModal(messageErServer);
-      const userThis = allUsers.find((user) => user.login === dataUser.login);
-      this.saveLocalStorage('dataUserServer', userThis);
-      this.saveLocalStorage('allUsers', allUsers);
-      this.renderHeader();
-      // this.setCurrentUser(userThis);
-      this.renderStartPages();
+      this.handlerError(allUsers);
+      if (!allUsers.status) {
+        const userThis = allUsers.find((user) => user.login === dataUser.login);
+        this.saveLocalStorage('dataUserServer', userThis);
+        this.saveLocalStorage('allUsers', allUsers);
+        this.renderHeader();
+        // this.setCurrentUser(userThis);
+        this.renderStartPages();
+      }
     }
   };
 
@@ -458,11 +495,12 @@ class TasksController {
       const response = await this.serviseApi.editTask(id, data);
       await this.getTasksFromServer();
       this.cleanLoader();
-      if (response.status === 403) this.renderMessageModal(messageEr);
-      if (response.status === 500) this.renderMessageModal(messageErServer);
-      this.cleanModalCreateTask();
-      this.renderStartPages();
-      localStorage.removeItem('editTask');
+      this.handlerError(response);
+      if (!response.status) {
+        this.cleanModalCreateTask();
+        this.renderStartPages();
+        localStorage.removeItem('editTask');
+      }
     }
   };
 
@@ -471,11 +509,12 @@ class TasksController {
     const response = await this.serviseApi.addTask(data);
     await this.getTasksFromServer();
     this.cleanLoader();
-    if (response.status === 400) this.renderMessageModal(messageEr);
-    if (response.status === 500) this.renderMessageModal(messageErServer);
-    this.cleanModalCreateTask();
-    this.renderStartPages();
-    localStorage.removeItem('editTask');
+    this.handlerError(response);
+    if (!response.status) {
+      this.cleanModalCreateTask();
+      this.renderStartPages();
+      localStorage.removeItem('editTask');
+    }
   };
 
   removeTask = (id, isNeedRenderFilter) => {
@@ -494,8 +533,7 @@ class TasksController {
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
     this.renderLoader();
     const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
-    if (deleteTask.status === 400) this.renderMessageModal(messageEr);
-    if (deleteTask.status === 500) this.renderMessageModal(messageErServer);
+    this.handlerError(deleteTask);
     await this.getTasksFromServer();
     if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
@@ -518,10 +556,9 @@ class TasksController {
     this.renderLoader();
     const oneTask = await this.serviseApi.getOneTask(id);
     this.cleanLoader();
-    if (oneTask.status === 400) this.renderMessageModal(messageEr);
-    if (oneTask.status === 500) this.renderMessageModal(messageErServer);
-    if (!this.allTasks) await this.getTasksFromServer();
-    else {
+    this.handlerError(oneTask);
+    if (!oneTask.status) {
+      if (!this.allTasks) await this.getTasksFromServer();
       this.saveLocalStorage('idCheckedTask', id);
       this.saveLocalStorage('editTask', oneTask);
       this.renderOneTaskPage(oneTask);

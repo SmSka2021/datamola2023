@@ -11,6 +11,21 @@ export const pathName = {
   auth: 'auth',
 };
 export const loadPagesStart = {
-  from: 0,
-  to: 10,
+  todo: {
+    from: 0,
+    to: 10,
+  },
+  inProgress: {
+    from: 0,
+    to: 10,
+  },
+  complete: {
+    from: 0,
+    to: 10,
+  },
+};
+export const hideBtnsLoad = {
+  todo: false,
+  inProgress: false,
+  complete: false,
 };

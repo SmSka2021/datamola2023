@@ -76,8 +76,7 @@ class BoardViewList {
     if (btnsLoadMore) {
       btnsLoadMore.forEach((btn) => btn.addEventListener('click', (event) => {
         event.stopPropagation();
-        // console.log(btn.dataset.column);
-        handler();
+        handler(btn.dataset.column);
       }));
     }
   }
@@ -151,6 +150,18 @@ class BoardViewList {
       default:
         elem.classList.toggle('table__header_open');
         elem.classList.toggle('table__header_close');
+    }
+  };
+
+  checkIsHideBtnLoad = () => {
+    const isHideBtnsLoad = JSON.parse(localStorage.getItem('hideBtnsLoad'));
+    if (isHideBtnsLoad) {
+      const loadBths = getElements('.load__btn_list');
+      loadBths.forEach((btn) => {
+        if (btn.dataset.column && isHideBtnsLoad[btn.dataset.column]) {
+          btn.classList.add('display_none');
+        }
+      });
     }
   };
 
@@ -228,7 +239,7 @@ class BoardViewList {
       const btnMoreTasks = createBtn('Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list']);
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
-      // btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+      btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
       columnOne.append(tableHeader, tableTodo, btnMoreTasks);
       sectionTasks.append(columnOne);
     });
@@ -249,6 +260,7 @@ class BoardViewList {
     if (this.isOpenTodo) this.changeOpenCloseTodo(labelTodo[0], 0);
     if (this.isOpenInProgress) this.changeOpenCloseTodo(labelTodo[1], 1);
     if (this.isOpenComplete) this.changeOpenCloseTodo(labelTodo[2], 2);
+    this.checkIsHideBtnLoad();
   }
 }
 

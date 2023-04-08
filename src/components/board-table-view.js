@@ -79,8 +79,7 @@ class TaskFeedView {
     if (btnsLoadMore) {
       btnsLoadMore.forEach((btn) => btn.addEventListener('click', (event) => {
         event.stopPropagation();
-        // console.log(btn.dataset.column);
-        handler();
+        handler(btn.dataset.column);
       }));
     }
   }
@@ -113,7 +112,7 @@ class TaskFeedView {
       const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
-      // btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+      btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
 
       columnOne.append(btnAddTask, line, list, btnMoreTasks);
       sectionTasks.append(columnOne);

@@ -11,3 +11,5 @@ export const messageErPassword = 'Password incorrect';
 export const messageErName = 'UserName is already taken';
 
 export const messageAgainAuth = 'Session timed out, you need to login again';
+
+export const messageNoMoreTasks = 'This category has not more tasks';

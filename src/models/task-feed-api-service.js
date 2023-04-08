@@ -231,7 +231,7 @@ class TaskFeedApiService {
         return res;
       }
       if (response.status === 401) {
-        return { status: 401 };
+        return { status: 402 };
       }
       console.log('This Login or userName is already taken', response);
       return { status: 400 };
