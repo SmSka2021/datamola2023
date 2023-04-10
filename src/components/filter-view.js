@@ -7,13 +7,11 @@ import {
   createImg,
   createBtn,
   createInput,
-  // createInputRadio,
-
 } from '../ultilites/create-element';
 import srcImgCollection from '../ultilites/src-img-collection';
 import { getElement } from '../ultilites/get-element';
-// import { priorityTask } from '../ultilites/field-task';
 import { settingFilterStart } from '../ultilites/setting-filter';
+import { checkStateFilter } from '../ultilites/is-equal-obj';
 
 class FilterView {
   constructor(id) {
@@ -22,75 +20,79 @@ class FilterView {
 
   stateFilter = localStorage.getItem('settingFilter') ? { ...JSON.parse(localStorage.getItem('settingFilter')) } : { ...settingFilterStart };
 
-  // filterData = localStorage.getItem('dataFilter')
-  // ? { ...JSON.parse(localStorage.getItem('dataFilter')) } : { ...filterDataStart };
-
   saveSettingLocalStorage() {
     localStorage.setItem('settingFilter', JSON.stringify(this.stateFilter));
-    // localStorage.setItem('dataFilter', JSON.stringify(this.filterData));
   }
 
   removeSettingLocalStorage() {
     localStorage.removeItem('settingFilter');
-    // localStorage.removeItem('dataFilter');
   }
 
   bindFilter(handler) {
     const filter = getElement('.form__filter');
     filter.addEventListener('click', (event) => {
       event.stopPropagation();
-      getElement('.reset_btn').disabled = false;
 
       getElement('#inputDateFrom').onchange = (e) => {
         const dateFrom = e.target.value;
         this.stateFilter.dateFrom = new Date(dateFrom);
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#inputDateTo').onchange = (e) => {
         const dateTo = e.target.value;
         this.stateFilter.dateTo = new Date(dateTo);
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#checkbox_low').onchange = () => {
         this.stateFilter.priority.low = !this.stateFilter.priority.low;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#checkbox_medium').onchange = () => {
         this.stateFilter.priority.medium = !this.stateFilter.priority.medium;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#checkbox_high').onchange = () => {
         this.stateFilter.priority.high = !this.stateFilter.priority.high;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#public0').onchange = () => {
         this.stateFilter.isPrivate.public = !this.stateFilter.isPrivate.public;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#privacy0').onchange = () => {
         this.stateFilter.isPrivate.privacy = !this.stateFilter.isPrivate.privacy;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#assignee0').onchange = () => {
         this.stateFilter.assignee = !this.stateFilter.assignee;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#description0').onchange = () => {
         this.stateFilter.description = !this.stateFilter.description;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       getElement('#title0').onchange = () => {
         this.stateFilter.title = !this.stateFilter.title;
         this.saveSettingLocalStorage();
+        this.isDisabledReset();
         handler();
       };
       const searchInput = getElement('.search__input');
@@ -98,11 +100,20 @@ class FilterView {
         searchInput.addEventListener('input', () => {
           this.stateFilter.dataSearch = searchInput.value;
           this.saveSettingLocalStorage();
+          this.isDisabledReset();
           handler();
         });
       }
     });
   }
+
+  isDisabledReset = () => {
+    if (checkStateFilter(this.stateFilter)) {
+      getElement('.reset_btn').disabled = true;
+    } else {
+      getElement('.reset_btn').disabled = false;
+    }
+  };
 
   bindResetForm(handler) {
     const resetBtn = getElement('.reset_btn');
@@ -113,7 +124,6 @@ class FilterView {
         document.forms.filterForm.reset();
         event.stopPropagation();
         this.stateFilter = { ...settingFilterStart };
-        // this.filterData = { ...filterDataStart };
         this.removeSettingLocalStorage();
         handler();
       });
@@ -122,7 +132,10 @@ class FilterView {
 
   settingChecked() {
     const stateFilter = JSON.parse(localStorage.getItem('settingFilter'));
-    if (!stateFilter) return;
+    if (!stateFilter) {
+      getElement('.reset_btn').disabled = true;
+      return;
+    }
     if (stateFilter.title) getElement('#title0').setAttribute('checked', 'true');
     if (stateFilter.description) getElement('#description0').setAttribute('checked', 'true');
     if (stateFilter.assignee) getElement('#assignee0').setAttribute('checked', 'true');
@@ -134,6 +147,8 @@ class FilterView {
     if (stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom.slice(0, 10));
     if (stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo.slice(0, 10));
     if (stateFilter.dataSearch) getElement('.search__input').setAttribute('value', stateFilter.dataSearch);
+    const resetBtn = getElement('.reset_btn');
+    resetBtn.disabled = checkStateFilter(stateFilter);
   }
 
   display() {
@@ -261,6 +276,7 @@ class FilterView {
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
     const resetBtn = createBtn('Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
+
     myForm.append(
       filterTitle,
       containerSearch,
