@@ -29,7 +29,7 @@ import {
   messageAgainAuth,
   messageIncorrectData,
 } from './ultilites/text-message-user';
-import filterTasks from './ultilites/filter-tasks';
+import { filterAllTasks } from './ultilites/filter-tasks';
 import { fiveMinutes } from './ultilites/constant';
 
 class TasksController {
@@ -188,10 +188,10 @@ class TasksController {
   };
 
   getTasksAfterFilterFromLocal = () => {
-    const filterConfig = this.getLocalStorage('dataFilter');
+    const filterConfig = this.getLocalStorage('settingFilter');
     if (!filterConfig) return this.allTasks;
     if (filterConfig) {
-      return [...filterTasks(this.allTasks, { ...filterConfig })];
+      return [...filterAllTasks(this.allTasks, { ...filterConfig })];
     }
     return false;
   };
