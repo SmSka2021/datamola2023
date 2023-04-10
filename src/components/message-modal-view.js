@@ -26,8 +26,8 @@ class MessageModalView {
   display(text) {
     const parentElem = document.getElementById(this.id);
 
-    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'sction__confirm_modal']);
-    newsectionTasks.id = 'create_task';
+    const newsectionTasks = createElem('section', ['section__confirm_modal']);
+    newsectionTasks.id = 'modal_message';
     const modalWraper = createDiv(['wrapper__confirm_modal']);
     const modalContainer = createDiv(['container__confirm_modal']);
     const modal = createDiv(['modal']);

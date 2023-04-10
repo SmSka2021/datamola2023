@@ -46,7 +46,7 @@ class ConfirmModalView {
   display() {
     const parentElem = document.getElementById(this.id);
 
-    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'sction__confirm_modal']);
+    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'section__confirm_modal']);
     newsectionTasks.id = 'create_task';
     const modalWraper = createDiv(['wrapper__confirm_modal']);
     const modalContainer = createDiv(['container__confirm_modal']);

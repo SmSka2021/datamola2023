@@ -211,6 +211,7 @@
   overflow: hidden;
   overflow-y: auto;
   max-height: calc(100vh - 410px);
+  min-height: calc(100vh - 410px);
 }
 
 .task {

@@ -143,16 +143,18 @@ class TaskFeedView {
 
     newsectionTasks.append(containerViewBtn, sectionTasks);
     parentElem.replaceWith(newsectionTasks);
-    taskStatusArr.forEach((column) => {
-      const arrTasksStatus = tasks.filter((task) => task.status === column);
-      if (arrTasksStatus.length) {
-        arrTasksStatus.forEach((task) => {
-          const oneTask = new OneTaskViewCard(createIdList(column));
-          oneTask.display(task);
-        });
-      }
-    });
-    this.checkIsHideBtnLoad();
+    if (tasks.length) {
+      taskStatusArr.forEach((column) => {
+        const arrTasksStatus = tasks.filter((task) => task.status === column);
+        if (arrTasksStatus.length) {
+          arrTasksStatus.forEach((task) => {
+            const oneTask = new OneTaskViewCard(createIdList(column));
+            oneTask.display(task);
+          });
+        }
+      });
+      this.checkIsHideBtnLoad();
+    }
   }
 }
 

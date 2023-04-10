@@ -18,11 +18,8 @@
   justify-content: space-between;
 }
 
-.container__label,
-.container__title_one_task,
-.container__btn_task,
-.container__date_task_one,
-.comment__user_name {
+
+.container__title_one_task {
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -31,6 +28,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.container__label,
+.container__btn_task,
+.container__date_task_one,
+.comment__user_name {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+
 
 .container__date_task_one {
   gap: 3.7rem;

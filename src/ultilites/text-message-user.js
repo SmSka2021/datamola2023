@@ -17,3 +17,7 @@ export const messageNoMoreTasks = 'This category has not more tasks';
 export const messagePrivateTask = 'You have not access to private tasks other users';
 
 export const messageIncorrectData = 'Login or password is incorrect';
+
+export const messageNotResSearch = 'Oops! Nothing found';
+
+export const messageConfirmDelete = 'A you sure?';

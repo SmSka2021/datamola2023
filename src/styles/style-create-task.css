@@ -158,3 +158,52 @@
 .form__task_btns button:last-child {
     color: green;
 }
+.modal_reset {
+    position: absolute;
+    background: url('./../assets/img/light_fon.jpg');
+    border-radius: 15px;
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+    padding: 40px;
+    text-align: center;
+}
+.confirm__modal_title_dark {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 3.4rem;
+}
+.confirm__modal_btns_reset {
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+    margin-top: 90px;
+}
+.confirm_reset {
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 30px;
+    top: 30px;
+    border-radius: 50%;
+    border: none;
+    background:  var(--primary-color);  
+    color:   var(--white-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.confirm_reset:hover {
+    background:  var(--technic-color);  
+}
+.confirm__modal_text_dark {
+    color: var(--red-color);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-top: 70px;
+}

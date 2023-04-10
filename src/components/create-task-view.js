@@ -57,17 +57,6 @@ class CreateTaskView {
     }
   }
 
-  resetForm(event) {
-    const btn = event.target;
-    event.stopPropagation();
-    if (btn) {
-      getElement('.form__task').reset();
-      getElement('#todo1').checked = true;
-      getElement('#low1').checked = true;
-      getElement('#privacy1').checked = true;
-    }
-  }
-
   settingRadioEditTask() {
     const checkedTask = JSON.parse(localStorage.getItem('editTask'));
     if (checkedTask) {
@@ -97,14 +86,30 @@ class CreateTaskView {
     }
   }
 
+  resetForm() {
+    getElement('.modal_reset').classList.toggle('display_none');
+  }
+
+  resetFormConfirm = () => {
+    getElement('.form__task').reset();
+    // getElement('#todo1').checked = false;
+    // getElement('#low1').checked = false;
+    // getElement('#privacy1').checked = false;
+    this.closeConfirm();
+  };
+
+  closeConfirm = () => {
+    getElement('.modal_reset').classList.add('display_none');
+  };
+
   display() {
     const users = JSON.parse(localStorage.getItem('allUsers'));
+    const userThis = JSON.parse(localStorage.getItem('dataUserServer'));
     const parentElem = document.getElementById(this.id);
     const main = createElem('section', ['container_Modal_create_task']);
     main.id = 'create_task';
     const wrapper = createDiv(['wrapper__cteate_task']);
     const section = createElem('section', ['container__create_task']);
-    section.id = 'create_task';
 
     const containerForm = createDiv(['container__form_task']);
     const formTitle = createText('h4', `${localStorage.getItem('editTask') ? 'Edit Task' : 'Create new Task'}`, ['form__task_title']);
@@ -130,21 +135,19 @@ class CreateTaskView {
     users.forEach((user) => {
       const option = createElem('option', ['option']);
       option.value = user.id;
+      if (userThis.id === user.id) option.selected = true;
       option.textContent = user.userName;
       select.append(option);
     });
     selectText.append(select);
     const labeUserName = createLabel('userName', 'Assignee', ['label__task_info']);
-    // const userNameInput = createInput('text', ['input__task_info', 'userName'], 'Enter Name');
-    // userNameInput.name = 'userNameData';
-    // userNameInput.id = 'userNameData';
-    // userNameInput.setAttribute('required', true);
     containerInputSecond.append(labeUserName, selectText);
     const containerInputSecond2 = createDiv(['container__input_second']);
     const privacyText = createText('p', 'Privacy', ['label__task_info']);
     const containerRadios = createDiv(['container__radios']);
     const containerRadioPrivate = createDiv(['container__radio']);
     const radioPrivacy = createInputRadio('radio', 'privacy', true, 'privacy1', false, ['input__task_info']);
+    radioPrivacy.required = true;
     const labePrivate = createLabel('privacy1', 'Private', ['label__task_info', 'radio_label']);
     containerRadioPrivate.append(radioPrivacy, labePrivate);
     const containerRadioPublic = createDiv(['container__radio']);
@@ -160,6 +163,7 @@ class CreateTaskView {
     const containerStatus2 = createDiv(['container__radios', 'status_container']);
     const containerTodo = createDiv(['container__radio']);
     const radioToDo = createInputRadio('radio', 'status', taskStatusObj.toDo, 'todo1', false, ['input__task_info']);
+    radioToDo.required = true;
     const labelTodo = createLabel('todo1', 'To Do', ['label__task_info', 'radio_label']);
     containerTodo.append(radioToDo, labelTodo);
     const containerProgress = createDiv(['container__radio']);
@@ -178,6 +182,7 @@ class CreateTaskView {
     const containerPriority2 = createDiv(['container__radios', 'status_container']);
     const containerheight = createDiv(['container__radio']);
     const radioHigh = createInputRadio('radio', 'priority', priorityTask.high, 'heigh1', false, ['input__task_info']);
+    radioHigh.required = true;
     const labelHight = createLabel('heigh1', 'Heigh', ['label__task_info', 'radio_label']);
     containerheight.append(radioHigh, labelHight);
     const containerMedium = createDiv(['container__radio']);
@@ -201,7 +206,7 @@ class CreateTaskView {
     containerArea.append(labelLArea, area);
 
     const containerBtn = createDiv(['form__task_btns']);
-    const btnReset = createBtn('Reset', ['light_btn', 'btn', 'form__task_btn'], 'button', 'reset data');
+    const btnReset = createBtn('Reset', ['light_btn', 'btn', 'form__task_btn', 'reset_create_form'], 'button', 'reset data');
     btnReset.addEventListener('click', this.resetForm);
     const btnSave = createBtn('Save', ['light_btn', 'btn', 'form__task_btn', 'submit_create'], 'submit', 'save new task');
     containerBtn.append(btnReset, btnSave);
@@ -214,7 +219,21 @@ class CreateTaskView {
       containerArea,
       containerBtn,
     );
-    containerForm.append(formTitle, closeModalBtn, myForm);
+
+    const modal = createDiv(['modal_reset', 'display_none']);
+    const btnClose = createBtn('X', ['confirm_reset'], 'button', 'Close');
+    btnClose.addEventListener('click', this.closeConfirm);
+    const title = createText('h4', 'Reset all fields?', ['confirm__modal_title_dark']);
+    const text = createText('p', 'All field values ​​will be reset', ['confirm__modal_text_dark']);
+    const containerBtns = createDiv(['confirm__modal_btns_reset']);
+    const btnNot = createBtn('No', ['dark_btn', 'btn'], 'button', 'not reset');
+    btnNot.addEventListener('click', this.closeConfirm);
+    const yesBtn = createBtn('Yes', ['dark_btn', 'btn'], 'button', 'reset');
+    yesBtn.addEventListener('click', this.resetFormConfirm);
+    containerBtns.append(btnNot, yesBtn);
+    modal.append(btnClose, title, text, containerBtns);
+
+    containerForm.append(formTitle, closeModalBtn, myForm, modal);
     section.append(containerForm);
     main.append(wrapper, section);
     parentElem.replaceWith(main);

@@ -17,6 +17,7 @@ import { statusBtn } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
 import Loader from './components/loader';
+import { createElem } from './ultilites/create-element';
 import {
   messageDelEdit,
   messageErDublicate,
@@ -28,6 +29,7 @@ import {
   messagePrivateTask,
   messageAgainAuth,
   messageIncorrectData,
+  messageNotResSearch,
 } from './ultilites/text-message-user';
 import { filterAllTasks } from './ultilites/filter-tasks';
 import { fiveMinutes } from './ultilites/constant';
@@ -42,7 +44,7 @@ class TasksController {
     this.filter = new FilterView('container__filter');
     this.registration = new RegistrationFormView('container__columns');
     this.modalCreateTask = new CreateTaskView('create_task');
-    this.messageModal = new MessageModalView('create_task');
+    this.messageModal = new MessageModalView('modal_message');
     this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
@@ -191,9 +193,13 @@ class TasksController {
     const filterConfig = this.getLocalStorage('settingFilter');
     if (!filterConfig) return this.allTasks;
     if (filterConfig) {
-      return [...filterAllTasks(this.allTasks, { ...filterConfig })];
+      const res = [...filterAllTasks(this.allTasks, { ...filterConfig })];
+      if (!res.length) {
+        this.renderMessageModal(messageNotResSearch);
+        return [];
+      }
+      return res;
     }
-    return false;
   };
 
   savePathActual = (pathNew) => {
@@ -393,12 +399,14 @@ class TasksController {
 
   renderMessageModal = (text) => {
     this.messageModal.display(text);
-    this.messageModal.bindCloseMessageModal(this.closeModalCreateTask);
+    this.messageModal.bindCloseMessageModal(this.closeModalMessage);
   };
 
   removeElement = (id) => {
     const elem = document.getElementById(id);
-    elem.style.display = 'none';
+    const section = createElem('section');
+    section.id = `${id}`;
+    elem.replaceWith(section);
   };
 
   openModalCreateTask = (id) => {
@@ -419,6 +427,10 @@ class TasksController {
   closeModalCreateTask = () => {
     this.cleanModalCreateTask();
     this.renderStartPages();
+  };
+
+  closeModalMessage = () => {
+    this.removeElement('modal_message');
   };
 
   registrationUser = async (dataUser) => {
@@ -571,8 +583,6 @@ class TasksController {
     const assigneeTask = taskChecked.assignee.userName;
     const creatorTask = taskChecked.creator.userName;
     const thisUser = this.getLocalStorage('dataUserServer').userName;
-    console.log(taskChecked, assigneeTask, creatorTask, thisUser);
-
     if (isPrivateTask && (thisUser !== creatorTask) && (thisUser !== assigneeTask)) {
       this.renderMessageModal(messagePrivateTask);
     } else {
