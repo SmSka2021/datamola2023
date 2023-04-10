@@ -87,6 +87,18 @@ class CreateTaskView {
   }
 
   resetForm() {
+    const myForm = document.forms.formTask;
+    const isEmptyForm = (myForm.elements.titleTask.value === '')
+    && (myForm.elements.description.value === '')
+    && (getElement('#medium1').checked === false)
+    && (getElement('#low1').checked === false)
+    && (getElement('#heigh1').checked === false)
+    && (getElement('#todo1').checked === false)
+    && (getElement('#inProcess1').checked === false)
+    && (getElement('#completed1').checked === false)
+    && (getElement('#privacy1').checked === false)
+    && (getElement('#public1').checked === false);
+    if (isEmptyForm) return;
     getElement('.modal_reset').classList.toggle('display_none');
   }
 
@@ -123,6 +135,7 @@ class CreateTaskView {
     inputInfo.id = 'titleTask';
     inputInfo.name = 'titleTask';
     inputInfo.setAttribute('required', true);
+    inputInfo.setAttribute('maxlength', '100');
     containerInputTask.append(labelInfo, inputInfo);
 
     const containerLineSecond = createDiv(['container__line_second']);
@@ -203,6 +216,7 @@ class CreateTaskView {
     area.id = 'description1';
     area.name = 'description';
     area.setAttribute('required', true);
+    area.setAttribute('maxlength', '280');
     containerArea.append(labelLArea, area);
 
     const containerBtn = createDiv(['form__task_btns']);
