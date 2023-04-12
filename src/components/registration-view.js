@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import convertorImg64 from '../ultilites/convertation-img-base64';
@@ -27,40 +28,118 @@ class RegistrationFormView {
     const errorPassword = getElement('.error__pasword_message');
     const errorRepeat = getElement('.error__password2_message');
     const errorUserName = getElement('.error__name_message');
+    const errorUserNameLength = getElement('.error__name_length');
     const inputPasswordValue = getElement('#password1').value;
+    const inputPassword2 = getElement('#password2');
+    const inputPassword = getElement('#password1');
+    const btnSubmit = getElement('.save_reg');
+    const btnReset = getElement('.reset_reg');
     switch (elem.id) {
       case 'nameUser':
-        if (!validNameUser(valueUnput) && valueUnput.length) errorUserName.classList.remove('display_none');
-        else errorUserName.classList.add('display_none');
+        if (!validNameUser(valueUnput) && valueUnput.length) {
+          RegistrationFormView.showError(errorUserName, btnSubmit, elem);
+        } else {
+          errorUserName.classList.add('display_none');
+        }
+        if (valueUnput.length > 100) {
+          RegistrationFormView.showError(errorUserNameLength, btnSubmit, elem);
+        } else {
+          errorUserNameLength.classList.add('display_none');
+        }
+        if (validNameUser(valueUnput) && valueUnput.length && valueUnput.length <= 100) {
+          elem.classList.remove('border_red');
+        }
         break;
       case 'login':
-        if (!validLogin(valueUnput) && valueUnput.length) errorLogin.classList.remove('display_none');
-        else errorLogin.classList.add('display_none');
+        if (!validLogin(valueUnput) && valueUnput.length) {
+          RegistrationFormView.showError(errorLogin, btnSubmit, elem);
+        } else {
+          errorLogin.classList.add('display_none');
+          elem.classList.remove('border_red');
+        }
         break;
       case 'password1':
         if (!validPassword(valueUnput) && valueUnput.length) {
-          errorPassword.classList.remove('display_none');
+          RegistrationFormView.showError(errorPassword, btnSubmit, elem);
         } else {
           errorPassword.classList.add('display_none');
         }
-        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) {
-          errorRepeat.classList.remove('display_none');
-        } else {
-          errorRepeat.classList.add('display_none');
+        if (validPassword(valueUnput) && valueUnput.length) {
+          elem.classList.remove('border_red');
         }
         break;
       case 'password2':
-        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) errorRepeat.classList.remove('display_none');
-        else errorRepeat.classList.add('display_none');
+        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) {
+          RegistrationFormView.showError(errorRepeat, btnSubmit, elem);
+          inputPassword.classList.add('border_red');
+        } else {
+          errorRepeat.classList.add('display_none');
+          inputPassword.classList.remove('border_red');
+        }
+        if (validRepeatPassword(valueUnput, inputPasswordValue)) {
+          inputPassword.classList.remove('border_red');
+          elem.classList.remove('border_red');
+        }
         break;
       default:
         return true;
     }
+    const validateName1 = errorUserName.classList.contains('display_none');
+    const validateNameLengthMax = errorUserNameLength.classList.contains('display_none');
+    const validateNameEmpty = getElement('#nameUser').value !== '';
+
+    const validatePassword = errorPassword.classList.contains('display_none');
+    const validatePasswordEmpty = inputPasswordValue !== '';
+
+    const validatePassword2 = errorRepeat.classList.contains('display_none');
+    const validatePassword2Empty = inputPassword2.value !== '';
+
+    const validateLogin = errorLogin.classList.contains('display_none');
+    const validateLoginEmpty = getElement('#login').value !== '';
+
+    const isNewData = validateLoginEmpty
+     || validatePassword2Empty
+     || validatePasswordEmpty
+     || validateNameEmpty;
+
+    const isDisabled = validateName1
+     && validateNameLengthMax
+     && validatePassword
+     && validatePassword2
+     && validateLogin
+     && validateNameEmpty
+     && validateLoginEmpty
+     && validatePassword2Empty
+     && validatePasswordEmpty;
+
+    btnSubmit.disabled = !isDisabled;
+    btnReset.disabled = !isNewData;
+  }
+
+  static showError(error, btnSubmit, elem) {
+    btnSubmit.disabled = true;
+    elem.classList.add('border_red');
+    error.classList.remove('display_none');
   }
 
   resetForm(event) {
     event.stopPropagation();
     document.forms.registrationForm.reset();
+    const errors = [
+      '.error__login_message',
+      '.error__pasword_message',
+      '.error__password2_message',
+      '.error__name_message',
+      '.error__name_length',
+    ];
+    const inputElem = [
+      '#nameUser',
+      '#login',
+      '#password1',
+      '#password2',
+    ];
+    errors.forEach((cl) => { getElement(cl).classList.add('display_none'); });
+    inputElem.forEach((cl) => { getElement(cl).classList.remove('border_red'); });
   }
 
   hiddenElem(elemArr) {
@@ -110,7 +189,7 @@ class RegistrationFormView {
           retypedPassword: myForm.elements.repeatPassword.value,
           photo: imgUser,
         };
-        localStorage.setItem('avatar', myForm.elements.avatar.value);
+        // localStorage.setItem('avatar', myForm.elements.avatar.value);
         handler(newUser, 'signUp');
       });
     }
@@ -137,6 +216,8 @@ class RegistrationFormView {
   }
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['board']);
@@ -144,9 +225,9 @@ class RegistrationFormView {
     const mainRegistr = createDiv(['info_user_main']);
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title']);
-    const signUp = createBtn('SignUp', ['user__info_title', 'sign_up'], 'button', 'Registration');
-    const logIn = createBtn('LogIn', ['user__info_title', 'login_btn_link', 'login__modal_link'], 'button', 'Authorize');
-    const guest = createBtn('LogIn as a guest', ['user__info_title', 'guest_btn_link'], 'button', 'LogIn as a guest');
+    const signUp = createBtn(isRu ? 'Регистр' : 'SignUp', ['user__info_title', 'sign_up'], 'button', 'Registration');
+    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'login_btn_link', 'login__modal_link'], 'button', 'Authorize');
+    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link'], 'button', 'LogIn as a guest');
     containerTitle.append(signUp, logIn, guest);
     const containerForm = createDiv(['container__form']);
 
@@ -154,14 +235,13 @@ class RegistrationFormView {
     myForm.name = 'registrationForm';
 
     myForm.insertAdjacentHTML('afterbegin', `<div class='container__input'>
-    <label class='label__user_info' for='login'>Login</label>
+    <label class='label__user_info label_login_reg' for='login'>Login</label>
     <input class='input__user_info login_input' type='text' id='login' name='login' maxlength="100" required/>
-    <p class='eror_form error__login_message display_none'>Only latin letter</p>
-    <p class='eror_form error__login_origin display_none'>This login is busy</p>
+    <p class='eror_form error__login_message display_none'>Only latin letter</p> 
 </div>
 
 <div class='container__input'>
-    <label class='label__user_info' for='password1'>Password</label>
+    <label class='label__user_info label_passw_reg' for='password1'>Password</label>
     <input class='input__user_info' type='password' id='password1' name='password' required/>
     <button type='button' class='password__btn_eye eye_close1'>
            <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
@@ -172,7 +252,7 @@ class RegistrationFormView {
     <p class='eror_form error__pasword_message display_none'>Symbols, large and small latin letters, numbers</p>
 </div>
 <div class='container__input'>
-    <label class='label__user_info' for='password2'>Repeat Password</label>
+    <label class='label__user_info label_passw2' for='password2'>Repeat Password</label>
     <input class='input__user_info' type='password' id='password2' name='repeatPassword' required/>
     <button type='button' class='password__btn_eye eye_close2'>
            <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
@@ -183,12 +263,13 @@ class RegistrationFormView {
     <p class='eror_form error__password2_message display_none'>Password mismatch</p>
 </div>
 <div class='container__input'>
-    <label class='label__user_info' for='nameUser'>Name user</label>
+    <label class='label__user_info label_name' for='nameUser'>Name user</label>
     <input class='input__user_info' type='text' id='nameUser' name='nameUser' required/>
     <p class='eror_form error__name_message display_none'>Only in Latin or Cyrillic letter</p>
+    <p class='eror_form error__name_length display_none'>Length must be less than 100 letter</p>
 </div>
 <div class='container__input avatar_radio'>
-    <p class='label__user_info'>Avatar</p>
+    <p class='label__user_info label_avatar'>Avatar</p>
     <div class='container__avatar'>
         <img src='../assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
         <img src='../assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
@@ -206,8 +287,8 @@ class RegistrationFormView {
 </div>
 <div class='form_btns'>
     <div class='action__form_btns'>
-        <button type='button' class='light_btn btn form_btn reset_reg'>Reset</button>
-        <button type='submit' class='light_btn btn form_btn'>Save</button>
+        <button type='button' disabled class='light_btn btn form_btn reset_reg'>Reset</button>
+        <button type='submit' disabled class='light_btn btn form_btn save_reg'>Save</button>
     </div>   
 </div>`);
 
@@ -219,6 +300,20 @@ class RegistrationFormView {
     getElements('.password__btn_eye').forEach((btn) => btn.addEventListener('click', this.openEye));
     getElement('.reset_reg').addEventListener('click', this.resetForm);
     getElements('.input__user_info').forEach((input) => input.addEventListener('input', this.validationInput));
+    if (isRu) {
+      getElement('.label_login_reg').textContent = 'Логин';
+      getElement('.error__login_message').textContent = 'Только латинские буквы';
+      getElement('.label_passw_reg').textContent = 'Пароль';
+      getElement('.error__pasword_message').textContent = 'Символ, цифры, большие и мал. латинские буквы';
+      getElement('.label_passw2').textContent = 'Повторите пароль';
+      getElement('.error__password2_message').textContent = 'Пароли не совпадают';
+      getElement('.label_name').textContent = 'Имя пользователя';
+      getElement('.error__name_message').textContent = 'Только латин. буквы или кириллица';
+      getElement('.error__name_length').textContent = 'Не более 100 символов';
+      getElement('.label_avatar').textContent = 'Аватар';
+      getElement('.reset_reg').textContent = 'Очистить';
+      getElement('.save_reg').textContent = 'Сохранить';
+    }
   }
 }
 export default RegistrationFormView;

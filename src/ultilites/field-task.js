@@ -1,3 +1,6 @@
+const lang = JSON.parse(localStorage.getItem('lang'));
+const isRu = lang === 'ru';
+
 export const priorityTask = {
   high: 'High',
   medium: 'Medium',
@@ -10,13 +13,15 @@ export const taskStatusObj = {
 };
 export const taskStatusArr = ['To Do', 'In progress', 'Complete'];
 
+export const taskStatusArrRu = ['В планах', 'В процессе', 'Выполнено'];
+
 export const createIdList = (str) => {
   if (str === taskStatusObj.toDo) return 'todo';
   if (str === taskStatusObj.inProgress) return 'inProgress';
   return 'complete';
 };
 
-export const arrFieldTask = ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
+export const arrFieldTask = isRu ? ['Задача', 'Статус', 'Описание', 'Приоритет', 'Приватность', 'Исполнитель', 'Создатель', 'Дата', 'Комментарии', 'Править', 'Удалить'] : ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
 
 export const statusBtn = {
   todo: 'todo',

@@ -97,6 +97,9 @@ class TaskFeedView {
   };
 
   display(tasks) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';
@@ -121,7 +124,7 @@ class TaskFeedView {
       const idList = createIdList(column);
       list.id = idList;
 
-      const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
+      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
@@ -154,6 +157,11 @@ class TaskFeedView {
         }
       });
       this.checkIsHideBtnLoad();
+    }
+    if (isRu) {
+      getElements('.btn__add_task')[0].textContent = 'В планах';
+      getElements('.btn__add_task')[1].textContent = 'В процессе';
+      getElements('.btn__add_task')[2].textContent = 'Выполнено';
     }
   }
 }

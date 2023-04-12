@@ -28,13 +28,12 @@ class UserPagesView {
 
   validationInput(e) {
     e.stopPropagation();
-    const dataUser = JSON.parse(localStorage.getItem('dataUser'));
-    const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
     const oldDataPassword = JSON.parse(localStorage.getItem('dataUser')).password;
     const oldDataServer = JSON.parse(localStorage.getItem('dataUserServer'));
     const oldUserName = oldDataServer.userName;
     const elem = e.target;
     const valueUnput = elem.value;
+    const nameUser = getElement('#nameProfileUser');
     const errorPassword = getElement('.error__pasword_profile');
     const errorRepeat = getElement('.error__pasword2_profile');
     const errorUserName = getElement('.error__name_profile');
@@ -43,8 +42,8 @@ class UserPagesView {
     const errEmptyPassword = getElement('.error__empty_password');
     const errEmptyPassword2 = getElement('.error__empty_password2');
     const errEmptyName = getElement('.error__empty_name');
-    const inputPasswordValue = getElement('#passwordProfileUser').value;
-    const inputPasswordValue2 = getElement('#password2ProdileUser').value;
+    const inputPassword = getElement('#passwordProfileUser');
+    const inputPassword2 = getElement('#password2ProdileUser');
     const btnSubmit = getElement('.form_profile_btn_save');
     const btnReset = getElement('.form_profile_btn_reset');
     switch (elem.id) {
@@ -79,7 +78,7 @@ class UserPagesView {
         } else {
           UserPagesView.hideError(errRepeatPassword);
         }
-        if (!validRepeatPassword(valueUnput, inputPasswordValue2) && valueUnput.length) {
+        if (!validRepeatPassword(valueUnput, inputPassword2.value) && valueUnput.length) {
           UserPagesView.showError(errorRepeat, btnSubmit, elem);
         } else {
           UserPagesView.hideError(errorRepeat);
@@ -94,14 +93,14 @@ class UserPagesView {
          && (oldDataPassword !== valueUnput)) {
           elem.classList.remove('border_red');
         }
-        if (validRepeatPassword(valueUnput, inputPasswordValue2)) {
+        if (validRepeatPassword(valueUnput, inputPassword2.value)) {
           getElement('#password2ProdileUser').classList.remove('border_red');
         } else {
           getElement('#password2ProdileUser').classList.add('border_red');
         }
         break;
       case 'password2ProdileUser':
-        if (!validRepeatPassword(valueUnput, inputPasswordValue) && valueUnput.length) {
+        if (!validRepeatPassword(valueUnput, inputPassword.value) && valueUnput.length) {
           UserPagesView.showError(errorRepeat, btnSubmit, elem);
         } else {
           UserPagesView.hideError(errorRepeat);
@@ -111,40 +110,35 @@ class UserPagesView {
         } else {
           UserPagesView.hideError(errEmptyPassword2);
         }
-        if (valueUnput.length && validRepeatPassword(valueUnput, inputPasswordValue)) {
+        if (valueUnput.length && validRepeatPassword(valueUnput, inputPassword.value)) {
           elem.classList.remove('border_red');
         }
         break;
       default:
         return true;
     }
-    const validateName1 = getElement('.error__name_profile').classList.contains('display_none');
-    const validatePassword = getElement('.error__pasword_profile').classList.contains('display_none');
-    const validatePassword2 = getElement('.error__pasword2_profile').classList.contains('display_none');
-    const validateOldName = getElement('#nameProfileUser').value !== dataUserServer.userName;
-    const validateOldPassword = getElement('#passwordProfileUser').value !== dataUser.password;
-    const validateOldPassword2 = getElement('#password2ProdileUser').value !== dataUser.password;
+    const arrErrors = [
+      errorUserName, errorPassword, errorRepeat, errorRepeatName, errRepeatPassword,
+      errEmptyPassword, errEmptyPassword2, errEmptyName,
+    ];
+    let isValid = true;
+    arrErrors.forEach((er) => {
+      if (!er.classList.contains('display_none')) isValid = false;
+    });
     const validateOldAvatar = !UserPagesView.isNewAvatar();
-    console.log(validateOldAvatar);
-    const validateEmptyName = getElement('#nameProfileUser').value !== '';
-    const validateEmptyPassword = getElement('#passwordProfileUser').value !== '';
-    const validateEmptyRepPassword = getElement('#password2ProdileUser').value !== '';
-    const isNewData = validateOldName || validateOldPassword || validateOldPassword2 || validateOldAvatar;
-    const isDisabled = validateName1
-     && validatePassword
-     && validatePassword2
-     && validateEmptyName
-     && validateEmptyPassword
-     && validateEmptyRepPassword
-     && isNewData;
-    btnSubmit.disabled = !isDisabled;
+    const isOldName = nameUser.value === oldDataServer.userName;
+    const isOldPassword = inputPassword.value === oldDataPassword;
+    const isOldPassword2 = inputPassword2.value === oldDataPassword;
+    console.log(isOldPassword2, isOldName, isOldPassword, validateOldAvatar);
+    const isNewData = (!isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
+    btnSubmit.disabled = !isValid || !isNewData;
     btnReset.disabled = !isNewData;
   }
 
-  static showError(errorUserName, btnSubmit, elem) {
+  static showError(error, btnSubmit, elem) {
     btnSubmit.disabled = true;
     elem.classList.add('border_red');
-    errorUserName.classList.remove('display_none');
+    error.classList.remove('display_none');
   }
 
   static hideError(errorUserName) {
@@ -203,17 +197,10 @@ class UserPagesView {
     }
   }
 
-  settingRadio() {
-    const idImg = localStorage.getItem('avatar');
-    getElements('.profile_avatar_radio').forEach((radio) => {
-      if (radio.value === idImg) radio.checked = true;
-    });
-  }
-
   static isNewAvatar() {
-    const idImg = localStorage.getItem('avatar');
     const checkAvatar = document.forms.editProfile.elements.avatar.value;
-    if (idImg !== checkAvatar) {
+    const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
+    if (checkAvatar !== oldAvatar) {
       getElement('.form_profile_btn_save').disabled = false;
       getElement('.form_profile_btn_reset').disabled = false;
       return true;
@@ -226,18 +213,25 @@ class UserPagesView {
     getElement('#passwordProfileUser').value = dataUser.password;
     getElement('#password2ProdileUser').value = dataUser.password;
     getElement('#nameProfileUser').value = dataUserServer.userName;
-    getElement('.error__name_profile').classList.add('display_none');
-    getElement('.error__pasword_profile').classList.add('display_none');
-    getElement('.error__pasword2_profile').classList.add('display_none');
-    getElement('.error__repeat_name').classList.add('display_none');
-    getElement('.error__repeat_password').classList.add('display_none');
-    getElement('.error__empty_password').classList.add('display_none');
-    getElement('.error__empty_password2').classList.add('display_none');
-    getElement('.error__empty_name').classList.add('display_none');
-
-    const idImg = localStorage.getItem('avatar');
+    const errors = [
+      '.error__name_profile',
+      '.error__pasword_profile',
+      '.error__pasword2_profile',
+      '.error__repeat_name',
+      '.error__repeat_password',
+      '.error__empty_password',
+      '.error__empty_password2',
+      '.error__empty_name',
+    ];
+    errors.forEach((cl) => { getElement(cl).classList.add('display_none'); });
+    const inputElem = [
+      '#passwordProfileUser',
+      '#password2ProdileUser',
+      '#nameProfileUser',
+    ];
+    inputElem.forEach((cl) => { getElement(cl).classList.remove('border_red'); });
     getElements('.profile_avatar_radio').forEach((radio) => {
-      if (radio.value === idImg) radio.checked = true;
+      radio.checked = false;
     });
     getElement('.form_profile_btn_reset').disabled = true;
     getElement('.form_profile_btn_save').disabled = true;
@@ -334,27 +328,32 @@ class UserPagesView {
       userPasswordInput.disabled = false;
       userPasswordInput2.disabled = false;
       userNameInput.disabled = false;
-      containerInputAvatar.classList.add('display_none');
+      // containerInputAvatar.classList.add('display_none');
       viewMode.classList.toggle('edit_profile_btn_link');
       editProf.classList.toggle('view_mode');
 
       containerInfoUs.insertAdjacentHTML('beforeend', `<div class='profile__avatar_group'>
-    <p class='label__user_profile'>Avatar</p>
-    <div class='container__avatar'>
-      <img src='../assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
-      <img src='../assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
-      <img src='../assets/img/avatar3.png' id='Img3' alt='icon avatar'/>
-      <img src='../assets/img/avatar4.png' id='Img4' alt='icon avatar'/>
-      <img src='../assets/img/avatar5.png' id='Img5' alt='icon avatar' />         
+      <hr/>
+    <p class='label__user_profile'> New Avatar:</p>
+    <div class='container__avatar_profile'>
+      <img src='../assets/img/avatar10.png' id='Img1' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='../assets/img/avatar11.png' id='Img2' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='../assets/img/avatar12.png' id='Img3' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='../assets/img/avatar13.png' id='Img4' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='../assets/img/avatar14.png' id='Img5' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='../assets/img/avatar15.png' id='Img6' alt='icon avatar' class='profile_avatar_img'/>              
     </div>
-    <div class='container__radio'>
+    <div class='container__radio_profile'>
       <input name="avatar" type="radio" value='Img1' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img2' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img3' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img4' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img5' class='profile_avatar_radio'/> 
+      <input name="avatar" type="radio" value='Img6' class='profile_avatar_radio'/> 
     </div>
+    <hr/>
 </div>
+
 <div class='form_btns'>
     <div class='form_btns_profile'>
         <button type='button' disabled class='dark_btn btn form_profile_btn_reset'>Cancel</button>      
@@ -378,9 +377,8 @@ class UserPagesView {
     newsectionTasks.append(mainRegistr);
     parentElem.replaceWith(newsectionTasks);
     if (this.isViewMode !== 'true') {
-      this.settingRadio();
       getElements('.input__user_profile').forEach((input) => input.addEventListener('input', this.validationInput));
-      getElement('.container__radio').addEventListener('change', UserPagesView.isNewAvatar);
+      getElement('.container__radio_profile').addEventListener('change', UserPagesView.isNewAvatar);
       getElement('.form_profile_btn_reset').addEventListener('click', this.cancelChanges);
     }
     if (theme === 'dark') {

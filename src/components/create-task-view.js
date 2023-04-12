@@ -115,6 +115,9 @@ class CreateTaskView {
   };
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+
     const users = JSON.parse(localStorage.getItem('allUsers'));
     const userThis = JSON.parse(localStorage.getItem('dataUserServer'));
     const parentElem = document.getElementById(this.id);
@@ -124,7 +127,7 @@ class CreateTaskView {
     const section = createElem('section', ['container__create_task']);
 
     const containerForm = createDiv(['container__form_task']);
-    const formTitle = createText('h4', `${localStorage.getItem('editTask') ? 'Edit Task' : 'Create new Task'}`, ['form__task_title']);
+    const formTitle = createText('h4', `${(localStorage.getItem('editTask') && isRu && 'Править задачу') || (localStorage.getItem('editTask') && !isRu && 'Edit Task') || (!localStorage.getItem('editTask') && isRu && 'Создать новую задачу') || 'Create new Task'}`, ['form__task_title']);
     const closeModalBtn = createBtn('X', ['form__btn_close'], 'button', 'close modal');
 
     const myForm = createElem('form', ['form__task']);

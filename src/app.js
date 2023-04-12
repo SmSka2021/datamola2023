@@ -62,6 +62,7 @@ class TasksController {
     this.setTheme();
     this.saveLocalStorage('loadPages', loadPagesStart);
     localStorage.removeItem('hideBtnsLoad');
+    this.settingLang();
   }
 
   allTasks = [];
@@ -69,6 +70,11 @@ class TasksController {
   allUser = [];
 
   profileUser = {};
+
+  settingLang = () => {
+    const lang = this.getLocalStorage();
+    if (!lang) this.saveLocalStorage('lang', 'ru');
+  };
 
   updateDataTask = () => {
     setTimeout(setInterval(() => { this.getTasksFromServer(); }, fiveMinutes), fiveMinutes);
@@ -126,9 +132,21 @@ class TasksController {
       this.renderRegistrationPage();
       return;
     }
+    // if (this.getLocalStorage('statusUser') && this.path.actuale === pathName.boardCard) {
+    //   this.renderMainBoardCard();
+    //   this.renderFilter();
+    //   return;
+    // }
+    // if (this.getLocalStorage('statusUser') && this.path.actuale === pathName.boardList) {
+    //   this.renderMainBoardList();
+    //   this.renderFilter();
+    //   this.renderHeader();
+    //   return;
+    // }
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
       this.renderFilter();
+      this.renderHeader();
       return;
     }
     if (this.path.actuale === pathName.boardList) {
@@ -229,13 +247,13 @@ class TasksController {
 
   handlerError = (response) => {
     this.cleanLoader();
-    if (response.error === 404) this.renderMessageModal(messageAgainAuth);
-    if (response.error === 401) this.renderMessageModal(messageEr);
-    if (response.error === 500) this.renderMessageModal(messageErServer);
-    if (response.error === 405) this.renderMessageModal(messageIncorrectData);
-    if (response.error === 400) this.renderMessageModal(messageErDublicate);
-    if (response.error === 402) this.renderMessageModal(messageErPassword);
-    if (response.error === 403) this.renderMessageModal(messageErName);
+    if (response.error === 404) this.renderMessageModal(messageAgainAuth, true);
+    if (response.error === 401) this.renderMessageModal(messageEr, true);
+    if (response.error === 500) this.renderMessageModal(messageErServer, true);
+    if (response.error === 405) this.renderMessageModal(messageIncorrectData, true);
+    if (response.error === 400) this.renderMessageModal(messageErDublicate, true);
+    if (response.error === 402) this.renderMessageModal(messageErPassword, true);
+    if (response.error === 403) this.renderMessageModal(messageErName, true);
   };
 
   editProfileUser = async (dataUser) => {
@@ -396,6 +414,20 @@ class TasksController {
     this.header.bindOpenProfileUserFromHeader(this.renderProfilePage);
     this.header.bindSetDarkTheme(this.setDarkTheme);
     this.header.bindSetLightTheme(this.setLightTheme);
+    this.header.bindSetRuLang(this.setRuLang);
+    this.header.bindSetEnLang(this.setEnLang);
+  };
+
+  setRuLang = () => {
+    this.saveLocalStorage('lang', 'ru');
+    this.renderHeader();
+    this.renderStartPages();
+  };
+
+  setEnLang = () => {
+    this.saveLocalStorage('lang', 'en');
+    this.renderHeader();
+    this.renderStartPages();
   };
 
   setTheme = () => {
@@ -463,9 +495,20 @@ class TasksController {
     this.confimModal.bindCloseConfirm(this.closeModalCreateTask);
   };
 
-  renderMessageModal = (text) => {
-    this.messageModal.display(text);
+  renderMessageModal = (text, isShowBtnMainPages) => {
+    this.messageModal.display(text, isShowBtnMainPages);
     this.messageModal.bindCloseMessageModal(this.closeModalMessage);
+    this.messageModal.bindShowMainPages(this.actionBtnError);
+  };
+
+  actionBtnError = () => {
+    this.closeModalMessage();
+    const isAuth = this.getLocalStorage('auth');
+    if (!isAuth) {
+      this.logInAsGuest();
+    } else {
+      this.renderMainBoardCard();
+    }
   };
 
   removeElement = (id) => {
@@ -504,7 +547,6 @@ class TasksController {
     const registrDataUser = await this.serviseApi.registrationUser(dataUser);
     this.cleanLoader();
     this.handlerError(registrDataUser);
-    console.log(registrDataUser);
     if (!registrDataUser.error) {
       this.saveLocalStorage('dataUser', registrDataUser);
       this.saveLocalStorage('user', registrDataUser.id);
@@ -538,16 +580,18 @@ class TasksController {
 
   logInAsGuest = () => {
     this.saveLocalStorage('statusUser', 'guest');
-    localStorage.removeItem('tokken');
-    localStorage.removeItem('dataRemoveTask');
-    localStorage.removeItem('dataUserServer');
-    localStorage.removeItem('dataUser');
-    localStorage.removeItem('editTask');
-    localStorage.removeItem('idCheckedTask');
-    localStorage.removeItem('isViewProfile');
-    localStorage.removeItem('settingFilter');
-    localStorage.removeItem('confirmReset');
-    // localStorage.removeItem('hideBtnsLoad');
+    const dataLocal = ['tokken',
+      'dataRemoveTask',
+      'dataUserServer',
+      'dataUser',
+      'editTask',
+      'idCheckedTask',
+      'isViewProfile',
+      'settingFilter',
+      'confirmReset',
+      // 'hideBtnsLoad',
+    ];
+    dataLocal.forEach((data) => { localStorage.removeItem(data); });
     this.renderStartPages();
     this.renderHeader();
   };

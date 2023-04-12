@@ -97,3 +97,7 @@
 .message_title {
     margin-top: 75px;
 }
+.main_pages_btn {
+    margin: 30px calc(50% - 60px);
+    width: 120px;
+}

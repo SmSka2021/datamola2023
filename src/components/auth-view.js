@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import {
@@ -19,6 +20,12 @@ class AuthFormView {
   resetForm(event) {
     event.stopPropagation();
     document.forms.authForm.reset();
+    event.target.disabled = true;
+    getElement('.btn_login').disabled = true;
+    getElement('.error__login_auth').classList.add('display_none');
+    getElement('.error__pasword_auth').classList.add('display_none');
+    getElement('#login_auth').classList.remove('border_red');
+    getElement('#password_auth').classList.remove('border_red');
   }
 
   bindLogInAsGuestPage(handler) {
@@ -47,18 +54,49 @@ class AuthFormView {
     const valueUnput = elem.value;
     const errorLogin = getElement('.error__login_auth');
     const errorPassword = getElement('.error__pasword_auth');
+    const btnLogin = getElement('.btn_login');
+    const btnReset = getElement('.reset_auth');
     switch (elem.id) {
       case 'login_auth':
-        if (!validLogin(valueUnput) && valueUnput.length) errorLogin.classList.remove('display_none');
-        else errorLogin.classList.add('display_none');
+        if (!validLogin(valueUnput) && valueUnput.length) {
+          AuthFormView.showError(errorLogin, btnLogin, elem);
+        } else {
+          errorLogin.classList.add('display_none');
+          elem.classList.remove('border_red');
+        }
         break;
       case 'password_auth':
-        if (!validPassword(valueUnput) && valueUnput.length) errorPassword.classList.remove('display_none');
-        else errorPassword.classList.add('display_none');
+        if (!validPassword(valueUnput) && valueUnput.length) {
+          AuthFormView.showError(errorPassword, btnLogin, elem);
+        } else {
+          errorPassword.classList.add('display_none');
+          elem.classList.remove('border_red');
+        }
         break;
       default:
         return true;
     }
+    const validateLogin = errorLogin.classList.contains('display_none');
+    const validatePassword = errorPassword.classList.contains('display_none');
+    const validateEmptyLogin = getElement('#login_auth').value !== '';
+    const validateEmptyPassword = getElement('#password_auth').value !== '';
+    const isDisabled = validateLogin
+     && validatePassword
+     && validatePassword
+     && validateEmptyLogin
+     && validateEmptyPassword;
+    btnLogin.disabled = !isDisabled;
+    btnReset.disabled = !validateEmptyPassword && !validateEmptyPassword && false;
+  }
+
+  static showError(error, btn, elem) {
+    btn.disabled = true;
+    elem.classList.add('border_red');
+    error.classList.remove('display_none');
+  }
+
+  static hideError(errorUserName) {
+    errorUserName.classList.add('display_none');
   }
 
   hiddenElem(elemArr) {
@@ -99,6 +137,9 @@ class AuthFormView {
   }
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['board', 'auth_page']);
@@ -108,9 +149,9 @@ class AuthFormView {
     // const btnMain = createBtn('Main Page', ['dark_btn', 'btn'], 'button', 'main page');
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title']);
-    const logIn = createBtn('LogIn', ['user__info_title', 'sign_up'], 'button', 'Authorize');
-    const signUp = createBtn('SignUp', ['user__info_title', 'login_btn_link', 'sign__modal_link'], 'button', 'Registration');
-    const guest = createBtn('LogIn as a guest', ['user__info_title', 'guest_btn_link', 'guest_btn_link_auth'], 'button', 'LogIn as a guest');
+    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'sign_up'], 'button', 'Authorize');
+    const signUp = createBtn(isRu ? 'Регистр' : 'SignUp', ['user__info_title', 'login_btn_link', 'sign__modal_link'], 'button', 'Registration');
+    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link', 'guest_btn_link_auth'], 'button', 'LogIn as a guest');
     containerTitle.append(logIn, signUp, guest);
     const containerForm = createDiv(['container__form']);
 
@@ -118,14 +159,13 @@ class AuthFormView {
     myForm.name = 'authForm';
 
     myForm.insertAdjacentHTML('afterbegin', `<div class='container__input'>
-    <label class='label__user_info' for='login_auth'>Login</label>
+    <label class='label__user_info label_login' for='login_auth'>Login</label>
     <input class='input__user_info login_input' type='text' id='login_auth' name='login_auth' maxlength="100" required/>
     <p class='eror_form error__login_auth display_none'>Only latin letter</p>
-    <p class='eror_form error__login_auth_origin display_none'>This login is busy</p>
 </div>
 
 <div class='container__input'>
-    <label class='label__user_info' for='password_auth'>Password</label>
+    <label class='label__user_info label_password' for='password_auth'>Password</label>
     <input class='input__user_info' type='password' id='password_auth' name='password_auth' required/>
     <button type='button' class='password__btn_eye eye_auth eye_close_auth'>
            <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
@@ -137,8 +177,8 @@ class AuthFormView {
 </div>
 <div class='form_btns'>
     <div class='action__form_btns'>
-        <button type='button' class='light_btn btn form_btn reset_auth'>Reset</button>
-        <button type='submit' class='light_btn btn form_btn'>LogIn</button>
+        <button type='button' class='light_btn btn form_btn reset_auth' disabled>Reset</button>
+        <button type='submit' class='light_btn btn form_btn btn_login' disabled>LogIn</button>
     </div>   
 </div>`);
 
@@ -150,6 +190,14 @@ class AuthFormView {
     getElements('.input__user_info').forEach((input) => input.addEventListener('input', this.validationInput));
     getElements('.eye_auth').forEach((btn) => btn.addEventListener('click', this.openEyeAuth));
     getElement('.reset_auth').addEventListener('click', this.resetForm);
+    if (isRu) {
+      getElement('.label_login').textContent = 'Логин';
+      getElement('.error__login_auth').textContent = 'Только латинские буквы';
+      getElement('.label_password').textContent = 'Пароль';
+      getElement('.error__pasword_auth').textContent = 'Символ, цифры, большие и мал. латинские буквы';
+      getElement('.reset_auth').textContent = 'Очистить';
+      getElement('.btn_login').textContent = 'Войти';
+    }
   }
 }
 export default AuthFormView;

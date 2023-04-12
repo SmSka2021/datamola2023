@@ -23,7 +23,17 @@ class MessageModalView {
     }
   }
 
-  display(text) {
+  bindShowMainPages(handler) {
+    const btn = getElement('.main_pages_btn');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
+  display(text, isShowBtnMain = false) {
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['section__confirm_modal']);
@@ -33,8 +43,12 @@ class MessageModalView {
     const modal = createDiv(['modal']);
     const btnClose = createBtn('X', ['form__btn_close', 'close_confirm'], 'button', 'Close');
     const title = createText('h4', `${text}`, ['confirm__modal_title', 'message_title']);
-
-    modal.append(btnClose, title);
+    if (isShowBtnMain) {
+      const btnMainPages = createBtn('Main pages', ['btn', 'light_btn', 'main_pages_btn'], 'button', 'main pages');
+      modal.append(btnClose, title, btnMainPages);
+    } else {
+      modal.append(btnClose, title);
+    }
     modalContainer.append(modal);
     newsectionTasks.append(modalWraper, modalContainer);
     parentElem.replaceWith(newsectionTasks);

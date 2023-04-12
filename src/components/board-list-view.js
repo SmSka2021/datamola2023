@@ -166,6 +166,9 @@ class BoardViewList {
   };
 
   display(tasks) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';
@@ -218,14 +221,14 @@ class BoardViewList {
       arrFieldTask.forEach((field) => {
         const tableThTitle = createElem('th', []);
         tableThTitle.textContent = field;
-        if (field === 'Comments') {
+        if (field === 'Comments' || field === 'Комментарии') {
           tableThTitle.innerHTML = `<img src=${srcImgCollection.comments} alt='comments icon'
           class='task__img_comment'>`;
         }
-        if ((field === 'Edit' || field === 'Delete') && this.checkIsGuest()) {
+        if (((field === 'Edit' || field === 'Править') || (field === 'Delete' || field === 'Удалить')) && this.checkIsGuest()) {
           tableThTitle.classList.add('display_none');
         }
-        if ((field === 'Edit' || field === 'Delete') && this.isAuthUser()) {
+        if (((field === 'Edit' || field === 'Править') || (field === 'Delete' || field === 'Удалить')) && this.isAuthUser()) {
           tableThTitle.classList.remove('display_none');
         }
         tableRowTitle.append(tableThTitle);
@@ -236,7 +239,7 @@ class BoardViewList {
       tableTodo.append(tableThead, tableBody);
       tableTodo.hidden = true;
 
-      const btnMoreTasks = createBtn('Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list'], 'button', 'Load more tasks');
+      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list'], 'button', 'Load more tasks');
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
@@ -257,6 +260,11 @@ class BoardViewList {
         });
       }
     });
+    if (isRu) {
+      getElements('.label__todo_list')[0].textContent = 'В планах';
+      getElements('.label__todo_list')[1].textContent = 'В процессе';
+      getElements('.label__todo_list')[2].textContent = 'Выполнено';
+    }
     const labelTodo = getElements('.table__header');
     if (this.isOpenTodo) this.changeOpenCloseTodo(labelTodo[0], 0);
     if (this.isOpenInProgress) this.changeOpenCloseTodo(labelTodo[1], 1);
