@@ -162,12 +162,14 @@
     color: var(--primary-color);
     margin: 30px auto 20px;
 }
+.light_color {
+    color: var(--white-color); 
+}
 /********profile page ****/
 .container__title_profile {
 width: 600px;
 }
-.view_mode {
-    background: transparent;
+.view_mode {  
     width: 33.4%;
     color: var(--primary-color);
     border-right: 2px solid var(--primary-color);
@@ -192,10 +194,11 @@ width: 600px;
 .container__view_info {
     width: 600px;   
     color: var(--primary-color);
+    background: url('./../assets/img/light_fon.jpg');
     border-left: 2px solid var(--primary-color);
     border-right: 2px solid var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
-    border-radius: 0 0 10px; 
+    border-radius: 0 0 10px 10px; 
     padding: 20px;
     margin: 0 auto;
 }
@@ -237,15 +240,21 @@ width: 600px;
     display: flex;
     margin: 0 auto;
     padding: 10px 0;
-    justify-content: flex-end; 
+    justify-content: space-between; 
 }
 .profile__img_avatars {
     width: 50px;
     height: 50px;
 }
-.form_profile_btn_save {
+.form_profile_btn_save,
+.form_profile_btn_reset {
     width: 120px;
     height: 40px;
+}
+.form_profile_btn_save:disabled,
+.form_profile_btn_reset:disabled {
+    cursor: not-allowed;
+    background: var(--irys-color);
 }
 .eror_form_profile {
     font-size: 12px;
@@ -261,4 +270,7 @@ width: 600px;
     width: 85%;
     margin: 0 auto;
     padding: 10px 19px;
+}
+.border_red {
+    border: 2px solid red;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
@@ -13,18 +14,19 @@ import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
-import { statusBtn } from './ultilites/field-task';
+import { statusBtn, taskStatusObj, statusBtnLoadStart } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
 import TaskFeedApiService from './models/task-feed-api-service';
 import Loader from './components/loader';
 import { createElem } from './ultilites/create-element';
+import { getElement } from './ultilites/get-element';
 import {
   messageDelEdit,
   messageErDublicate,
   messageErServer,
   messageEr,
   messageErPassword,
-  // messageErName,
+  messageErName,
   messageNoMoreTasks,
   messagePrivateTask,
   messageAgainAuth,
@@ -57,6 +59,7 @@ class TasksController {
     this.renderStartPages();
     this.updateDataTask();
     this.setCurrentUser();
+    this.setTheme();
     this.saveLocalStorage('loadPages', loadPagesStart);
     localStorage.removeItem('hideBtnsLoad');
   }
@@ -110,7 +113,7 @@ class TasksController {
   };
 
   renderStartPages = async () => {
-    if (this.isAuth && !this.allTasks.length) {
+    if (!this.allTasks.length) {
       await this.getTasksFromServer();
     }
     if (!localStorage.getItem('allUsers') && this.isAuth) this.getDataUsers();
@@ -232,13 +235,13 @@ class TasksController {
     if (response.error === 405) this.renderMessageModal(messageIncorrectData);
     if (response.error === 400) this.renderMessageModal(messageErDublicate);
     if (response.error === 402) this.renderMessageModal(messageErPassword);
+    if (response.error === 403) this.renderMessageModal(messageErName);
   };
 
   editProfileUser = async (dataUser) => {
     this.renderLoader();
     const responseServer = await this.serviseApi.editUserProfile(dataUser);
     this.cleanLoader();
-    // сообщаем об успехе или неудаче messageErName
     this.handlerError(responseServer);
     if (!responseServer.error) {
       this.saveLocalStorage('dataUserServer', responseServer);
@@ -257,6 +260,7 @@ class TasksController {
   setMainPage = () => {
     this.saveLocalStorage('isViewProfile', 'true');
     this.renderMainBoardCard();
+    this.renderFilter();
   };
 
   setViewProfile = () => {
@@ -292,25 +296,41 @@ class TasksController {
 
   loadMoreTask = async (status) => {
     const isLoadPage = this.getLocalStorage('loadPages');
+    const statusBtnLoad = this.getLocalStorage('hideBtnsLoad') || statusBtnLoadStart;
     let moreTask;
-    this.renderLoader();
     if (status === statusBtn.todo) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.toDo)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks);
+        statusBtnLoad.todo = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        getElement('#load_list_todo').style.display = 'none';
+        return;
+      }
+      this.renderLoader();
       moreTask = await this.serviseApi.getTasks(isLoadPage.todo.to, isLoadPage.todo.to + 10, 1);
       this.handlerError(moreTask);
       if (!moreTask.error) {
-        console.log(moreTask);
         isLoadPage.todo = { from: 0, to: isLoadPage.todo.to + 10 };
         const lengthAllTaskOld = this.allTasks.length;
         this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
           window.scrollTo(0, 0);
-          this.saveLocalStorage('hideBtnsLoad', { todo: true });
+          statusBtnLoad.todo = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
           this.renderMessageModal(messageNoMoreTasks);
         }
       }
     }
     if (status === statusBtn.inProgress) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.inProgress)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks);
+        statusBtnLoad.inProgress = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        getElement('#load_list_inProgress').style.display = 'none';
+        return;
+      }
+      this.renderLoader();
       moreTask = this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
       this.handlerError(moreTask);
       if (!moreTask.error) {
@@ -319,13 +339,22 @@ class TasksController {
         this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
-          this.saveLocalStorage('hideBtnsLoad', { inProgress: true });
+          statusBtnLoad.inProgress = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
           window.scrollTo(0, 0);
           this.renderMessageModal(messageNoMoreTasks);
         }
       }
     }
     if (status === statusBtn.complete) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.complete)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks);
+        statusBtnLoad.complete = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        getElement('#load_list_complete').style.display = 'none';
+        return;
+      }
+      this.renderLoader();
       moreTask = this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
       this.handlerError(moreTask);
       if (!moreTask.error) {
@@ -334,7 +363,8 @@ class TasksController {
         this.allTasks.push(...moreTask);
         const lengthAllTaskNew = this.allTasks.length;
         if (lengthAllTaskOld === lengthAllTaskNew) {
-          this.saveLocalStorage('hideBtnsLoad', { complete: true });
+          statusBtnLoad.complete = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
           window.scrollTo(0, 0);
           this.renderMessageModal(messageNoMoreTasks);
         }
@@ -364,12 +394,48 @@ class TasksController {
     this.header.bindOpenLoginModalHeader(this.renderAuthPage);
     this.header.bindLogOutHeader(this.logOutUser);
     this.header.bindOpenProfileUserFromHeader(this.renderProfilePage);
+    this.header.bindSetDarkTheme(this.setDarkTheme);
+    this.header.bindSetLightTheme(this.setLightTheme);
+  };
+
+  setTheme = () => {
+    const theme = this.getLocalStorage('theme');
+    if (theme) {
+      (theme === 'dark') ? this.setDarkTheme() : this.setLightTheme();
+    } else {
+      this.setLightTheme();
+    }
+  };
+
+  setDarkTheme = () => {
+    this.saveLocalStorage('theme', 'dark');
+    getElement('#main').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('.sunny').classList.remove('check_btn');
+    getElement('.dark').classList.add('check_btn');
+    const pagesProfile = getElement('.info_user_main');
+    if (pagesProfile) {
+      getElement('.dark_color').classList.add('light_color');
+    }
+  };
+
+  setLightTheme = () => {
+    this.saveLocalStorage('theme', 'light');
+    getElement('#main').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('.sunny').classList.add('check_btn');
+    getElement('.dark').classList.remove('check_btn');
+    const pagesProfile = getElement('.info_user_main');
+    if (pagesProfile) {
+      getElement('.dark_color').classList.remove('light_color');
+    }
   };
 
   logOutUser = () => {
     this.auth = false;
     localStorage.removeItem('auth');
     this.path.actuale = pathName.boardCard;
+    this.cleanModalCreateTask();
     this.logInAsGuest();
   };
 
@@ -472,6 +538,16 @@ class TasksController {
 
   logInAsGuest = () => {
     this.saveLocalStorage('statusUser', 'guest');
+    localStorage.removeItem('tokken');
+    localStorage.removeItem('dataRemoveTask');
+    localStorage.removeItem('dataUserServer');
+    localStorage.removeItem('dataUser');
+    localStorage.removeItem('editTask');
+    localStorage.removeItem('idCheckedTask');
+    localStorage.removeItem('isViewProfile');
+    localStorage.removeItem('settingFilter');
+    localStorage.removeItem('confirmReset');
+    // localStorage.removeItem('hideBtnsLoad');
     this.renderStartPages();
     this.renderHeader();
   };

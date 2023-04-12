@@ -1,4 +1,4 @@
-import { maxLengthDescription } from '../ultilites/constant';
+import { maxLengthDescription } from '../../src/ultilites/constant';
 
 class Comment {
   constructor(id, text, createdAt, author) {

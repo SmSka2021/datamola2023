@@ -10,8 +10,7 @@
     height: 100%;
     position: absolute;
     top: 0;
-    left: 0;
-    background: var(--grey-light-color);
+    left: 0;    
     opacity: 0.5;
     z-index: 2;
 }
@@ -206,4 +205,9 @@
     font-weight: 700;
     font-size: 2rem;
     margin-top: 70px;
+}
+.container__radio_create {
+    display: flex;
+    padding: 0 10px 10px 10px;
+    justify-content: space-between;
 }

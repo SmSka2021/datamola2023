@@ -240,6 +240,7 @@ class BoardViewList {
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+      btnMoreTasks.id = `load_list_${createIdList(column)}`;
       columnOne.append(tableHeader, tableTodo, btnMoreTasks);
       sectionTasks.append(columnOne);
     });

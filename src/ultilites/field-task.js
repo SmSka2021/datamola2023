@@ -23,3 +23,8 @@ export const statusBtn = {
   complete: 'complete',
   inProgress: 'inProgress',
 };
+export const statusBtnLoadStart = {
+  todo: false,
+  complete: false,
+  inProgress: false,
+};

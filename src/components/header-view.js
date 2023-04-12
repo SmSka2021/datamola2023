@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import {
@@ -45,6 +47,26 @@ class HeaderView {
     }
   }
 
+  bindSetDarkTheme(handler) {
+    const btn = getElement('.img_dark_theme');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
+  bindSetLightTheme(handler) {
+    const btn = getElement('.img_light_theme');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   setUser = () => {
     if (localStorage.getItem('dataUserServer')) {
@@ -56,22 +78,6 @@ class HeaderView {
     } else {
       return null;
     }
-  };
-
-  setDarkThema = (e) => {
-    e.stopPropagation();
-    getElement('#main').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
-    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
-    getElement('.sunny').classList.toggle('check_btn');
-    getElement('.dark').classList.toggle('check_btn');
-  };
-
-  setLightThema = (e) => {
-    e.stopPropagation();
-    getElement('#main').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
-    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
-    getElement('.sunny').classList.toggle('check_btn');
-    getElement('.dark').classList.toggle('check_btn');
   };
 
   checkIsGuest = () => localStorage.getItem('statusUser');
@@ -88,14 +94,14 @@ class HeaderView {
     containerLogo.append(imgLogo, logoTitle);
 
     const containerThema = createDiv(['container__thema']);
-    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny', 'check_btn'], 'button', 'Light theme');
-    const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img']);
-    imgLightThema.addEventListener('click', this.setLightThema);
+    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny'], 'button', 'Light theme');
+    const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img', 'img_light_theme']);
+    // imgLightThema.addEventListener('click', this.setLightThema);
     themaBtnLiht.append(imgLightThema);
     const spanSlesh = createText('span', ' / ');
-    const themaBtnDark = createBtn('', ['thema__btn', 'dark'], 'button', 'Dark theme');
-    const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img']);
-    imgDarkThema.addEventListener('click', this.setDarkThema);
+    const themaBtnDark = createBtn('', ['thema__btn', 'dark', 'check_btn'], 'button', 'Dark theme');
+    const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img', 'img_dark_theme']);
+    // imgDarkThema.addEventListener('click', this.setDarkThema);
     themaBtnDark.append(imgDarkThema);
     containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
 
