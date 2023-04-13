@@ -21,7 +21,7 @@
 }
 
 .container__form_task {
-    width: 450px;
+    width: 500px;
     margin: 0 auto;
     position: relative;
     background-image: url('./../assets/img/dark_fon.jpg');
@@ -78,7 +78,7 @@
 }
 
 .label_width {
-    width: 60px;
+    min-width: 60px;
 }
 
 .radio_label {
@@ -125,6 +125,7 @@
     width: 100%;
     gap: 5px;
     align-items: center;
+    justify-content: space-between;
 }
 
 .status_container {

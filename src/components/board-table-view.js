@@ -6,7 +6,7 @@ import {
   createBtn,
 } from '../ultilites/create-element';
 import srcImgCollection from '../ultilites/src-img-collection';
-import { createIdList, taskStatusArr } from '../ultilites/field-task';
+import { createIdList, taskStatusArr, translateStatus } from '../ultilites/field-task';
 import OneTaskViewCard from './one-task-card-view';
 import { getElements, getElement } from '../ultilites/get-element';
 import { pathName } from '../ultilites/path';
@@ -109,7 +109,7 @@ class TaskFeedView {
     taskStatusArr.forEach((column) => {
       const columnOne = createDiv(['column']);
 
-      const btnAddTask = createBtn(`${column}`, ['btn__add_task', 'dark_btn', 'btn'], 'button', 'Add new task');
+      const btnAddTask = createBtn(isRu ? translateStatus(column) : `${column}`, ['btn__add_task', 'dark_btn', 'btn'], 'button', isRu ? 'Добавить задачу' : 'Add new task');
       const imgAdd = createImg(srcImgCollection.addTask, 'icon');
       btnAddTask.append(imgAdd);
       if (this.checkIsGuest()) {
@@ -128,6 +128,7 @@ class TaskFeedView {
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+      btnMoreTasks.id = `load_card_${createIdList(column)}`;
 
       columnOne.append(btnAddTask, line, list, btnMoreTasks);
       sectionTasks.append(columnOne);
@@ -158,11 +159,11 @@ class TaskFeedView {
       });
       this.checkIsHideBtnLoad();
     }
-    if (isRu) {
-      getElements('.btn__add_task')[0].textContent = 'В планах';
-      getElements('.btn__add_task')[1].textContent = 'В процессе';
-      getElements('.btn__add_task')[2].textContent = 'Выполнено';
-    }
+    // if (isRu) {
+    //   getElements('.btn__add_task')[0].textContent = 'В планах';
+    //   getElements('.btn__add_task')[1].textContent = 'В процессе';
+    //   getElements('.btn__add_task')[2].textContent = 'Выполнено';
+    // }
   }
 }
 

@@ -129,7 +129,6 @@ class UserPagesView {
     const isOldName = nameUser.value === oldDataServer.userName;
     const isOldPassword = inputPassword.value === oldDataPassword;
     const isOldPassword2 = inputPassword2.value === oldDataPassword;
-    console.log(isOldPassword2, isOldName, isOldPassword, validateOldAvatar);
     const isNewData = (!isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
     btnSubmit.disabled = !isValid || !isNewData;
     btnReset.disabled = !isNewData;
@@ -184,7 +183,9 @@ class UserPagesView {
       myForm.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const imgUser = convertorImg64(myForm.elements.avatar.value);
+        const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
+        const newAvatar = myForm.elements.avatar.value;
+        const imgUser = newAvatar ? convertorImg64(newAvatar) : oldAvatar;
         const editUser = {
           password: myForm.elements.profile_password_input.value,
           retypedPassword: myForm.elements.profile_password2_input.value,
@@ -238,6 +239,9 @@ class UserPagesView {
   }
 
   display() {
+    const isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) === 'true';
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const dataUser = JSON.parse(localStorage.getItem('dataUser'));
     const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
     const theme = JSON.parse(localStorage.getItem('theme'));
@@ -246,12 +250,15 @@ class UserPagesView {
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';
     const mainRegistr = createDiv(['info_user_main']);
-    const pageTitle = createText('h4', `${this.isViewMode ? 'Page User`s Profile' : 'Edit User`s Profile'}`, ['form__task_title', 'dark_color']);
+    const pageTitle = createText('h4', (isViewMode && isRu && 'Профиль пользователя')
+     || (isViewMode && !isRu && 'Page User`s Profile')
+     || (!isViewMode && isRu && 'Редактировать профиль')
+     || (!isViewMode && !isRu && 'Edit User`s Profile'), ['form__task_title', 'dark_color']);
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title', 'container__title_profile']);
-    const viewMode = createBtn('View Mode', ['user__info_title', 'view'], 'button', 'View Mode');
-    const editProf = createBtn('Edit Profile', ['user__info_title', 'edit_profile_link'], 'button', 'Edit Profile');
-    const mainPage = createBtn('Main pages', ['user__info_title', 'main_profile_btn_link'], 'button', 'Main pages');
+    const viewMode = createBtn(isRu ? 'Смотреть' : 'View Mode', ['user__info_title', 'view'], 'button', 'View Mode');
+    const editProf = createBtn(isRu ? 'Править' : 'Edit Profile', ['user__info_title', 'edit_profile_link'], 'button', 'Edit Profile');
+    const mainPage = createBtn(isRu ? 'Главная стр' : 'Main pages', ['user__info_title', 'main_profile_btn_link'], 'button', 'Main pages');
     containerTitle.append(viewMode, editProf, mainPage);
 
     const containerForm = createDiv(['container__form_profile']);
@@ -261,7 +268,7 @@ class UserPagesView {
 
     const containerInputLogin0 = createDiv(['profile_group0']);
     const containerInputLogin = createDiv(['profile_group']);
-    const labeUserLogin = createText('p', 'Login:', ['label__user_profile']);
+    const labeUserLogin = createText('p', isRu ? 'Логин: ' : 'Login:', ['label__user_profile']);
     const userLoginInput = createInput('text', ['input__user_profile', 'login_input']);
     userLoginInput.name = 'profile_login_input';
     userLoginInput.value = `${dataUserServer.login}`;
@@ -271,48 +278,48 @@ class UserPagesView {
 
     const containerInputPassword0 = createDiv(['profile_group0']);
     const containerInputPassword = createDiv(['profile_group']);
-    const labeUserPassword = createText('p', 'Password:', ['label__user_profile']);
+    const labeUserPassword = createText('p', isRu ? 'Пароль: ' : 'Password:', ['label__user_profile']);
     const userPasswordInput = createInput('text', ['input__user_profile']);
     userPasswordInput.name = 'profile_password_input';
     userPasswordInput.value = `${dataUser.password}`;
     userPasswordInput.id = 'passwordProfileUser';
     userPasswordInput.setAttribute('required', 'true');
-    const errorPassword = createText('p', 'Symbols, large and small latin letters, numbers', ['eror_form_profile', 'error__pasword_profile', 'display_none']);
-    const errorRepeatPassword = createText('p', 'Old password is not new', ['eror_form_profile', 'error__repeat_password', 'display_none']);
-    const errorEmptyPassword = createText('p', 'Field cannot be empty', ['eror_form_profile', 'error__empty_password', 'display_none']);
+    const errorPassword = createText('p', isRu ? 'Символ, цифра, больш. и мал. латин. буква' : 'Symbols, large and small latin letters, numbers', ['eror_form_profile', 'error__pasword_profile', 'display_none']);
+    const errorRepeatPassword = createText('p', isRu ? 'Пароль не изменился' : 'Old password is not new', ['eror_form_profile', 'error__repeat_password', 'display_none']);
+    const errorEmptyPassword = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_password', 'display_none']);
     containerInputPassword.append(labeUserPassword, userPasswordInput);
     containerInputPassword0.append(containerInputPassword, errorPassword, errorRepeatPassword, errorEmptyPassword);
 
     const containerInputPassword20 = createDiv(['profile_group0']);
     const containerInputPassword2 = createDiv(['profile_group']);
-    const labeUserPassword2 = createText('p', 'Repeat Password:', ['label__user_profile']);
+    const labeUserPassword2 = createText('p', isRu ? 'Повторите пароль' : 'Repeat Password:', ['label__user_profile']);
     const userPasswordInput2 = createInput('text', ['input__user_profile']);
     userPasswordInput2.name = 'profile_password2_input';
     userPasswordInput2.value = `${dataUser.password}`;
     userPasswordInput2.id = 'password2ProdileUser';
     userPasswordInput2.setAttribute('required', true);
-    const errorPassword2 = createText('p', 'Password mismatch', ['eror_form_profile', 'error__pasword2_profile', 'display_none']);
-    const errorEmptyPassword2 = createText('p', 'Field cannot be empty', ['eror_form_profile', 'error__empty_password2', 'display_none']);
+    const errorPassword2 = createText('p', isRu ? 'Пароли не совпадают' : 'Password mismatch', ['eror_form_profile', 'error__pasword2_profile', 'display_none']);
+    const errorEmptyPassword2 = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_password2', 'display_none']);
     containerInputPassword2.append(labeUserPassword2, userPasswordInput2);
     containerInputPassword20.append(containerInputPassword2, errorPassword2, errorEmptyPassword2);
 
     const containerInputName0 = createDiv(['profile_group0']);
     const containerInputName = createDiv(['profile_group']);
-    const labeUserName = createText('p', 'Name User:', ['label__user_profile']);
+    const labeUserName = createText('p', isRu ? 'Имя пользователя: ' : 'Name User: ', ['label__user_profile']);
     const userNameInput = createInput('text', ['input__user_profile']);
     userNameInput.name = 'profile_name_input';
     userNameInput.value = `${dataUserServer.userName}`;
     userNameInput.id = 'nameProfileUser';
     userNameInput.setAttribute('required', true);
-    const errorRepeat = createText('p', 'Old name is not new', ['eror_form_profile', 'error__repeat_name', 'display_none']);
-    const errorNameUser = createText('p', 'Only in Latin or Cyrillic letter', ['eror_form_profile', 'error__name_profile', 'display_none']);
-    const errorEmptyName = createText('p', 'Field cannot be empty', ['eror_form_profile', 'error__empty_name', 'display_none']);
+    const errorRepeat = createText('p', isRu ? 'Имя не изменилось' : 'Old name is not new', ['eror_form_profile', 'error__repeat_name', 'display_none']);
+    const errorNameUser = createText('p', isRu ? 'Только латинские буквы или кириллица' : 'Only in Latin or Cyrillic letter', ['eror_form_profile', 'error__name_profile', 'display_none']);
+    const errorEmptyName = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_name', 'display_none']);
     containerInputName.append(labeUserName, userNameInput);
     containerInputName0.append(containerInputName, errorNameUser, errorRepeat, errorEmptyName);
 
     const containerInputAvatar0 = createDiv(['profile_group0']);
     const containerInputAvatar = createDiv(['profile_group']);
-    const labeUserAvatar = createText('p', 'Avatar:', ['label__user_profile']);
+    const labeUserAvatar = createText('p', isRu ? 'Аватар' : 'Avatar:', ['label__user_profile']);
     const imgAvatarUser = createImg(`data:image/png;base64,${dataUserServer.photo}`, 'avatar', ['profile__img_avatar']);
     containerInputAvatar.append(labeUserAvatar, imgAvatarUser);
     containerInputAvatar0.append(containerInputAvatar);
@@ -380,6 +387,10 @@ class UserPagesView {
       getElements('.input__user_profile').forEach((input) => input.addEventListener('input', this.validationInput));
       getElement('.container__radio_profile').addEventListener('change', UserPagesView.isNewAvatar);
       getElement('.form_profile_btn_reset').addEventListener('click', this.cancelChanges);
+      if (isRu) {
+        getElement('.form_profile_btn_reset').textContent = 'Отменить';
+        getElement('.form_profile_btn_save').textContent = 'Сохранить';
+      }
     }
     if (theme === 'dark') {
       pageTitle.classList.add('light_color');

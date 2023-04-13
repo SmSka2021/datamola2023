@@ -1,5 +1,6 @@
-const lang = JSON.parse(localStorage.getItem('lang'));
-const isRu = lang === 'ru';
+function checkLang() {
+  return JSON.parse(localStorage.getItem('lang')) === 'ru';
+}
 
 export const priorityTask = {
   high: 'High',
@@ -13,6 +14,12 @@ export const taskStatusObj = {
 };
 export const taskStatusArr = ['To Do', 'In progress', 'Complete'];
 
+export const translateStatus = (status) => {
+  if (status === 'To Do') return 'В планах';
+  if (status === 'In progress') return 'В процессе';
+  return 'Выполнено';
+};
+
 export const taskStatusArrRu = ['В планах', 'В процессе', 'Выполнено'];
 
 export const createIdList = (str) => {
@@ -21,7 +28,7 @@ export const createIdList = (str) => {
   return 'complete';
 };
 
-export const arrFieldTask = isRu ? ['Задача', 'Статус', 'Описание', 'Приоритет', 'Приватность', 'Исполнитель', 'Создатель', 'Дата', 'Комментарии', 'Править', 'Удалить'] : ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
+export const arrFieldTask = checkLang() ? ['Задача', 'Статус', 'Описание', 'Приоритет', 'Приватность', 'Исполнитель', 'Создатель', 'Дата', 'Комментарии', 'Править', 'Удалить'] : ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
 
 export const statusBtn = {
   todo: 'todo',

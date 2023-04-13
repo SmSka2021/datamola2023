@@ -1,23 +1,62 @@
-export const messageDelEdit = 'Only creator can delete or edit task';
+function checkLang() {
+  return JSON.parse(localStorage.getItem('lang')) === 'ru';
+}
 
-export const messageErDublicate = 'This Login or userName is already taken';
+export const messageDelEdit = () => {
+  if (checkLang()) return 'Только автор или исполнитель может удалять или править задачу';
+  return 'Only creator can delete or edit task';
+};
 
-export const messageErServer = 'Server error, please try again later';
+export const messageErDublicate = () => {
+  if (checkLang()) return 'Пользователь с таким именем или логином уже существует';
+  return 'This Login or userName is already taken';
+};
 
-export const messageEr = 'Something went wrong, please try again';
+export const messageErServer = () => {
+  if (checkLang()) return 'Ошибка сервера, пожалуйста, попробуйте позже';
+  return 'Server error, please try again later';
+};
 
-export const messageErPassword = 'Password incorrect';
+export const messageEr = () => {
+  if (checkLang()) return 'Что-то пошло не так, попробуйте позже';
+  return 'Something went wrong, please try again';
+};
 
-export const messageErName = 'UserName is already taken';
+export const messageErPassword = () => {
+  if (checkLang()) return 'Некорректный пароль';
+  return 'Password incorrect';
+};
 
-export const messageAgainAuth = 'Session timed out, you need to login again';
+export const messageErName = () => {
+  if (checkLang()) return 'Это имя уже занято';
+  return 'UserName is already taken';
+};
 
-export const messageNoMoreTasks = 'This category has not more tasks';
+export const messageAgainAuth = () => {
+  if (checkLang()) return 'Время сессии закончилось, Вам необходимо залогиниться снова';
+  return 'Session timed out, you need to login again';
+};
 
-export const messagePrivateTask = 'You have not access to private tasks other users';
+export const messageNoMoreTasks = () => {
+  if (checkLang()) return 'В этой категории больше нет задач';
+  return 'This category has not more tasks';
+};
 
-export const messageIncorrectData = 'Login or password is incorrect';
+export const messagePrivateTask = () => {
+  if (checkLang()) return 'Это приватня задача, доступ имеет только автор или исполнитель задачи';
+  return 'You have not access to private tasks other users';
+};
 
-export const messageNotResSearch = 'Oops! Nothing found';
+export const messageIncorrectData = () => {
+  if (checkLang()) return 'Логин или пароль не корректны';
+  return 'Login or password is incorrect';
+};
+export const messageNotResSearch = () => {
+  if (checkLang()) return 'Упс, по вашему запросу ничего не найдено';
+  return 'Oops! Nothing found';
+};
 
-export const messageConfirmDelete = 'A you sure?';
+export const messageConfirmDelete = () => {
+  if (checkLang()) return 'Вы уверены?';
+  return 'A you sure?';
+};

@@ -12,6 +12,7 @@ import srcPriority from '../ultilites/convertor-src';
 import { maxLengthDescription } from '../ultilites/constant';
 import { getElement } from '../ultilites/get-element';
 import { pathName } from '../ultilites/path';
+import { translateStatus } from '../ultilites/field-task';
 
 // ----------PAGE ONE TASK  -TaskView---------------- //
 class TaskViewPage {
@@ -75,6 +76,9 @@ class TaskViewPage {
 
   display(task) {
     if (!task) return;
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     // const users = JSON.parse(localStorage.getItem('allUsers'));
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
@@ -89,7 +93,7 @@ class TaskViewPage {
 
     const containerLabel = createDiv(['container__label']);
     const labelTodo = createDiv(['label__todo']);
-    const todoTitle = createText('p', `${task.status}`);
+    const todoTitle = createText('p', isRu ? translateStatus(task.status) : `${task.status}`);
     labelTodo.append(todoTitle);
     const labelUser = createDiv(['label__todo', 'user_name']);
     const userTitle = createText('p', `${task.assignee.userName}`);
@@ -117,10 +121,10 @@ class TaskViewPage {
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
-    const creatorTask = createText('h6', `Creator task: ${task.creator.userName}`, ['creator']);
-    const deckriptionTitle = createText('span', 'Description: ', ['comments__title']);
+    const creatorTask = createText('h6', isRu ? `Задачу создал:  ${task.creator.userName}` : `Creator task: ${task.creator.userName}`, ['creator']);
+    const deckriptionTitle = createText('span', isRu ? 'Описание задачи: ' : 'Description: ', ['comments__title']);
     const deckriptionTask = createText('span', ` ${task.description}`, ['task__text_one']);
-    const commentsTitle = createText('h6', 'Comments:', ['comments__title']);
+    const commentsTitle = createText('h6', isRu ? 'Комментарии: ' : 'Comments:', ['comments__title']);
     const commentsList = createElem('ul', ['comments__list']);
     if (task.comments.length) {
       task.comments.forEach((comment) => {
@@ -141,13 +145,13 @@ class TaskViewPage {
     formElem.setAttribute('data-id', `${task.id}`);
     const formLabel = createElem('label', ['form__label']);
     formLabel.for = 'addComment';
-    formLabel.textContent = 'Comment: ';
+    formLabel.textContent = isRu ? 'Комментарий: ' : 'Comment: ';
     const formTextArea = createElem('textarea', ['form__area']);
     formTextArea.name = 'newComment';
     formTextArea.id = 'addComment';
     formElem.setAttribute('data-id', `${task.id}`);
     formTextArea.maxlength = maxLengthDescription;
-    const btnForm = createBtn('Add', ['light_btn', 'btn'], 'submit', 'add comment');
+    const btnForm = createBtn(isRu ? 'Добавить: ' : 'Add', ['light_btn', 'btn'], 'submit', isRu ? 'Добавить комментарий' : 'Add comment');
     formElem.append(formLabel, formTextArea, btnForm);
 
     sectionOneTask.append(
@@ -163,6 +167,9 @@ class TaskViewPage {
 
     newsectionTasks.append(btnPrevious, sectionOneTask);
     parentElem.replaceWith(newsectionTasks);
+    if (theme === 'dark') {
+      newsectionTasks.style.backgroundImage = 'url(../assets/img/dark_fon3.png)';
+    }
   }
 }
 

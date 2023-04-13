@@ -72,7 +72,7 @@ class TasksController {
   profileUser = {};
 
   settingLang = () => {
-    const lang = this.getLocalStorage();
+    const lang = this.getLocalStorage('lang');
     if (!lang) this.saveLocalStorage('lang', 'ru');
   };
 
@@ -132,17 +132,6 @@ class TasksController {
       this.renderRegistrationPage();
       return;
     }
-    // if (this.getLocalStorage('statusUser') && this.path.actuale === pathName.boardCard) {
-    //   this.renderMainBoardCard();
-    //   this.renderFilter();
-    //   return;
-    // }
-    // if (this.getLocalStorage('statusUser') && this.path.actuale === pathName.boardList) {
-    //   this.renderMainBoardList();
-    //   this.renderFilter();
-    //   this.renderHeader();
-    //   return;
-    // }
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
       this.renderFilter();
@@ -216,7 +205,7 @@ class TasksController {
     if (filterConfig) {
       const res = [...filterAllTasks(this.allTasks, { ...filterConfig })];
       if (!res.length) {
-        this.renderMessageModal(messageNotResSearch);
+        this.renderMessageModal(messageNotResSearch());
         return [];
       }
       return res;
@@ -247,13 +236,13 @@ class TasksController {
 
   handlerError = (response) => {
     this.cleanLoader();
-    if (response.error === 404) this.renderMessageModal(messageAgainAuth, true);
-    if (response.error === 401) this.renderMessageModal(messageEr, true);
-    if (response.error === 500) this.renderMessageModal(messageErServer, true);
-    if (response.error === 405) this.renderMessageModal(messageIncorrectData, true);
-    if (response.error === 400) this.renderMessageModal(messageErDublicate, true);
-    if (response.error === 402) this.renderMessageModal(messageErPassword, true);
-    if (response.error === 403) this.renderMessageModal(messageErName, true);
+    if (response.error === 404) this.renderMessageModal(messageAgainAuth(), true);
+    if (response.error === 401) this.renderMessageModal(messageEr(), true);
+    if (response.error === 500) this.renderMessageModal(messageErServer(), true);
+    if (response.error === 405) this.renderMessageModal(messageIncorrectData(), true);
+    if (response.error === 400) this.renderMessageModal(messageErDublicate(), true);
+    if (response.error === 402) this.renderMessageModal(messageErPassword(), true);
+    if (response.error === 403) this.renderMessageModal(messageErName(), true);
   };
 
   editProfileUser = async (dataUser) => {
@@ -267,6 +256,9 @@ class TasksController {
       this.saveLocalStorage('isViewProfile', 'true');
       this.renderProfilePage();
       this.setCurrentUser();
+    } else {
+      this.saveLocalStorage('isViewProfile', 'true');
+      this.renderProfilePage();
     }
   };
 
@@ -321,7 +313,10 @@ class TasksController {
         this.renderMessageModal(messageNoMoreTasks);
         statusBtnLoad.todo = true;
         this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
-        getElement('#load_list_todo').style.display = 'none';
+        const btnLoadList = getElement('#load_list_todo');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_todo');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
         return;
       }
       this.renderLoader();
@@ -336,16 +331,19 @@ class TasksController {
           window.scrollTo(0, 0);
           statusBtnLoad.todo = true;
           this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
-          this.renderMessageModal(messageNoMoreTasks);
+          this.renderMessageModal(messageNoMoreTasks());
         }
       }
     }
     if (status === statusBtn.inProgress) {
       if ((this.allTasks.filter((task) => task.status === taskStatusObj.inProgress)).length < 10) {
-        this.renderMessageModal(messageNoMoreTasks);
+        this.renderMessageModal(messageNoMoreTasks());
         statusBtnLoad.inProgress = true;
         this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
-        getElement('#load_list_inProgress').style.display = 'none';
+        const btnLoadList = getElement('#load_list_inProgress');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_inProgress');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
         return;
       }
       this.renderLoader();
@@ -360,16 +358,19 @@ class TasksController {
           statusBtnLoad.inProgress = true;
           this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
           window.scrollTo(0, 0);
-          this.renderMessageModal(messageNoMoreTasks);
+          this.renderMessageModal(messageNoMoreTasks());
         }
       }
     }
     if (status === statusBtn.complete) {
       if ((this.allTasks.filter((task) => task.status === taskStatusObj.complete)).length < 10) {
-        this.renderMessageModal(messageNoMoreTasks);
+        this.renderMessageModal(messageNoMoreTasks());
         statusBtnLoad.complete = true;
         this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
-        getElement('#load_list_complete').style.display = 'none';
+        const btnLoadList = getElement('#load_list_complete');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_complete');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
         return;
       }
       this.renderLoader();
@@ -384,7 +385,7 @@ class TasksController {
           statusBtnLoad.complete = true;
           this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
           window.scrollTo(0, 0);
-          this.renderMessageModal(messageNoMoreTasks);
+          this.renderMessageModal(messageNoMoreTasks());
         }
       }
     }
@@ -420,12 +421,14 @@ class TasksController {
 
   setRuLang = () => {
     this.saveLocalStorage('lang', 'ru');
+    this.cleanModalCreateTask();
     this.renderHeader();
     this.renderStartPages();
   };
 
   setEnLang = () => {
     this.saveLocalStorage('lang', 'en');
+    this.cleanModalCreateTask();
     this.renderHeader();
     this.renderStartPages();
   };
@@ -508,6 +511,7 @@ class TasksController {
       this.logInAsGuest();
     } else {
       this.renderMainBoardCard();
+      this.renderFilter();
     }
   };
 
@@ -523,7 +527,7 @@ class TasksController {
       const assigneeTask = this.allTasks.find((task) => task.id === id).creator.userName;
       const userActual = this.getLocalStorage('dataUserServer').userName;
       if (assigneeTask !== userActual) {
-        this.renderMessageModal(messageDelEdit);
+        this.renderMessageModal(messageDelEdit());
         return;
       }
       this.saveLocalStorage('editTask', this.allTasks.find((task) => task.id === id));
@@ -589,7 +593,7 @@ class TasksController {
       'isViewProfile',
       'settingFilter',
       'confirmReset',
-      // 'hideBtnsLoad',
+      'hideBtnsLoad',
     ];
     dataLocal.forEach((data) => { localStorage.removeItem(data); });
     this.renderStartPages();
@@ -632,7 +636,7 @@ class TasksController {
     const creatorTask = this.allTasks.find((task) => task.id === id).creator.userName;
     const userActual = this.getLocalStorage('dataUserServer').userName;
     if (creatorTask !== userActual) {
-      this.renderMessageModal(messageDelEdit);
+      this.renderMessageModal(messageDelEdit());
     } else {
       this.renderLoader();
       const response = await this.serviseApi.editTask(id, data);
@@ -667,7 +671,7 @@ class TasksController {
     if (creatorTask === userActual) {
       this.renderConfirm();
     } else {
-      this.renderMessageModal(messageDelEdit);
+      this.renderMessageModal(messageDelEdit());
     }
   };
 
@@ -704,7 +708,7 @@ class TasksController {
     const creatorTask = taskChecked.creator.userName;
     const thisUser = this.getLocalStorage('dataUserServer').userName;
     if (isPrivateTask && (thisUser !== creatorTask) && (thisUser !== assigneeTask)) {
-      this.renderMessageModal(messagePrivateTask);
+      this.renderMessageModal(messagePrivateTask());
     } else {
       this.renderLoader();
       const oneTask = await this.serviseApi.getOneTask(id);

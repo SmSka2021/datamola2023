@@ -9,6 +9,7 @@ import {
 import srcPriority from '../ultilites/convertor-src';
 import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
+import { translateStatus } from '../ultilites/field-task';
 
 // --------- One Task View List ------------ //
 
@@ -22,6 +23,8 @@ class OneTaskViewList {
   isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
 
   display(task) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
     const taskRow = createElem('tr', ['one_task_list']);
     taskRow.setAttribute('data-id', `${task.id}`);
@@ -30,7 +33,7 @@ class OneTaskViewList {
 
     const taskStat = createElem('td', []);
     const taskStatusLabel = createDiv(['label__todo', 'progress', 'table_progress']);
-    const taskStatusTxt = createText('p', `${task.status}`);
+    const taskStatusTxt = createText('p', isRu ? translateStatus(task.status) : `${task.status}`);
     taskStatusLabel.append(taskStatusTxt);
     taskStat.append(taskStatusLabel);
 

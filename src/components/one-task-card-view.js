@@ -8,6 +8,7 @@ import {
 import srcPriority from '../ultilites/convertor-src';
 import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
+import { translateStatus } from '../ultilites/field-task';
 
 class OneTaskViewCard {
   constructor(id) {
@@ -19,13 +20,15 @@ class OneTaskViewCard {
   isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
 
   display(taskOne) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
     const task = createDiv(['task']);
     task.setAttribute('data-id', `${taskOne.id}`);
     const containerTitleTask = createDiv(['container__title_task']);
     const taskTitle = createText('h6', `${taskOne.name}`, ['task__title']);
     const labelTodo = createDiv(['label__todo']);
-    const itemLabelTodo = createText('p', `${taskOne.status}`, []);
+    const itemLabelTodo = createText('p', isRu ? translateStatus(taskOne.status) : `${taskOne.status}`, []);
     labelTodo.append(itemLabelTodo);
     containerTitleTask.append(taskTitle, labelTodo);
     task.addEventListener('click', this.actionTask);
@@ -35,8 +38,8 @@ class OneTaskViewCard {
     const imgIsPrivate = createImg(`${taskOne.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDate, imgIsPrivate);
 
-    const creatorTask = createText('h6', `Creator task: ${taskOne.creator.userName}`, ['creator_card']);
-    const descriptionTitle = createText('span', 'Description:  ', ['task__title_one_card']);
+    const creatorTask = createText('h6', isRu ? `Создатель задачи: ${taskOne.creator.userName}` : `Creator task: ${taskOne.creator.userName}`, ['creator_card']);
+    const descriptionTitle = createText('span', isRu ? 'Описание:  ' : 'Description:  ', ['task__title_one_card']);
 
     const taskText = createText('span', taskOne.description, ['task__text']);
 

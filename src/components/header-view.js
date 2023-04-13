@@ -130,9 +130,9 @@ class HeaderView {
     containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
 
     const containerLang = createDiv(['container__lang']);
-    const enLang = createText('span', isRu ? 'Анг ' : 'En ', ['en_lang']);
-    const slach = createText('span', ' / ', ['en_lang']);
-    const ruLang = createText('span', isRu ? ' Рус' : ' Ru', ['ru_lang']);
+    const enLang = createText('span', isRu ? 'Ан ' : 'En ', ['en_lang']);
+    const slach = createText('span', '/', ['en_lang']);
+    const ruLang = createText('span', isRu ? ' Ру' : ' Ru', ['ru_lang']);
     containerLang.append(enLang, slach, ruLang);
     if (lang === 'ru') ruLang.classList.add('active_lang');
     else enLang.classList.add('active_lang');

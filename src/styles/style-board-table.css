@@ -282,8 +282,9 @@
 }
 
 .label__todo {
-  width: 7rem;
+  min-width: 7rem;
   height: 2rem;
+  padding: 2px 7px;
   border-radius: 1rem;
   background: var(--irys-color);
   font-weight: 600;

@@ -152,19 +152,21 @@ class FilterView {
   }
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['container__filter']);
     newsectionTasks.id = 'container__filter';
     const myForm = createElem('form', ['form__filter']);
     myForm.name = 'filterForm';
-    const filterTitle = createText('h5', 'Filter by', ['filter__title']);
+    const filterTitle = createText('h5', isRu ? 'Фильтр' : 'Filter by', ['filter__title']);
 
     const containerSearch = createDiv(['container__search']);
     const containerSearchRadoisText = createDiv(['container__search__text_radio']);
 
     const containerSearchByAssignee = createDiv(['container__search_group']);
-    const searchByAssignee = createText('p', 'assignee', ['search__by-name']);
+    const searchByAssignee = createText('p', isRu ? 'исполнитеть' : 'assignee', ['search__by-name']);
     const inputSearchByAssignee = createInput('checkbox', ['checkbox_search']);
     inputSearchByAssignee.id = 'assignee0';
     inputSearchByAssignee.name = 'assignee';
@@ -173,7 +175,7 @@ class FilterView {
     containerSearchByAssignee.append(inputSearchByAssignee, searchByAssignee);
 
     const containerSearchByNameTask = createDiv(['container__search_group']);
-    const searchByTitle = createText('p', 'title', ['search__by-title']);
+    const searchByTitle = createText('p', isRu ? 'задача' : 'title', ['search__by-title']);
     const inputSearchByTitle = createInput('checkbox', ['checkbox_search']);
     inputSearchByTitle.id = 'title0';
     inputSearchByTitle.name = 'title';
@@ -182,7 +184,7 @@ class FilterView {
     containerSearchByNameTask.append(inputSearchByTitle, searchByTitle);
 
     const containerSearchByDescr = createDiv(['container__search_group']);
-    const searchByDesc = createText('p', 'description', ['search__by-title']);
+    const searchByDesc = createText('p', isRu ? 'описание' : 'description', ['search__by-title']);
     const inputSearchByDec = createInput('checkbox', ['checkbox_search']);
     inputSearchByDec.id = 'description0';
     inputSearchByDec.name = 'description';
@@ -201,7 +203,7 @@ class FilterView {
     containerSearch.append(inputSearch, containerSearchRadoisText);
 
     const containerPriority = createDiv(['container__priority']);
-    const prioritTitle = createText('p', 'priority', ['priority__title']);
+    const prioritTitle = createText('p', isRu ? 'Приоритет' : 'priority', ['priority__title']);
     const containerImgAndRadios = createDiv(['container__img_and_radio']);
     const priorityItemsImg = createDiv(['priority__items_img']);
     const imgLowPriority = createImg(srcImgCollection.priority.low, 'icon', ['priority_img']);
@@ -233,7 +235,7 @@ class FilterView {
     containerPriority.append(prioritTitle, containerImgAndRadios);
 
     const containerPrivacy = createDiv(['container__privacy']);
-    const privacyTitle = createText('p', 'privacy', ['priority__title']);
+    const privacyTitle = createText('p', isRu ? 'Приватность' : 'privacy', ['priority__title']);
 
     const containerImgAndRadio = createDiv(['container__privacy_img_radios']);
 
@@ -261,21 +263,21 @@ class FilterView {
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
     containerPrivacy.append(privacyTitle, containerImgAndRadio);
     const containerDate = createDiv(['container__privacy']);
-    const dateTitle = createText('p', 'date', ['priority__title']);
+    const dateTitle = createText('p', isRu ? 'Дата' : 'date', ['priority__title']);
 
     const blockDate = createDiv(['container__date']);
-    const labelFrom = createText('label', 'from  ', ['date__label']);
+    const labelFrom = createText('label', isRu ? 'с  ' : 'from  ', ['date__label']);
     const inputDateFrom = createInput('date', ['input__date']);
     inputDateFrom.id = 'inputDateFrom';
     labelFrom.append(inputDateFrom);
 
-    const labelTo = createText('label', 'to  ', ['date__label']);
+    const labelTo = createText('label', isRu ? 'по  ' : 'to  ', ['date__label']);
     const inputDateTo = createInput('date', ['input__date']);
     inputDateTo.id = 'inputDateTo';
     labelTo.append(inputDateTo);
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
-    const resetBtn = createBtn('Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
+    const resetBtn = createBtn(isRu ? 'Сбросить  ' : 'Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
 
     myForm.append(
       filterTitle,

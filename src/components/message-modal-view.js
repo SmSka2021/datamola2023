@@ -34,6 +34,8 @@ class MessageModalView {
   }
 
   display(text, isShowBtnMain = false) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['section__confirm_modal']);
@@ -44,7 +46,7 @@ class MessageModalView {
     const btnClose = createBtn('X', ['form__btn_close', 'close_confirm'], 'button', 'Close');
     const title = createText('h4', `${text}`, ['confirm__modal_title', 'message_title']);
     if (isShowBtnMain) {
-      const btnMainPages = createBtn('Main pages', ['btn', 'light_btn', 'main_pages_btn'], 'button', 'main pages');
+      const btnMainPages = createBtn(isRu ? 'Главная стр' : 'Main pages', ['btn', 'light_btn', 'main_pages_btn'], 'button', 'main pages');
       modal.append(btnClose, title, btnMainPages);
     } else {
       modal.append(btnClose, title);
