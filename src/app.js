@@ -224,6 +224,7 @@ class TasksController {
   };
 
   renderProfilePage = () => {
+    this.cleanModalCreateTask();
     this.cleanOneTaskPage();
     this.cleanMainBoard();
     this.savePathActual(pathName.profilePage);

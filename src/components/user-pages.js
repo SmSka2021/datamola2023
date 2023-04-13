@@ -129,7 +129,7 @@ class UserPagesView {
     const isOldName = nameUser.value === oldDataServer.userName;
     const isOldPassword = inputPassword.value === oldDataPassword;
     const isOldPassword2 = inputPassword2.value === oldDataPassword;
-    const isNewData = (!isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
+    const isNewData = (this.newAvatar || !isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
     btnSubmit.disabled = !isValid || !isNewData;
     btnReset.disabled = !isNewData;
   }
@@ -184,8 +184,8 @@ class UserPagesView {
         event.preventDefault();
         event.stopPropagation();
         const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
-        const newAvatar = myForm.elements.avatar.value;
-        const imgUser = newAvatar ? convertorImg64(newAvatar) : oldAvatar;
+        const newAvatarUser = JSON.parse(localStorage.getItem('avatar'));
+        const imgUser = newAvatarUser || oldAvatar;
         const editUser = {
           password: myForm.elements.profile_password_input.value,
           retypedPassword: myForm.elements.profile_password2_input.value,
@@ -199,16 +199,40 @@ class UserPagesView {
   }
 
   static isNewAvatar() {
-    const checkAvatar = document.forms.editProfile.elements.avatar.value;
-    const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
-    if (checkAvatar !== oldAvatar) {
-      getElement('.form_profile_btn_save').disabled = false;
-      getElement('.form_profile_btn_reset').disabled = false;
-      return true;
+    const checkRadioId = document.forms.editProfile.elements.avatar.value;
+    if (checkRadioId) {
+      const imgAvatarChecked = convertorImg64(checkRadioId);
+      getElement('.profile_avatar_new').value = '';
+      const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
+      if (imgAvatarChecked !== oldAvatar) {
+        localStorage.setItem('avatar', JSON.stringify(imgAvatarChecked));
+        getElement('.form_profile_btn_save').disabled = false;
+        getElement('.form_profile_btn_reset').disabled = false;
+        return true;
+      }
+      return false;
     }
   }
 
+  isDisabledSave = () => {
+    const oldDataPassword = JSON.parse(localStorage.getItem('dataUser')).password;
+    const oldDataServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    const nameUser = getElement('#nameProfileUser');
+    const inputPassword = getElement('#passwordProfileUser');
+    const inputPassword2 = getElement('#password2ProdileUser');
+    const btnSubmit = getElement('.form_profile_btn_save');
+    const btnReset = getElement('.form_profile_btn_reset');
+    const validateOldAvatar = !UserPagesView.isNewAvatar();
+    const isOldName = nameUser.value === oldDataServer.userName;
+    const isOldPassword = inputPassword.value === oldDataPassword;
+    const isOldPassword2 = inputPassword2.value === oldDataPassword;
+    const isNewData = (this.newAvatar || !isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
+    btnSubmit.disabled = !isNewData;
+    btnReset.disabled = !isNewData;
+  };
+
   cancelChanges() {
+    this.newAvatar = '';
     const dataUser = JSON.parse(localStorage.getItem('dataUser'));
     const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
     getElement('#passwordProfileUser').value = dataUser.password;
@@ -236,7 +260,31 @@ class UserPagesView {
     });
     getElement('.form_profile_btn_reset').disabled = true;
     getElement('.form_profile_btn_save').disabled = true;
+    getElement('.profile_avatar_new').value = '';
+    localStorage.removeItem('avatar');
   }
+
+  encodeImageFileAsURL = (e) => {
+    getElements('.profile_avatar_radio').forEach((radio) => {
+      radio.checked = false;
+    });
+    getElement('.form_profile_btn_save').disabled = false;
+    const element = e.target;
+    const arrExe = ['png'];
+    const file = element.files[0];
+    const exe = file.name.split('.').splice(-1, 1)[0];
+    if (!arrExe.includes(exe)) {
+      alert('Извините, но на данный момент принимаются только файлы в формате "png"');
+      getElement('.profile_avatar_new').value = '';
+      this.isDisabledSave();
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      localStorage.setItem('avatar', JSON.stringify(reader.result.slice(22)));
+    };
+    reader.readAsDataURL(file);
+  };
 
   display() {
     const isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) === 'true';
@@ -340,7 +388,7 @@ class UserPagesView {
 
       containerInfoUs.insertAdjacentHTML('beforeend', `<div class='profile__avatar_group'>
       <hr/>
-    <p class='label__user_profile'> New Avatar:</p>
+    <p class='label__user_profile profile_new_avatar'> New Avatar:</p>
     <div class='container__avatar_profile'>
       <img src='./assets/img/avatar10.png' id='Img1' alt='icon avatar' class='profile_avatar_img'/>
       <img src='./assets/img/avatar11.png' id='Img2' alt='icon avatar' class='profile_avatar_img'/>
@@ -355,9 +403,11 @@ class UserPagesView {
       <input name="avatar" type="radio" value='Img3' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img4' class='profile_avatar_radio'/>
       <input name="avatar" type="radio" value='Img5' class='profile_avatar_radio'/> 
-      <input name="avatar" type="radio" value='Img6' class='profile_avatar_radio'/> 
+      <input name="avatar" type="radio" value='Img6' class='profile_avatar_radio'/>  
     </div>
     <hr/>
+    <span class='label__user_profile upload_avatar'>Upload your Avatar:</span>
+    <input type="file" class='profile_avatar_new' name="myAvatar"/>
 </div>
 
 <div class='form_btns'>
@@ -389,7 +439,10 @@ class UserPagesView {
       if (isRu) {
         getElement('.form_profile_btn_reset').textContent = 'Отменить';
         getElement('.form_profile_btn_save').textContent = 'Сохранить';
+        getElement('.profile_new_avatar').textContent = 'Новый аватар:';
+        getElement('.upload_avatar').textContent = 'Свой аватар:  ';
       }
+      getElement('.profile_avatar_new').addEventListener('change', this.encodeImageFileAsURL);
     }
     if (theme === 'dark') {
       pageTitle.classList.add('light_color');

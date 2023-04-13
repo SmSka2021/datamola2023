@@ -303,4 +303,7 @@ width: 600px;
 .profile_avatar_img:hover {  
     border: 2px solid var(--primary-color);
   }
+  .profile_avatar_new { 
+    cursor: pointer;
+  }
 

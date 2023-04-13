@@ -9,3 +9,13 @@ const convertorImg64 = (selectorId) => {
   return base64String.slice(22);
 };
 export default convertorImg64;
+
+// function encodeImageFileAsURL(element) {
+//   var file = element.files[0];
+//   var reader = new FileReader();
+//   reader.onloadend = function() {
+//     console.log('RESULT', reader.result)
+//   }
+//   reader.readAsDataURL(file);
+// }
+// <input type="file" onchange="encodeImageFileAsURL(this)" />
