@@ -168,10 +168,10 @@ class AuthFormView {
     <label class='label__user_info label_password' for='password_auth'>Password</label>
     <input class='input__user_info' type='password' id='password_auth' name='password_auth' required/>
     <button type='button' class='password__btn_eye eye_auth eye_close_auth'>
-           <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
+           <img src='./assets/icon/eyeClosed.svg' alt='icon'/>
     </button>
     <button type='button' class='password__btn_eye eye_open_auth eye_auth display_none'>
-    <img src='./../assets/icon/eyeOpen.svg' alt='icon'/>
+    <img src='./assets/icon/eyeOpen.svg' alt='icon'/>
     </button>
     <p class='eror_form error__pasword_auth display_none'>Symbols, large and small latin letters, numbers</p>
 </div>

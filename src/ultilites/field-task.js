@@ -1,7 +1,3 @@
-function checkLang() {
-  return JSON.parse(localStorage.getItem('lang')) === 'ru';
-}
-
 export const priorityTask = {
   high: 'High',
   medium: 'Medium',
@@ -28,7 +24,12 @@ export const createIdList = (str) => {
   return 'complete';
 };
 
-export const arrFieldTask = checkLang() ? ['Задача', 'Статус', 'Описание', 'Приоритет', 'Приватность', 'Исполнитель', 'Создатель', 'Дата', 'Комментарии', 'Править', 'Удалить'] : ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
+export const arrFieldTask = () => {
+  if (JSON.parse(localStorage.getItem('lang')) === 'ru') {
+    return ['Задача', 'Статус', 'Описание', 'Приоритет', 'Приватность', 'Исполнитель', 'Создатель', 'Дата', 'Комментарии', 'Править', 'Удалить'];
+  }
+  return ['Name Task', 'Status', 'Description', 'Priority', 'Privacy', 'Assignee', 'Creator', 'Date', 'Comments', 'Edit', 'Delete'];
+};
 
 export const statusBtn = {
   todo: 'todo',

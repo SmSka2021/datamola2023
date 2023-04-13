@@ -57,7 +57,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    assetModuleFilename: 'src/assets/img/[name].[ext]',
+    assetModuleFilename: 'dist/assets/img/[name].[ext]',
   },
   devServer: {
     static: {

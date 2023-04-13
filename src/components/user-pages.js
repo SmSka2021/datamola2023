@@ -343,12 +343,12 @@ class UserPagesView {
       <hr/>
     <p class='label__user_profile'> New Avatar:</p>
     <div class='container__avatar_profile'>
-      <img src='../assets/img/avatar10.png' id='Img1' alt='icon avatar' class='profile_avatar_img'/>
-      <img src='../assets/img/avatar11.png' id='Img2' alt='icon avatar' class='profile_avatar_img'/>
-      <img src='../assets/img/avatar12.png' id='Img3' alt='icon avatar' class='profile_avatar_img'/>
-      <img src='../assets/img/avatar13.png' id='Img4' alt='icon avatar' class='profile_avatar_img'/>
-      <img src='../assets/img/avatar14.png' id='Img5' alt='icon avatar' class='profile_avatar_img'/>
-      <img src='../assets/img/avatar15.png' id='Img6' alt='icon avatar' class='profile_avatar_img'/>              
+      <img src='./assets/img/avatar10.png' id='Img1' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar11.png' id='Img2' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar12.png' id='Img3' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar13.png' id='Img4' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar14.png' id='Img5' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar15.png' id='Img6' alt='icon avatar' class='profile_avatar_img'/>              
     </div>
     <div class='container__radio_profile'>
       <input name="avatar" type="radio" value='Img1' class='profile_avatar_radio'/>

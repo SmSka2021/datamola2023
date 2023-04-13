@@ -184,7 +184,7 @@ class TasksController {
   };
 
   getTasksFromServer = async () => {
-    const isLoadPage = this.getLocalStorage('loadPages');
+    const isLoadPage = this.getLocalStorage('loadPages') || loadPagesStart;
     this.renderLoader();
     const promises = [
       this.serviseApi.getTasks(isLoadPage.todo.from, isLoadPage.todo.to, 1),
@@ -310,7 +310,7 @@ class TasksController {
     let moreTask;
     if (status === statusBtn.todo) {
       if ((this.allTasks.filter((task) => task.status === taskStatusObj.toDo)).length < 10) {
-        this.renderMessageModal(messageNoMoreTasks);
+        this.renderMessageModal(messageNoMoreTasks());
         statusBtnLoad.todo = true;
         this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
         const btnLoadList = getElement('#load_list_todo');
@@ -444,8 +444,8 @@ class TasksController {
 
   setDarkTheme = () => {
     this.saveLocalStorage('theme', 'dark');
-    getElement('#main').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
-    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/dark_fon3.png)';
+    getElement('#main').style.backgroundImage = 'url(./assets/img/dark_fon3.png)';
+    getElement('#main_task').style.backgroundImage = 'url(./assets/img/dark_fon3.png)';
     getElement('.sunny').classList.remove('check_btn');
     getElement('.dark').classList.add('check_btn');
     const pagesProfile = getElement('.info_user_main');
@@ -456,8 +456,8 @@ class TasksController {
 
   setLightTheme = () => {
     this.saveLocalStorage('theme', 'light');
-    getElement('#main').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
-    getElement('#main_task').style.backgroundImage = 'url(./../assets/img/light_fon.jpg)';
+    getElement('#main').style.backgroundImage = 'url(./assets/img/light_fon.jpg)';
+    getElement('#main_task').style.backgroundImage = 'url(./assets/img/light_fon.jpg)';
     getElement('.sunny').classList.add('check_btn');
     getElement('.dark').classList.remove('check_btn');
     const pagesProfile = getElement('.info_user_main');

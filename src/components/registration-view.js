@@ -244,10 +244,10 @@ class RegistrationFormView {
     <label class='label__user_info label_passw_reg' for='password1'>Password</label>
     <input class='input__user_info' type='password' id='password1' name='password' required/>
     <button type='button' class='password__btn_eye eye_close1'>
-           <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
+           <img src='./assets/icon/eyeClosed.svg' alt='icon'/>
     </button>
     <button type='button' class='password__btn_eye eye_open1 display_none'>
-    <img src='./../assets/icon/eyeOpen.svg' alt='icon'/>
+    <img src='./assets/icon/eyeOpen.svg' alt='icon'/>
     </button>
     <p class='eror_form error__pasword_message display_none'>Symbols, large and small latin letters, numbers</p>
 </div>
@@ -255,10 +255,10 @@ class RegistrationFormView {
     <label class='label__user_info label_passw2' for='password2'>Repeat Password</label>
     <input class='input__user_info' type='password' id='password2' name='repeatPassword' required/>
     <button type='button' class='password__btn_eye eye_close2'>
-           <img src='./../assets/icon/eyeClosed.svg' alt='icon'/>
+           <img src='./assets/icon/eyeClosed.svg' alt='icon'/>
     </button>
     <button type='button' class='password__btn_eye eye_open2 display_none'>
-    <img src='./../assets/icon/eyeOpen.svg' alt='icon'/>
+    <img src='./assets/icon/eyeOpen.svg' alt='icon'/>
     </button>
     <p class='eror_form error__password2_message display_none'>Password mismatch</p>
 </div>
@@ -271,11 +271,11 @@ class RegistrationFormView {
 <div class='container__input avatar_radio'>
     <p class='label__user_info label_avatar'>Avatar</p>
     <div class='container__avatar'>
-        <img src='../assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
-        <img src='../assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
-        <img src='../assets/img/avatar3.png' id='Img3' alt='icon avatar'/>
-        <img src='../assets/img/avatar4.png' id='Img4' alt='icon avatar'/>
-        <img src='../assets/img/avatar5.png' id='Img5' alt='icon avatar'/>     
+        <img src='./assets/img/avatar1.png' id='Img1' alt='icon avatar'/>
+        <img src='./assets/img/avatar2.png' id='Img2' alt='icon avatar'/>
+        <img src='./assets/img/avatar3.png' id='Img3' alt='icon avatar'/>
+        <img src='./assets/img/avatar4.png' id='Img4' alt='icon avatar'/>
+        <img src='./assets/img/avatar5.png' id='Img5' alt='icon avatar'/>     
     </div>
     <div class='container__radio'>   
     <input name="avatar" type="radio" value='Img1' checked/>

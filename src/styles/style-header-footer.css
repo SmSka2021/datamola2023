@@ -109,7 +109,7 @@
 .container__lang {
   display: flex;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1.5rem;
   width: 75px;
   justify-content: space-between;
 }

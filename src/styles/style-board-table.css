@@ -1,14 +1,4 @@
 /*/////////////////main//////////////*/
-.main {
-  width: 100%;
-  padding: 10px;
-  background-image: url("./../assets/img/light_fon.jpg");
-  background-size: 100%;
-  background-repeat: none;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
 
 .form__filter {
   width: 100%;

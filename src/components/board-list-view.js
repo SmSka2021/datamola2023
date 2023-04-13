@@ -218,7 +218,7 @@ class BoardViewList {
       const tableThead = createElem('thead', []);
       const tableRowTitle = createElem('tr', []);
 
-      arrFieldTask.forEach((field) => {
+      arrFieldTask().forEach((field) => {
         const tableThTitle = createElem('th', []);
         tableThTitle.textContent = field;
         if (field === 'Comments' || field === 'Комментарии') {
