@@ -189,7 +189,6 @@ class RegistrationFormView {
           retypedPassword: myForm.elements.repeatPassword.value,
           photo: imgUser,
         };
-        // localStorage.setItem('avatar', myForm.elements.avatar.value);
         handler(newUser, 'signUp');
       });
     }

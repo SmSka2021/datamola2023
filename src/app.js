@@ -389,7 +389,6 @@ class TasksController {
         }
       }
     }
-    console.log(this.allTasks);
     this.cleanLoader();
     this.renderStartPages();
     this.saveLocalStorage('loadPages', isLoadPage);
@@ -577,7 +576,6 @@ class TasksController {
         this.saveLocalStorage('allUsers', allUsers);
       }
       this.renderHeader();
-      // this.setCurrentUser(userThis);
       this.renderStartPages();
     }
   };

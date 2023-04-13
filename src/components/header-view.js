@@ -91,7 +91,6 @@ class HeaderView {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   setUser = () => {
     if (localStorage.getItem('dataUserServer')) {
       const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));

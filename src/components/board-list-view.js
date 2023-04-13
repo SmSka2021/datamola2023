@@ -180,10 +180,6 @@ class BoardViewList {
     const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'button', 'view table');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
-    // const btnMoreTasks = createBtn('Load more',
-    // ['load__btn', 'dark_btn', 'btn', 'load_view_list'], 'Load more');
-    // const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-    // btnMoreTasks.append(imgMoreTasks);
     containerViewBtn.append(btnViewList, btnViewTable);
 
     const sectionTasks = createElem('div', ['container__row']);

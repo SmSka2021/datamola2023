@@ -208,14 +208,11 @@ class TaskFeedApiService {
   registrationUser = async (dataUser) => {
     try {
       const response = await fetch(this.createPost(urlRegistration, dataUser));
-      console.log(response);
       if (response.ok) {
         const res = await response.json();
-        console.log(res);
         return res;
       }
       if (response.status === 400) {
-        console.log('This Login or userName is already taken', response);
         return { error: 400 };
       }
       return { error: 401 };

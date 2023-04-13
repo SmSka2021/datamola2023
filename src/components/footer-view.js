@@ -6,8 +6,6 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
 
-//   ****************  ViewFooter   ********** //
-
 class FooterView {
   constructor(id) {
     this.id = id;

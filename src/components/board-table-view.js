@@ -159,11 +159,6 @@ class TaskFeedView {
       });
       this.checkIsHideBtnLoad();
     }
-    // if (isRu) {
-    //   getElements('.btn__add_task')[0].textContent = 'В планах';
-    //   getElements('.btn__add_task')[1].textContent = 'В процессе';
-    //   getElements('.btn__add_task')[2].textContent = 'Выполнено';
-    // }
   }
 }
 

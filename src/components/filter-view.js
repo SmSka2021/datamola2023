@@ -118,7 +118,6 @@ class FilterView {
   bindResetForm(handler) {
     const resetBtn = getElement('.reset_btn');
     document.forms.filterForm.reset();
-    // resetBtn.disabled = JSON.stringify(this.stateFilter) === JSON.stringify(settingFilterStart);
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
         document.forms.filterForm.reset();
@@ -171,7 +170,6 @@ class FilterView {
     inputSearchByAssignee.id = 'assignee0';
     inputSearchByAssignee.name = 'assignee';
     inputSearchByAssignee.value = 'assignee';
-    // const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee0');
     containerSearchByAssignee.append(inputSearchByAssignee, searchByAssignee);
 
     const containerSearchByNameTask = createDiv(['container__search_group']);
@@ -180,7 +178,6 @@ class FilterView {
     inputSearchByTitle.id = 'title0';
     inputSearchByTitle.name = 'title';
     inputSearchByTitle.value = 'title';
-    // const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title0');
     containerSearchByNameTask.append(inputSearchByTitle, searchByTitle);
 
     const containerSearchByDescr = createDiv(['container__search_group']);
@@ -189,8 +186,6 @@ class FilterView {
     inputSearchByDec.id = 'description0';
     inputSearchByDec.name = 'description';
     inputSearchByDec.value = 'description';
-    // const radioSearchByDeckr = createInputRadio('radio',
-    // 'search', 'description', 'description0');
     containerSearchByDescr.append(inputSearchByDec, searchByDesc);
 
     containerSearchRadoisText.append(
@@ -226,9 +221,6 @@ class FilterView {
     inputHigh.id = 'checkbox_high';
     inputHigh.name = 'priority';
     inputHigh.value = 'high';
-    // const radioLow = createInputRadio('radio', 'priority', 'low', 'low0');
-    // const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium0');
-    // const radioHigh = createInputRadio('radio', 'priority', 'high', 'high0');
 
     containeRadiosPriority.append(inputLow, inputMedium, inputHigh);
     containerImgAndRadios.append(priorityItemsImg, containeRadiosPriority);
@@ -255,9 +247,6 @@ class FilterView {
     inputPrivacy.id = 'privacy0';
     inputPrivacy.name = 'privacy';
     inputPrivacy.value = 'privacy';
-
-    // const radioPublic = createInputRadio('radio', 'private', 'public', 'public0');
-    // const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy0');
     containerPrivacyRadios.append(inputPublic, inputPrivacy);
 
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);

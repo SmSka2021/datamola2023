@@ -16,15 +16,6 @@ export const settingFilterStart = {
   dateTo: null,
 };
 
-// export const filterDataStart = {
-//   assignee: '',
-//   description: '',
-//   name: '',
-//   status: null,
-//   priority: null,
-//   isPrivate: null,
-// };
-
 export const filterDataStart = {
   assignee: '',
   description: '',

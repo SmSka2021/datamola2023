@@ -104,9 +104,6 @@ class CreateTaskView {
 
   resetFormConfirm = () => {
     getElement('.form__task').reset();
-    // getElement('#todo1').checked = false;
-    // getElement('#low1').checked = false;
-    // getElement('#privacy1').checked = false;
     this.closeConfirm();
   };
 

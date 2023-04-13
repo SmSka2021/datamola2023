@@ -14,7 +14,6 @@ import { getElement } from '../ultilites/get-element';
 import { pathName } from '../ultilites/path';
 import { translateStatus } from '../ultilites/field-task';
 
-// ----------PAGE ONE TASK  -TaskView---------------- //
 class TaskViewPage {
   constructor(id) {
     this.id = id;
@@ -79,7 +78,6 @@ class TaskViewPage {
     const theme = JSON.parse(localStorage.getItem('theme'));
     const lang = JSON.parse(localStorage.getItem('lang'));
     const isRu = lang === 'ru';
-    // const users = JSON.parse(localStorage.getItem('allUsers'));
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
     newsectionTasks.id = 'main_task';

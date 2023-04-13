@@ -145,8 +145,6 @@ class AuthFormView {
     const newsectionTasks = createElem('section', ['board', 'auth_page']);
     newsectionTasks.id = 'container__columns';
     const mainRegistr = createDiv(['info_user_main']);
-    // const btnAuth = createBtn('Auth', ['dark_btn', 'btn', 'auth_btn'], 'button', 'authorize');
-    // const btnMain = createBtn('Main Page', ['dark_btn', 'btn'], 'button', 'main page');
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title']);
     const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'sign_up'], 'button', 'Authorize');

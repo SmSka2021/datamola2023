@@ -335,7 +335,6 @@ class UserPagesView {
       userPasswordInput.disabled = false;
       userPasswordInput2.disabled = false;
       userNameInput.disabled = false;
-      // containerInputAvatar.classList.add('display_none');
       viewMode.classList.toggle('edit_profile_btn_link');
       editProf.classList.toggle('view_mode');
 

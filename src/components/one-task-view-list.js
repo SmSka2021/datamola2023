@@ -11,8 +11,6 @@ import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
 import { translateStatus } from '../ultilites/field-task';
 
-// --------- One Task View List ------------ //
-
 class OneTaskViewList {
   constructor(id) {
     this.id = id;
