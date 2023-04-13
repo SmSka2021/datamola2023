@@ -1,0 +1,39 @@
+.container__loader {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(54, 54, 54, 0.3);
+    backdrop-filter:blur(10px);
+    z-index:20;
+  }
+  .loader {
+    width:6.8rem;
+    height:6.8rem;
+    border:5px solid #f8670a;
+    border-bottom-color:transparent;
+    border-radius:50%;
+    display:inline-block;
+    box-sizing:border-box;
+    animation:rotation 1s linear infinite;
+  }
+  
+  @keyframes rotation {
+    0% {
+      transform:rotate(0deg);
+    }
+    100% {
+      transform:rotate(360deg);
+    }
+  }
+  @media screen and (max-width:650px) {
+    .loader {
+      width:4rem;
+      height:4rem;
+    }
+  }
+  

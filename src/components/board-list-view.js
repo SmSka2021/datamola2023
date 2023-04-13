@@ -72,12 +72,12 @@ class BoardViewList {
   }
 
   bindLoadMoreTasks(handler) {
-    const btnLoadMore = getElement('.load_view_list');
-    if (btnLoadMore) {
-      btnLoadMore.addEventListener('click', (event) => {
+    const btnsLoadMore = getElements('.load__btn_list');
+    if (btnsLoadMore) {
+      btnsLoadMore.forEach((btn) => btn.addEventListener('click', (event) => {
         event.stopPropagation();
-        handler('list_board');
-      });
+        handler(btn.dataset.column);
+      }));
     }
   }
 
@@ -117,7 +117,7 @@ class BoardViewList {
     const tablesTodo = getElements('.open__table');
     const btnsImgCloseColumn = getElements('.img_close');
     const btnsImgOpenColumn = getElements('.img_open');
-    // const loadBths = getElements('.load__btn');
+    const loadBths = getElements('.load__btn_list');
 
     elem.classList.toggle('table__header_open');
     elem.classList.toggle('table__header_close');
@@ -125,7 +125,7 @@ class BoardViewList {
     tablesTodo[index].hidden = !tablesTodo[index].hidden;
     btnsImgCloseColumn[index].hidden = !btnsImgCloseColumn[index].hidden;
     btnsImgOpenColumn[index].hidden = !btnsImgOpenColumn[index].hidden;
-    // loadBths[index].classList.toggle('display_none');
+    loadBths[index].classList.toggle('display_none');
   };
 
   actionLabelTodo = (e) => {
@@ -153,22 +153,34 @@ class BoardViewList {
     }
   };
 
+  checkIsHideBtnLoad = () => {
+    const isHideBtnsLoad = JSON.parse(localStorage.getItem('hideBtnsLoad'));
+    if (isHideBtnsLoad) {
+      const loadBths = getElements('.load__btn_list');
+      loadBths.forEach((btn) => {
+        if (btn.dataset.column && isHideBtnsLoad[btn.dataset.column]) {
+          btn.classList.add('display_none');
+        }
+      });
+    }
+  };
+
   display(tasks) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';
 
     const containerViewBtn = createDiv(['container__view_btn_list']);
-    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list'], 'view list');
+    const btnViewList = createBtn('', ['check_btn', 'btn', 'btn_list'], 'button', 'view list');
     const imgList = createImg(srcImgCollection.viewList, 'icon', ['img_viewList']);
     btnViewList.append(imgList);
-    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'view table');
+    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'button', 'view table');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
-    const btnMoreTasks = createBtn('Load more', ['load__btn', 'dark_btn', 'btn', 'load_view_list'], 'Load more');
-    const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
-    btnMoreTasks.append(imgMoreTasks);
-    containerViewBtn.append(btnViewList, btnViewTable, btnMoreTasks);
+    containerViewBtn.append(btnViewList, btnViewTable);
 
     const sectionTasks = createElem('div', ['container__row']);
     taskStatusArr.forEach((column) => {
@@ -202,17 +214,17 @@ class BoardViewList {
       const tableThead = createElem('thead', []);
       const tableRowTitle = createElem('tr', []);
 
-      arrFieldTask.forEach((field) => {
+      arrFieldTask().forEach((field) => {
         const tableThTitle = createElem('th', []);
         tableThTitle.textContent = field;
-        if (field === 'Comments') {
+        if (field === 'Comments' || field === 'Комментарии') {
           tableThTitle.innerHTML = `<img src=${srcImgCollection.comments} alt='comments icon'
           class='task__img_comment'>`;
         }
-        if ((field === 'Edit' || field === 'Delete') && this.checkIsGuest()) {
+        if (((field === 'Edit' || field === 'Править') || (field === 'Delete' || field === 'Удалить')) && this.checkIsGuest()) {
           tableThTitle.classList.add('display_none');
         }
-        if ((field === 'Edit' || field === 'Delete') && this.isAuthUser()) {
+        if (((field === 'Edit' || field === 'Править') || (field === 'Delete' || field === 'Удалить')) && this.isAuthUser()) {
           tableThTitle.classList.remove('display_none');
         }
         tableRowTitle.append(tableThTitle);
@@ -222,8 +234,13 @@ class BoardViewList {
       tableBody.id = createIdList(column);
       tableTodo.append(tableThead, tableBody);
       tableTodo.hidden = true;
-      columnOne.append(tableHeader, tableTodo);
 
+      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list'], 'button', 'Load more tasks');
+      const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
+      btnMoreTasks.append(imgMoreTasks);
+      btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
+      btnMoreTasks.id = `load_list_${createIdList(column)}`;
+      columnOne.append(tableHeader, tableTodo, btnMoreTasks);
       sectionTasks.append(columnOne);
     });
 
@@ -239,10 +256,16 @@ class BoardViewList {
         });
       }
     });
+    if (isRu) {
+      getElements('.label__todo_list')[0].textContent = 'В планах';
+      getElements('.label__todo_list')[1].textContent = 'В процессе';
+      getElements('.label__todo_list')[2].textContent = 'Выполнено';
+    }
     const labelTodo = getElements('.table__header');
     if (this.isOpenTodo) this.changeOpenCloseTodo(labelTodo[0], 0);
     if (this.isOpenInProgress) this.changeOpenCloseTodo(labelTodo[1], 1);
     if (this.isOpenComplete) this.changeOpenCloseTodo(labelTodo[2], 2);
+    this.checkIsHideBtnLoad();
   }
 }
 

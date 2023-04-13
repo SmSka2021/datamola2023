@@ -9,8 +9,7 @@ import {
 import srcPriority from '../ultilites/convertor-src';
 import srcImgCollection from '../ultilites/src-img-collection';
 import convertationDate from '../ultilites/convertation-date';
-
-// --------- One Task View List ------------ //
+import { translateStatus } from '../ultilites/field-task';
 
 class OneTaskViewList {
   constructor(id) {
@@ -22,15 +21,17 @@ class OneTaskViewList {
   isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
 
   display(task) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
     const taskRow = createElem('tr', ['one_task_list']);
-    taskRow.setAttribute('data-id', `${task._id}`);
+    taskRow.setAttribute('data-id', `${task.id}`);
     const taskTitle = createElem('td', []);
     taskTitle.textContent = task.name;
 
     const taskStat = createElem('td', []);
     const taskStatusLabel = createDiv(['label__todo', 'progress', 'table_progress']);
-    const taskStatusTxt = createText('p', `${task.status}`);
+    const taskStatusTxt = createText('p', isRu ? translateStatus(task.status) : `${task.status}`);
     taskStatusLabel.append(taskStatusTxt);
     taskStat.append(taskStatusLabel);
 
@@ -45,26 +46,29 @@ class OneTaskViewList {
     const imgIsPrivateTask = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     taskPrivacy.append(imgIsPrivateTask);
     const taskAssigne = createElem('td', []);
-    taskAssigne.textContent = task.assignee;
+    taskAssigne.textContent = task.assignee.userName;
+
+    const taskCreator = createElem('td', []);
+    taskCreator.textContent = task.creator.userName;
 
     const taskDateItem = createElem('td', []);
-    taskDateItem.textContent = convertationDate(task._createdAt);
+    taskDateItem.textContent = convertationDate(task.createdAt);
 
     const taskCountComment = createElem('td', []);
     taskCountComment.textContent = task.comments.length;
 
     const taskEdit = createElem('td', ['td_edit']);
-    taskEdit.setAttribute('data-id', `${task._id}`);
-    const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
+    taskEdit.setAttribute('data-id', `${task.id}`);
+    const btnEdit = createBtn('', ['btn_icon', 'edit_btn_list', 'edit'], 'button', 'edit task');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
-    imgEdit.setAttribute('data-id', `${task._id}`);
+    imgEdit.setAttribute('data-id', `${task.id}`);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
     const taskDelete = createElem('td', ['td_delit']);
-    taskDelete.setAttribute('data-id', `${task._id}`);
-    const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
+    taskDelete.setAttribute('data-id', `${task.id}`);
+    const btnDelete = createBtn('', ['btn_icon', 'delete', 'delete_btn_list'], 'button', 'delete task');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
-    imgDelete.setAttribute('data-id', `${task._id}`);
+    imgDelete.setAttribute('data-id', `${task.id}`);
     btnDelete.append(imgDelete);
     taskDelete.append(btnDelete);
     if (this.checkIsGuest()) {
@@ -83,6 +87,7 @@ class OneTaskViewList {
       taskPriority,
       taskPrivacy,
       taskAssigne,
+      taskCreator,
       taskDateItem,
       taskCountComment,
       taskEdit,

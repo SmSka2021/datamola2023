@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable class-methods-use-this */
 import {
   createElem,
@@ -6,13 +7,11 @@ import {
   createImg,
   createBtn,
   createInput,
-  createInputRadio,
-
 } from '../ultilites/create-element';
 import srcImgCollection from '../ultilites/src-img-collection';
 import { getElement } from '../ultilites/get-element';
-import { priorityTask } from '../ultilites/field-task';
-import { settingFilterStart, filterDataStart } from '../ultilites/setting-filter';
+import { settingFilterStart } from '../ultilites/setting-filter';
+import { checkStateFilter } from '../ultilites/is-equal-obj';
 
 class FilterView {
   constructor(id) {
@@ -21,158 +20,109 @@ class FilterView {
 
   stateFilter = localStorage.getItem('settingFilter') ? { ...JSON.parse(localStorage.getItem('settingFilter')) } : { ...settingFilterStart };
 
-  filterData = localStorage.getItem('dataFilter') ? { ...JSON.parse(localStorage.getItem('dataFilter')) } : { ...filterDataStart };
-
   saveSettingLocalStorage() {
     localStorage.setItem('settingFilter', JSON.stringify(this.stateFilter));
-    localStorage.setItem('dataFilter', JSON.stringify(this.filterData));
   }
 
   removeSettingLocalStorage() {
     localStorage.removeItem('settingFilter');
-    localStorage.removeItem('dataFilter');
   }
 
   bindFilter(handler) {
     const filter = getElement('.form__filter');
     filter.addEventListener('click', (event) => {
       event.stopPropagation();
-      getElement('.reset_btn').disabled = false;
 
       getElement('#inputDateFrom').onchange = (e) => {
         const dateFrom = e.target.value;
-        this.filterData.dateFrom = new Date(dateFrom);
-        this.stateFilter.dateFrom = dateFrom;
+        this.stateFilter.dateFrom = new Date(dateFrom);
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
       getElement('#inputDateTo').onchange = (e) => {
         const dateTo = e.target.value;
-        this.filterData.dateTo = new Date(dateTo);
-        this.stateFilter.dateTo = dateTo;
+        this.stateFilter.dateTo = new Date(dateTo);
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#low').onchange = () => {
-        this.filterData.priority = priorityTask.low;
-        this.stateFilter.priority.low = true;
-        this.stateFilter.priority.medium = false;
-        this.stateFilter.priority.high = false;
+      getElement('#checkbox_low').onchange = () => {
+        this.stateFilter.priority.low = !this.stateFilter.priority.low;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#medium').onchange = () => {
-        this.filterData.priority = priorityTask.medium;
-        this.stateFilter.priority.low = false;
-        this.stateFilter.priority.medium = true;
-        this.stateFilter.priority.high = false;
+      getElement('#checkbox_medium').onchange = () => {
+        this.stateFilter.priority.medium = !this.stateFilter.priority.medium;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#high').onchange = () => {
-        this.filterData.priority = priorityTask.high;
-        this.stateFilter.priority.low = false;
-        this.stateFilter.priority.medium = false;
-        this.stateFilter.priority.high = true;
+      getElement('#checkbox_high').onchange = () => {
+        this.stateFilter.priority.high = !this.stateFilter.priority.high;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#public').onchange = () => {
-        this.filterData.isPrivate = false;
-        this.stateFilter.isPrivate.privacy = false;
-        this.stateFilter.isPrivate.public = true;
+      getElement('#public0').onchange = () => {
+        this.stateFilter.isPrivate.public = !this.stateFilter.isPrivate.public;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#privacy').onchange = () => {
-        this.filterData.isPrivate = true;
-        this.stateFilter.isPrivate.privacy = true;
-        this.stateFilter.isPrivate.public = false;
+      getElement('#privacy0').onchange = () => {
+        this.stateFilter.isPrivate.privacy = !this.stateFilter.isPrivate.privacy;
         this.saveSettingLocalStorage();
-        handler(0, 10, this.filterData);
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#assignee').onchange = () => {
-        const valueInput = getElement('.search__input').value;
-        this.stateFilter.assignee = true;
-        this.stateFilter.description = false;
-        this.stateFilter.title = false;
+      getElement('#assignee0').onchange = () => {
+        this.stateFilter.assignee = !this.stateFilter.assignee;
         this.saveSettingLocalStorage();
-        if (valueInput) {
-          this.filterData.assignee = valueInput;
-          this.filterData.description = null;
-          this.filterData.name = null;
-          this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
-        }
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#description').onchange = () => {
-        const valueInput = getElement('.search__input').value;
-        this.stateFilter.assignee = false;
-        this.stateFilter.description = true;
-        this.stateFilter.title = false;
+      getElement('#description0').onchange = () => {
+        this.stateFilter.description = !this.stateFilter.description;
         this.saveSettingLocalStorage();
-        if (valueInput) {
-          this.filterData.assignee = null;
-          this.filterData.description = valueInput;
-          this.filterData.name = null;
-          this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
-        }
+        this.isDisabledReset();
+        handler();
       };
-      getElement('#title').onchange = () => {
-        const valueInput = getElement('.search__input').value;
-        this.stateFilter.assignee = false;
-        this.stateFilter.description = false;
-        this.stateFilter.title = true;
+      getElement('#title0').onchange = () => {
+        this.stateFilter.title = !this.stateFilter.title;
         this.saveSettingLocalStorage();
-        if (valueInput) {
-          this.filterData.assignee = null;
-          this.filterData.description = null;
-          this.filterData.name = valueInput;
-          this.saveSettingLocalStorage();
-          handler(0, 10, this.filterData);
-        }
+        this.isDisabledReset();
+        handler();
       };
       const searchInput = getElement('.search__input');
       if (searchInput) {
         searchInput.addEventListener('input', () => {
-          const valueInput = searchInput.value;
-          if (this.stateFilter.assignee) {
-            this.filterData.assignee = valueInput;
-            this.filterData.description = null;
-            this.filterData.name = null;
-          }
-          if (this.stateFilter.description) {
-            this.filterData.description = valueInput;
-            this.filterData.name = null;
-            this.filterData.assignee = null;
-          }
-          if (this.stateFilter.title) {
-            this.filterData.name = valueInput;
-            this.filterData.description = null;
-            this.filterData.assignee = null;
-          }
+          this.stateFilter.dataSearch = searchInput.value;
           this.saveSettingLocalStorage();
-          if ((this.stateFilter.assignee || this.stateFilter.description || this.stateFilter.title)
-           && valueInput) {
-            this.saveSettingLocalStorage();
-            handler(0, 10, this.filterData);
-          }
+          this.isDisabledReset();
+          handler();
         });
       }
     });
   }
 
+  isDisabledReset = () => {
+    if (checkStateFilter(this.stateFilter)) {
+      getElement('.reset_btn').disabled = true;
+    } else {
+      getElement('.reset_btn').disabled = false;
+    }
+  };
+
   bindResetForm(handler) {
     const resetBtn = getElement('.reset_btn');
     document.forms.filterForm.reset();
-    // resetBtn.disabled = JSON.stringify(this.stateFilter) === JSON.stringify(settingFilterStart);
     if (resetBtn) {
       resetBtn.addEventListener('click', (event) => {
         document.forms.filterForm.reset();
         event.stopPropagation();
         this.stateFilter = { ...settingFilterStart };
-        this.filterData = { ...filterDataStart };
         this.removeSettingLocalStorage();
         handler();
       });
@@ -180,49 +130,63 @@ class FilterView {
   }
 
   settingChecked() {
-    if (this.stateFilter.title) getElement('#title').checked = true;
-    if (this.stateFilter.description) getElement('#description').checked = true;
-    if (this.stateFilter.assignee) getElement('#assignee').checked = true;
-    if (this.stateFilter.priority.low) getElement('#low').checked = true;
-    if (this.stateFilter.priority.medium) getElement('#medium').checked = true;
-    if (this.stateFilter.priority.high) getElement('#high').checked = true;
-    if (this.stateFilter.isPrivate.public) getElement('#public').checked = true;
-    if (this.stateFilter.isPrivate.privacy) getElement('#privacy').checked = true;
-    if (this.stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom);
-    if (this.stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo);
-    if (this.stateFilter.title || this.stateFilter.assignee || this.stateFilter.description) {
-      const value = this.filterData.assignee
-      || this.filterData.description || this.filterData.name;
-      getElement('.search__input').setAttribute('value', value);
+    const stateFilter = JSON.parse(localStorage.getItem('settingFilter'));
+    if (!stateFilter) {
+      getElement('.reset_btn').disabled = true;
+      return;
     }
+    if (stateFilter.title) getElement('#title0').setAttribute('checked', 'true');
+    if (stateFilter.description) getElement('#description0').setAttribute('checked', 'true');
+    if (stateFilter.assignee) getElement('#assignee0').setAttribute('checked', 'true');
+    if (stateFilter.priority.low) getElement('#checkbox_low').setAttribute('checked', 'true');
+    if (stateFilter.priority.medium) getElement('#checkbox_medium').setAttribute('checked', 'true');
+    if (stateFilter.priority.high) getElement('#checkbox_high').setAttribute('checked', 'true');
+    if (stateFilter.isPrivate.public) getElement('#public0').setAttribute('checked', 'true');
+    if (stateFilter.isPrivate.privacy) getElement('#privacy0').setAttribute('checked', 'true');
+    if (stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom.slice(0, 10));
+    if (stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo.slice(0, 10));
+    if (stateFilter.dataSearch) getElement('.search__input').setAttribute('value', stateFilter.dataSearch);
+    const resetBtn = getElement('.reset_btn');
+    resetBtn.disabled = checkStateFilter(stateFilter);
   }
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['container__filter']);
     newsectionTasks.id = 'container__filter';
     const myForm = createElem('form', ['form__filter']);
     myForm.name = 'filterForm';
-    const filterTitle = createText('h5', 'Filter by', ['filter__title']);
+    const filterTitle = createText('h5', isRu ? 'Фильтр' : 'Filter by', ['filter__title']);
 
     const containerSearch = createDiv(['container__search']);
     const containerSearchRadoisText = createDiv(['container__search__text_radio']);
 
     const containerSearchByAssignee = createDiv(['container__search_group']);
-    const searchByAssignee = createText('p', 'assignee', ['search__by-name']);
-    const radioSearchByAssignee = createInputRadio('radio', 'search', 'assignee', 'assignee');
-    containerSearchByAssignee.append(radioSearchByAssignee, searchByAssignee);
+    const searchByAssignee = createText('p', isRu ? 'исполнитеть' : 'assignee', ['search__by-name']);
+    const inputSearchByAssignee = createInput('checkbox', ['checkbox_search']);
+    inputSearchByAssignee.id = 'assignee0';
+    inputSearchByAssignee.name = 'assignee';
+    inputSearchByAssignee.value = 'assignee';
+    containerSearchByAssignee.append(inputSearchByAssignee, searchByAssignee);
 
     const containerSearchByNameTask = createDiv(['container__search_group']);
-    const searchByTitle = createText('p', 'title', ['search__by-title']);
-    const radioSearchByTille = createInputRadio('radio', 'search', 'title', 'title');
-    containerSearchByNameTask.append(radioSearchByTille, searchByTitle);
+    const searchByTitle = createText('p', isRu ? 'задача' : 'title', ['search__by-title']);
+    const inputSearchByTitle = createInput('checkbox', ['checkbox_search']);
+    inputSearchByTitle.id = 'title0';
+    inputSearchByTitle.name = 'title';
+    inputSearchByTitle.value = 'title';
+    containerSearchByNameTask.append(inputSearchByTitle, searchByTitle);
 
     const containerSearchByDescr = createDiv(['container__search_group']);
-    const searchByDesc = createText('p', 'description', ['search__by-title']);
-    const radioSearchByDeckr = createInputRadio('radio', 'search', 'description', 'description', this.stateFilter.description);
-    containerSearchByDescr.append(radioSearchByDeckr, searchByDesc);
+    const searchByDesc = createText('p', isRu ? 'описание' : 'description', ['search__by-title']);
+    const inputSearchByDec = createInput('checkbox', ['checkbox_search']);
+    inputSearchByDec.id = 'description0';
+    inputSearchByDec.name = 'description';
+    inputSearchByDec.value = 'description';
+    containerSearchByDescr.append(inputSearchByDec, searchByDesc);
 
     containerSearchRadoisText.append(
       containerSearchByAssignee,
@@ -234,23 +198,36 @@ class FilterView {
     containerSearch.append(inputSearch, containerSearchRadoisText);
 
     const containerPriority = createDiv(['container__priority']);
-    const prioritTitle = createText('p', 'priority', ['priority__title']);
+    const prioritTitle = createText('p', isRu ? 'Приоритет' : 'priority', ['priority__title']);
     const containerImgAndRadios = createDiv(['container__img_and_radio']);
     const priorityItemsImg = createDiv(['priority__items_img']);
     const imgLowPriority = createImg(srcImgCollection.priority.low, 'icon', ['priority_img']);
     const imgMediumPriority = createImg(srcImgCollection.priority.medium, 'icon', ['priority_img']);
     const imgHightPriority = createImg(srcImgCollection.priority.high, 'icon', ['priority_img']);
     priorityItemsImg.append(imgLowPriority, imgMediumPriority, imgHightPriority);
+
     const containeRadiosPriority = createDiv(['container__priority_radios']);
-    const radioLow = createInputRadio('radio', 'priority', 'low', 'low');
-    const radioMedium = createInputRadio('radio', 'priority', 'medium', 'medium');
-    const radioHigh = createInputRadio('radio', 'priority', 'high', 'high');
-    containeRadiosPriority.append(radioLow, radioMedium, radioHigh);
+    const inputLow = createInput('checkbox', ['checkbox_priority']);
+    inputLow.id = 'checkbox_low';
+    inputLow.name = 'priority';
+    inputLow.value = 'low';
+
+    const inputMedium = createInput('checkbox', ['checkbox_priority']);
+    inputMedium.id = 'checkbox_medium';
+    inputMedium.name = 'priority';
+    inputMedium.value = 'medium';
+
+    const inputHigh = createInput('checkbox', ['checkbox_priority']);
+    inputHigh.id = 'checkbox_high';
+    inputHigh.name = 'priority';
+    inputHigh.value = 'high';
+
+    containeRadiosPriority.append(inputLow, inputMedium, inputHigh);
     containerImgAndRadios.append(priorityItemsImg, containeRadiosPriority);
     containerPriority.append(prioritTitle, containerImgAndRadios);
 
     const containerPrivacy = createDiv(['container__privacy']);
-    const privacyTitle = createText('p', 'privacy', ['priority__title']);
+    const privacyTitle = createText('p', isRu ? 'Приватность' : 'privacy', ['priority__title']);
 
     const containerImgAndRadio = createDiv(['container__privacy_img_radios']);
 
@@ -260,28 +237,37 @@ class FilterView {
     containerPrivacyImg.append(imgPublicPrivacy, imgPersonPrivacy);
 
     const containerPrivacyRadios = createDiv(['container__privacy_radios']);
-    const radioPublic = createInputRadio('radio', 'private', 'public', 'public');
-    const radioPrivate = createInputRadio('radio', 'private', 'privacy', 'privacy');
-    containerPrivacyRadios.append(radioPublic, radioPrivate);
+
+    const inputPublic = createInput('checkbox', ['checkbox_private']);
+    inputPublic.id = 'public0';
+    inputPublic.name = 'public';
+    inputPublic.value = 'public';
+
+    const inputPrivacy = createInput('checkbox', ['checkbox_private']);
+    inputPrivacy.id = 'privacy0';
+    inputPrivacy.name = 'privacy';
+    inputPrivacy.value = 'privacy';
+    containerPrivacyRadios.append(inputPublic, inputPrivacy);
 
     containerImgAndRadio.append(containerPrivacyImg, containerPrivacyRadios);
     containerPrivacy.append(privacyTitle, containerImgAndRadio);
     const containerDate = createDiv(['container__privacy']);
-    const dateTitle = createText('p', 'date', ['priority__title']);
+    const dateTitle = createText('p', isRu ? 'Дата' : 'date', ['priority__title']);
 
     const blockDate = createDiv(['container__date']);
-    const labelFrom = createText('label', 'from  ', ['date__label']);
+    const labelFrom = createText('label', isRu ? 'с  ' : 'from  ', ['date__label']);
     const inputDateFrom = createInput('date', ['input__date']);
     inputDateFrom.id = 'inputDateFrom';
     labelFrom.append(inputDateFrom);
 
-    const labelTo = createText('label', 'to  ', ['date__label']);
+    const labelTo = createText('label', isRu ? 'по  ' : 'to  ', ['date__label']);
     const inputDateTo = createInput('date', ['input__date']);
     inputDateTo.id = 'inputDateTo';
     labelTo.append(inputDateTo);
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
-    const resetBtn = createBtn('Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
+    const resetBtn = createBtn(isRu ? 'Сбросить  ' : 'Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
+
     myForm.append(
       filterTitle,
       containerSearch,
@@ -292,6 +278,13 @@ class FilterView {
     );
     newsectionTasks.append(myForm);
     parentElem.replaceWith(newsectionTasks);
+    document.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      Object.defineProperty(cb, 'checked', {
+        set: (a) => {
+          a !== cb.checked && cb.click();
+        },
+      });
+    });
     this.settingChecked();
   }
 }

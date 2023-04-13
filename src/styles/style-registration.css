@@ -42,7 +42,7 @@
     padding: 0 30px;  
 }
 .login_btn_link:hover,
-.guest_btn_link :hover {
+.guest_btn_link:hover {
     color: var(--technic-color); 
 }
 .login_btn_link {
@@ -131,6 +131,11 @@
 .action__form_btns button:last-child {
     color: green;
 }
+.action__form_btns button:first-child:disabled,
+.action__form_btns button:last-child:disabled {
+ color: var(--grey-color);
+ cursor: not-allowed;
+}
 .auth_btn {
     margin: 0 30px 0 10px;
 }
@@ -162,12 +167,14 @@
     color: var(--primary-color);
     margin: 30px auto 20px;
 }
+.light_color {
+    color: var(--white-color); 
+}
 /********profile page ****/
 .container__title_profile {
 width: 600px;
 }
-.view_mode {
-    background: transparent;
+.view_mode {  
     width: 33.4%;
     color: var(--primary-color);
     border-right: 2px solid var(--primary-color);
@@ -192,10 +199,11 @@ width: 600px;
 .container__view_info {
     width: 600px;   
     color: var(--primary-color);
+    background: url('./../assets/img/light_fon.jpg');
     border-left: 2px solid var(--primary-color);
     border-right: 2px solid var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
-    border-radius: 0 0 10px; 
+    border-radius: 0 0 10px 10px; 
     padding: 20px;
     margin: 0 auto;
 }
@@ -228,24 +236,24 @@ width: 600px;
     background:transparent;
 
 }
-.profile__img_avatar {
-    position: absolute;
-    left: 200px;
-}
+
 .form_btns_profile {
     width: 100%;
     display: flex;
     margin: 0 auto;
     padding: 10px 0;
-    justify-content: flex-end; 
+    justify-content: space-between; 
 }
-.profile__img_avatars {
-    width: 50px;
-    height: 50px;
-}
-.form_profile_btn_save {
+
+.form_profile_btn_save,
+.form_profile_btn_reset {
     width: 120px;
     height: 40px;
+}
+.form_profile_btn_save:disabled,
+.form_profile_btn_reset:disabled {
+    cursor: not-allowed;
+    background: var(--irys-color);
 }
 .eror_form_profile {
     font-size: 12px;
@@ -257,8 +265,45 @@ width: 600px;
     bottom: -5px;
     margin: 0;
 }
+.container__avatar_profile {
+    display: flex;
+    justify-content: space-between;  
+    margin-top: 15px; 
+   
+}
+.container__radio_profile {
+    padding: 0 15px 10px 15px; 
+    display: flex;
+    justify-content: space-between;   
+}
+.profile__img_avatar {
+    position: absolute;
+    left: 120px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    top: -5px;
+}
 .profile__avatar_group {
     width: 85%;
     margin: 0 auto;
     padding: 10px 19px;
 }
+.border_red {
+    border: 2px solid red;
+    background: var(--red-light-color);
+}
+.profile_avatar_img {
+  width: 50px;
+  height: 50px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+.profile_avatar_img:hover {  
+    border: 2px solid var(--primary-color);
+  }
+  .profile_avatar_new { 
+    cursor: pointer;
+  }
+

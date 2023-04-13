@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable class-methods-use-this */
-import Task from './task';
+import Task from './task1';
 import Comment from './comments';
 
 class TaskCollection {

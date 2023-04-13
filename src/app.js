@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
-import TaskCollection from './models/task-collection';
 import HeaderView from './components/header-view';
 import FooterView from './components/footer-view';
 import FilterView from './components/filter-view';
@@ -10,25 +10,43 @@ import BoardViewList from './components/board-list-view';
 import TaskViewPage from './components/page-one-task-view';
 import CreateTaskView from './components/create-task-view';
 import RegistrationFormView from './components/registration-view';
-import UserCollection from './models/user-collection';
 import AuthFormView from './components/auth-view';
 import UserPagesView from './components/user-pages';
 import ConfirmModalView from './components/confirm-modal-view';
 import { pathData, pathName, loadPagesStart } from './ultilites/path';
-import { taskStatusObj } from './ultilites/field-task';
+import { statusBtn, taskStatusObj, statusBtnLoadStart } from './ultilites/field-task';
 import MessageModalView from './components/message-modal-view';
+import TaskFeedApiService from './models/task-feed-api-service';
+import Loader from './components/loader';
+import { createElem } from './ultilites/create-element';
+import { getElement } from './ultilites/get-element';
+import {
+  messageDelEdit,
+  messageErDublicate,
+  messageErServer,
+  messageEr,
+  messageErPassword,
+  messageErName,
+  messageNoMoreTasks,
+  messagePrivateTask,
+  messageAgainAuth,
+  messageIncorrectData,
+  messageNotResSearch,
+} from './ultilites/text-message-user';
+import { filterAllTasks } from './ultilites/filter-tasks';
+import { fiveMinutes } from './ultilites/constant';
 
 class TasksController {
   constructor() {
-    this.collection = new TaskCollection();
-    this.myUserCollection = new UserCollection();
+    this.serviseApi = new TaskFeedApiService('http://169.60.206.50:7777/api');
     this.authModalForm = new AuthFormView('container__columns');
     this.header = new HeaderView('header');
     this.footer = new FooterView('footer');
+    this.loader = new Loader('loader_section');
     this.filter = new FilterView('container__filter');
     this.registration = new RegistrationFormView('container__columns');
     this.modalCreateTask = new CreateTaskView('create_task');
-    this.messageModal = new MessageModalView('create_task');
+    this.messageModal = new MessageModalView('modal_message');
     this.boardCardView = new TaskFeedView('container__columns');
     this.boardListView = new BoardViewList('container__columns');
     this.pageOneTask = new TaskViewPage('main_task');
@@ -37,10 +55,30 @@ class TasksController {
     this.isAuth = this.getLocalStorage('auth');
     this.renderHeader();
     this.footer.display();
-    this.setCurrentUser();
     this.path = JSON.parse(localStorage.getItem('path')) || pathData;
     this.renderStartPages();
+    this.updateDataTask();
+    this.setCurrentUser();
+    this.setTheme();
+    this.saveLocalStorage('loadPages', loadPagesStart);
+    localStorage.removeItem('hideBtnsLoad');
+    this.settingLang();
   }
+
+  allTasks = [];
+
+  allUser = [];
+
+  profileUser = {};
+
+  settingLang = () => {
+    const lang = this.getLocalStorage('lang');
+    if (!lang) this.saveLocalStorage('lang', 'ru');
+  };
+
+  updateDataTask = () => {
+    setTimeout(setInterval(() => { this.getTasksFromServer(); }, fiveMinutes), fiveMinutes);
+  };
 
   isGuestUser = () => this.getLocalStorage('statusUser');
 
@@ -50,10 +88,43 @@ class TasksController {
     this.filter.bindResetForm(this.renderStartPages);
   };
 
-  renderStartPages = () => {
-    const loadPages = this.getLocalStorage('loadPages');
-    if (!loadPages) this.saveLocalStorage('loadPages', loadPagesStart);
+  renderLoader = () => {
+    this.loader.display();
+  };
+
+  cleanLoader = () => {
+    this.removeElement('loader_section');
+  };
+
+  getDataUserProfile = async () => {
+    this.renderLoader();
+    const userProfile = await this.serviseApi.getUserProfile();
+    this.handlerError(userProfile);
+    if (!userProfile.error) {
+      this.profileUser = userProfile;
+      this.saveLocalStorage('profileUser', userProfile);
+    }
+    this.cleanLoader();
+  };
+
+  getDataUsers = async () => {
+    this.renderLoader();
+    const usersAll = await this.serviseApi.getUsers();
+    this.handlerError(usersAll);
+    if (!usersAll.error) {
+      this.saveLocalStorage('allUsers', usersAll);
+      this.allUser = usersAll;
+    }
+    this.cleanLoader();
+  };
+
+  renderStartPages = async () => {
+    if (!this.allTasks.length) {
+      await this.getTasksFromServer();
+    }
+    if (!localStorage.getItem('allUsers') && this.isAuth) this.getDataUsers();
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
+      await this.getDataUserProfile();
       this.renderProfilePage();
       return;
     }
@@ -64,6 +135,7 @@ class TasksController {
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
       this.renderFilter();
+      this.renderHeader();
       return;
     }
     if (this.path.actuale === pathName.boardList) {
@@ -74,8 +146,9 @@ class TasksController {
     if ((this.path.actuale === pathName.oneTaskPage) && this.isAuth) {
       const idCheckedTask = this.getLocalStorage('idCheckedTask');
       if (idCheckedTask) {
-        this.showTask(idCheckedTask);
         this.path.prev = pathName.boardCard;
+        this.saveLocalStorage(this.path);
+        this.showTask(idCheckedTask);
       } else this.renderMainBoardCard();
     }
   };
@@ -110,31 +183,48 @@ class TasksController {
     this.authModalForm.bindGetDataFormAuth(this.setAuthoriseUser);
   };
 
+  getTasksFromServer = async () => {
+    const isLoadPage = this.getLocalStorage('loadPages') || loadPagesStart;
+    this.renderLoader();
+    const promises = [
+      this.serviseApi.getTasks(isLoadPage.todo.from, isLoadPage.todo.to, 1),
+      this.serviseApi.getTasks(isLoadPage.inProgress.from, isLoadPage.inProgress.to, 2),
+      this.serviseApi.getTasks(isLoadPage.complete.from, isLoadPage.complete.to, 3),
+    ];
+    const results = await Promise.allSettled(promises);
+    this.allTasks = [];
+    const successfulPromises = results.filter((promis) => promis.status === 'fulfilled');
+    successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
+    this.cleanLoader();
+    console.log(this.allTasks);
+  };
+
   getTasksAfterFilterFromLocal = () => {
-    const filterConfig = this.getLocalStorage('dataFilter');
-    const isLoadPage = this.getLocalStorage('loadPages');
-    if (!filterConfig) {
-      const statusTodo = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.toDo });
-      const statusInProgr = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.inProgress });
-      const statusCompl = this.collection.getPage(isLoadPage.from, isLoadPage.to, { status: taskStatusObj.complete });
-      return [...statusTodo, ...statusInProgr, ...statusCompl];
+    const filterConfig = this.getLocalStorage('settingFilter');
+    if (!filterConfig) return this.allTasks;
+    if (filterConfig) {
+      const res = [...filterAllTasks(this.allTasks, { ...filterConfig })];
+      if (!res.length) {
+        this.renderMessageModal(messageNotResSearch());
+        return [];
+      }
+      return res;
     }
-    if (filterConfig && isLoadPage) {
-      const statusTodoF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.toDo });
-      const statusInProgrF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.inProgress });
-      const statusComplF = this.collection.getPage(isLoadPage.from, isLoadPage.to, { ...filterConfig, status: taskStatusObj.complete });
-      return [...statusTodoF, ...statusInProgrF, ...statusComplF];
-    }
-    return false;
   };
 
   savePathActual = (pathNew) => {
-    this.path.prev = this.path.actuale;
-    this.path.actuale = pathNew;
+    const path = this.getLocalStorage('path');
+    if (path && (pathNew === pathName.oneTaskPage) && (path.actuale === pathName.oneTaskPage)) {
+      this.path.prev = pathName.boardCard;
+    } else {
+      this.path.prev = this.path.actuale;
+      this.path.actuale = pathNew;
+    }
     this.saveLocalStorage('path', this.path);
   };
 
   renderProfilePage = () => {
+    this.cleanModalCreateTask();
     this.cleanOneTaskPage();
     this.cleanMainBoard();
     this.savePathActual(pathName.profilePage);
@@ -145,23 +235,31 @@ class TasksController {
     this.pageUser.bindSetDataFormEditProfile(this.editProfileUser);
   };
 
-  editProfileUser = (dataUser) => {
-    const userId = this.getLocalStorage('userId');
-    const requesData = { ...dataUser, _id: userId };
-    delete requesData.repeatPassword;
-    console.log('данные для запроса', requesData);
-    // шлём на сервер
-    this.myUserCollection.editUser(requesData);
-    const responseServer = this.myUserCollection.editUser(requesData);
-    // сообщаем об успехе или неудаче
-    if (responseServer) {
-      console.log('response server for edit user', responseServer);
-      this.saveLocalStorage('dataUser', requesData);
+  handlerError = (response) => {
+    this.cleanLoader();
+    if (response.error === 404) this.renderMessageModal(messageAgainAuth(), true);
+    if (response.error === 401) this.renderMessageModal(messageEr(), true);
+    if (response.error === 500) this.renderMessageModal(messageErServer(), true);
+    if (response.error === 405) this.renderMessageModal(messageIncorrectData(), true);
+    if (response.error === 400) this.renderMessageModal(messageErDublicate(), true);
+    if (response.error === 402) this.renderMessageModal(messageErPassword(), true);
+    if (response.error === 403) this.renderMessageModal(messageErName(), true);
+  };
+
+  editProfileUser = async (dataUser) => {
+    this.renderLoader();
+    const responseServer = await this.serviseApi.editUserProfile(dataUser);
+    this.cleanLoader();
+    this.handlerError(responseServer);
+    if (!responseServer.error) {
+      this.saveLocalStorage('dataUserServer', responseServer);
+      this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('isViewProfile', 'true');
       this.renderProfilePage();
-      this.setCurrentUser(dataUser);
+      this.setCurrentUser();
     } else {
-      console.log('Ошибка сервера, возможно, такой пользователь уже есть');
+      this.saveLocalStorage('isViewProfile', 'true');
+      this.renderProfilePage();
     }
   };
 
@@ -173,6 +271,7 @@ class TasksController {
   setMainPage = () => {
     this.saveLocalStorage('isViewProfile', 'true');
     this.renderMainBoardCard();
+    this.renderFilter();
   };
 
   setViewProfile = () => {
@@ -184,7 +283,7 @@ class TasksController {
     const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardCard);
-    this.boardCardView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
+    this.boardCardView.display(taskAfterFilter || tasksFilter);
     this.boardCardView.bindOpenTask(this.showTask);
     this.boardCardView.bindSetViewBoardList(this.renderMainBoardList);
     this.boardCardView.bindDeleteTask(this.removeTask);
@@ -193,11 +292,11 @@ class TasksController {
     this.boardCardView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
-  renderMainBoardList = (tasksFilter) => {
+  renderMainBoardList = async (tasksFilter) => {
     const taskAfterFilter = this.getTasksAfterFilterFromLocal();
     this.cleanOneTaskPage();
     this.savePathActual(pathName.boardList);
-    this.boardListView.display(taskAfterFilter || tasksFilter || this.collection.tasks);
+    this.boardListView.display(taskAfterFilter || tasksFilter);
     this.boardListView.bindOpenTask(this.showTask);
     this.boardListView.bindSetViewBoardCard(this.renderMainBoardCard);
     this.boardListView.bindAddNewTask(this.openModalCreateTask);
@@ -206,13 +305,94 @@ class TasksController {
     this.boardListView.bindLoadMoreTasks(this.loadMoreTask);
   };
 
-  loadMoreTask = () => {
+  loadMoreTask = async (status) => {
     const isLoadPage = this.getLocalStorage('loadPages');
-    const filterConfig = this.getLocalStorage('dataFilter');
-    if (isLoadPage) {
-      this.saveLocalStorage('loadPages', { from: 0, to: isLoadPage.to + 10 });
+    const statusBtnLoad = this.getLocalStorage('hideBtnsLoad') || statusBtnLoadStart;
+    let moreTask;
+    if (status === statusBtn.todo) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.toDo)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks());
+        statusBtnLoad.todo = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        const btnLoadList = getElement('#load_list_todo');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_todo');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
+        return;
+      }
+      this.renderLoader();
+      moreTask = await this.serviseApi.getTasks(isLoadPage.todo.to, isLoadPage.todo.to + 10, 1);
+      this.handlerError(moreTask);
+      if (!moreTask.error) {
+        isLoadPage.todo = { from: 0, to: isLoadPage.todo.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.push(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          window.scrollTo(0, 0);
+          statusBtnLoad.todo = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+          this.renderMessageModal(messageNoMoreTasks());
+        }
+      }
     }
-    this.getFeed(0, isLoadPage.to + 10, filterConfig || {});
+    if (status === statusBtn.inProgress) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.inProgress)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks());
+        statusBtnLoad.inProgress = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        const btnLoadList = getElement('#load_list_inProgress');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_inProgress');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
+        return;
+      }
+      this.renderLoader();
+      moreTask = this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
+      this.handlerError(moreTask);
+      if (!moreTask.error) {
+        isLoadPage.inProgress = { from: 0, to: isLoadPage.inProgress.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.push(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          statusBtnLoad.inProgress = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+          window.scrollTo(0, 0);
+          this.renderMessageModal(messageNoMoreTasks());
+        }
+      }
+    }
+    if (status === statusBtn.complete) {
+      if ((this.allTasks.filter((task) => task.status === taskStatusObj.complete)).length < 10) {
+        this.renderMessageModal(messageNoMoreTasks());
+        statusBtnLoad.complete = true;
+        this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+        const btnLoadList = getElement('#load_list_complete');
+        if (btnLoadList) btnLoadList.style.display = 'none';
+        const btnLoadCard = getElement('#load_card_complete');
+        if (btnLoadCard) btnLoadCard.style.display = 'none';
+        return;
+      }
+      this.renderLoader();
+      moreTask = this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
+      this.handlerError(moreTask);
+      if (!moreTask.error) {
+        isLoadPage.complete = { from: 0, to: isLoadPage.complete.to + 10 };
+        const lengthAllTaskOld = this.allTasks.length;
+        this.allTasks.push(...moreTask);
+        const lengthAllTaskNew = this.allTasks.length;
+        if (lengthAllTaskOld === lengthAllTaskNew) {
+          statusBtnLoad.complete = true;
+          this.saveLocalStorage('hideBtnsLoad', statusBtnLoad);
+          window.scrollTo(0, 0);
+          this.renderMessageModal(messageNoMoreTasks());
+        }
+      }
+    }
+    this.cleanLoader();
+    this.renderStartPages();
+    this.saveLocalStorage('loadPages', isLoadPage);
   };
 
   cleanMainBoard = () => {
@@ -233,23 +413,72 @@ class TasksController {
     this.header.bindOpenLoginModalHeader(this.renderAuthPage);
     this.header.bindLogOutHeader(this.logOutUser);
     this.header.bindOpenProfileUserFromHeader(this.renderProfilePage);
+    this.header.bindSetDarkTheme(this.setDarkTheme);
+    this.header.bindSetLightTheme(this.setLightTheme);
+    this.header.bindSetRuLang(this.setRuLang);
+    this.header.bindSetEnLang(this.setEnLang);
+  };
+
+  setRuLang = () => {
+    this.saveLocalStorage('lang', 'ru');
+    this.cleanModalCreateTask();
+    this.renderHeader();
+    this.renderStartPages();
+  };
+
+  setEnLang = () => {
+    this.saveLocalStorage('lang', 'en');
+    this.cleanModalCreateTask();
+    this.renderHeader();
+    this.renderStartPages();
+  };
+
+  setTheme = () => {
+    const theme = this.getLocalStorage('theme');
+    if (theme) {
+      (theme === 'dark') ? this.setDarkTheme() : this.setLightTheme();
+    } else {
+      this.setLightTheme();
+    }
+  };
+
+  setDarkTheme = () => {
+    this.saveLocalStorage('theme', 'dark');
+    getElement('#main').style.backgroundImage = 'url(./assets/img/dark_fon3.png)';
+    getElement('#main_task').style.backgroundImage = 'url(./assets/img/dark_fon3.png)';
+    getElement('.sunny').classList.remove('check_btn');
+    getElement('.dark').classList.add('check_btn');
+    const pagesProfile = getElement('.info_user_main');
+    if (pagesProfile) {
+      getElement('.dark_color').classList.add('light_color');
+    }
+  };
+
+  setLightTheme = () => {
+    this.saveLocalStorage('theme', 'light');
+    getElement('#main').style.backgroundImage = 'url(./assets/img/light_fon.jpg)';
+    getElement('#main_task').style.backgroundImage = 'url(./assets/img/light_fon.jpg)';
+    getElement('.sunny').classList.add('check_btn');
+    getElement('.dark').classList.remove('check_btn');
+    const pagesProfile = getElement('.info_user_main');
+    if (pagesProfile) {
+      getElement('.dark_color').classList.remove('light_color');
+    }
   };
 
   logOutUser = () => {
     this.auth = false;
     localStorage.removeItem('auth');
-    localStorage.removeItem('dataUser');
     this.path.actuale = pathName.boardCard;
+    this.cleanModalCreateTask();
     this.logInAsGuest();
   };
 
-  renderOneTaskPage = (task, notSavePath) => {
+  renderOneTaskPage = (oneTask) => {
     this.removeElement('container__filter');
     this.removeElement('container__columns');
-    if (!notSavePath) {
-      this.savePathActual(pathName.oneTaskPage);
-    }
-    this.pageOneTask.display(task);
+    this.savePathActual(pathName.oneTaskPage);
+    this.pageOneTask.display(oneTask);
     this.pageOneTask.bindPrevViewAllTask(this.renderPreviosPages);
     this.pageOneTask.bindAddComment(this.addComment);
     this.pageOneTask.bindDeleteTask(this.removeTask);
@@ -269,25 +498,39 @@ class TasksController {
     this.confimModal.bindCloseConfirm(this.closeModalCreateTask);
   };
 
-  renderMessageModal = () => {
-    this.messageModal.display();
-    this.messageModal.bindCloseMessageModal(this.closeModalCreateTask);
+  renderMessageModal = (text, isShowBtnMainPages) => {
+    this.messageModal.display(text, isShowBtnMainPages);
+    this.messageModal.bindCloseMessageModal(this.closeModalMessage);
+    this.messageModal.bindShowMainPages(this.actionBtnError);
+  };
+
+  actionBtnError = () => {
+    this.closeModalMessage();
+    const isAuth = this.getLocalStorage('auth');
+    if (!isAuth) {
+      this.logInAsGuest();
+    } else {
+      this.renderMainBoardCard();
+      this.renderFilter();
+    }
   };
 
   removeElement = (id) => {
     const elem = document.getElementById(id);
-    elem.style.display = 'none';
+    const section = createElem('section');
+    section.id = `${id}`;
+    elem.replaceWith(section);
   };
 
   openModalCreateTask = (id) => {
     if (id) {
-      const assigneeTask = this.collection.get(id).assignee;
-      const userActual = this.collection.user;
+      const assigneeTask = this.allTasks.find((task) => task.id === id).creator.userName;
+      const userActual = this.getLocalStorage('dataUserServer').userName;
       if (assigneeTask !== userActual) {
-        this.renderMessageModal();
+        this.renderMessageModal(messageDelEdit());
         return;
       }
-      this.saveLocalStorage('editTask', this.collection.get(id));
+      this.saveLocalStorage('editTask', this.allTasks.find((task) => task.id === id));
     }
     this.cleanMainBoard();
     this.cleanOneTaskPage();
@@ -299,37 +542,59 @@ class TasksController {
     this.renderStartPages();
   };
 
-  registrationUser = (dataUser) => {
-    this.saveLocalStorage('dataUser', dataUser);
-    // послать данные на сервер в случа успеха переход на auth
-    const idUser = this.myUserCollection.addUser(dataUser);
-    if (idUser) {
-      this.saveLocalStorage('userId', idUser);
+  closeModalMessage = () => {
+    this.removeElement('modal_message');
+  };
+
+  registrationUser = async (dataUser) => {
+    this.renderLoader();
+    const registrDataUser = await this.serviseApi.registrationUser(dataUser);
+    this.cleanLoader();
+    this.handlerError(registrDataUser);
+    if (!registrDataUser.error) {
+      this.saveLocalStorage('dataUser', registrDataUser);
+      this.saveLocalStorage('user', registrDataUser.id);
       this.renderAuthPage();
-    } else {
-      // показать ошибку
-      console.log('Ошибка сервера');
     }
   };
 
-  setAuthoriseUser = (dataUser) => {
-    console.log(dataUser); // нельзя убрать console, так как dataUser пока не используем- eslint ругается
-    // ...посылаем на сервер данные, ищем там usera по id
-    const idUser = this.getLocalStorage('userId');
-    const userFromServer = this.myUserCollection.getOneUserById(idUser);
-    if (userFromServer) {
+  setAuthoriseUser = async (dataUser) => {
+    this.renderLoader();
+    const authDataUser = await this.serviseApi.authorizeUser(dataUser);
+    this.handlerError(authDataUser);
+    if (!authDataUser.error) {
       this.saveLocalStorage('auth', 'true');
-      this.saveLocalStorage('dataUser', userFromServer[0]);
+      this.saveLocalStorage('dataUser', dataUser);
+      this.saveLocalStorage('tokken', authDataUser);
       this.isAuth = true;
       localStorage.removeItem('statusUser');
+      this.renderLoader();
+      const allUsers = await this.serviseApi.getUsers();
+      this.handlerError(allUsers);
+      if (!allUsers.error) {
+        const userThis = allUsers.find((user) => user.login === dataUser.login);
+        this.saveLocalStorage('dataUserServer', userThis);
+        this.saveLocalStorage('allUsers', allUsers);
+      }
       this.renderHeader();
-      this.setCurrentUser(userFromServer);
       this.renderStartPages();
     }
   };
 
   logInAsGuest = () => {
     this.saveLocalStorage('statusUser', 'guest');
+    const dataLocal = ['tokken',
+      'dataRemoveTask',
+      'dataUserServer',
+      'dataUser',
+      'editTask',
+      'idCheckedTask',
+      'isViewProfile',
+      'settingFilter',
+      'confirmReset',
+      'hideBtnsLoad',
+    ];
+    dataLocal.forEach((data) => { localStorage.removeItem(data); });
     this.renderStartPages();
     this.renderHeader();
   };
@@ -340,78 +605,123 @@ class TasksController {
 
   getLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
-  addComment = (idTask, textComment) => {
-    this.collection.addComment(idTask, textComment);
-    const task = this.collection.get(idTask);
-    this.renderOneTaskPage(task, true);
+  addComment = async (idTask, textComment) => {
+    this.renderLoader();
+    const response = await this.serviseApi.addComment(textComment, idTask);
+    this.handlerError(response);
+    if (!response.error) {
+      const oneTask = await this.serviseApi.getOneTask(idTask);
+      this.handlerError(oneTask);
+      if (!oneTask.error) {
+        this.cleanLoader();
+        this.renderOneTaskPage(oneTask, true);
+      }
+    }
   };
 
-  setCurrentUser = (user) => {
-    const dataUser = this.getLocalStorage('dataUser') || user;
-    if (!dataUser) return;
-    this.collection.user = dataUser.firstName;
-    this.header.setUser(dataUser.firstName, dataUser.avatar);
+  setCurrentUser = () => {
+    this.header.setUser();
   };
 
   addOrEditTask = (data, isEditTask) => {
     if (isEditTask) {
-      this.editTask(data);
+      this.editTask(data, isEditTask);
     } else {
       this.addTask(data);
     }
   };
 
-  editTask = (data) => {
-    this.collection.edit(data);
-    this.cleanModalCreateTask();
-    this.renderStartPages();
-    localStorage.removeItem('editTask');
+  editTask = async (data, id) => {
+    const creatorTask = this.allTasks.find((task) => task.id === id).creator.userName;
+    const userActual = this.getLocalStorage('dataUserServer').userName;
+    if (creatorTask !== userActual) {
+      this.renderMessageModal(messageDelEdit());
+    } else {
+      this.renderLoader();
+      const response = await this.serviseApi.editTask(id, data);
+      await this.getTasksFromServer();
+      this.cleanLoader();
+      this.handlerError(response);
+      if (!response.error) {
+        this.cleanModalCreateTask();
+        this.renderStartPages();
+        localStorage.removeItem('editTask');
+      }
+    }
   };
 
-  addTask = (data) => {
-    this.collection.add(data);
-    this.cleanModalCreateTask();
-    this.renderStartPages();
-    localStorage.removeItem('editTask');
+  addTask = async (data) => {
+    this.renderLoader();
+    const response = await this.serviseApi.addTask(data);
+    await this.getTasksFromServer();
+    this.cleanLoader();
+    this.handlerError(response);
+    if (!response.error) {
+      this.cleanModalCreateTask();
+      this.renderStartPages();
+      localStorage.removeItem('editTask');
+    }
   };
 
   removeTask = (id, isNeedRenderFilter) => {
     this.saveLocalStorage('dataRemoveTask', { id, isNeedRenderFilter });
-    const assigneeTask = this.collection.get(id).assignee;
-    const userActual = this.collection.user;
-    if (assigneeTask === userActual) {
+    const creatorTask = this.allTasks.find((task) => task.id === id).creator.userName;
+    const userActual = this.getLocalStorage('dataUserServer').userName;
+    if (creatorTask === userActual) {
       this.renderConfirm();
     } else {
-      this.renderMessageModal();
+      this.renderMessageModal(messageDelEdit());
     }
   };
 
-  confirmDeleteTask = () => {
+  confirmDeleteTask = async () => {
     this.closeModalCreateTask();
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
-    this.collection.remove(dataDeleteTask.id);
+    this.renderLoader();
+    const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
+    this.handlerError(deleteTask);
+    await this.getTasksFromServer();
     if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
     if (this.path.actuale === pathName.boardCard) {
       this.renderMainBoardCard();
-      localStorage.removeItem('dataRemoveTask');
     } else {
       this.renderMainBoardList();
-      localStorage.removeItem('dataRemoveTask');
     }
+    localStorage.removeItem('dataRemoveTask');
+    localStorage.removeItem('editTask');
   };
 
-  getFeed = (skip, top, filterConfig) => {
+  getFeed = () => {
     if (this.path.actuale === pathName.boardCard) {
-      this.renderMainBoardCard(this.collection.getPage(skip, top, filterConfig));
+      this.renderMainBoardCard();
     } else {
-      this.renderMainBoardList(this.collection.getPage(skip, top, filterConfig));
+      this.renderMainBoardList();
     }
   };
 
-  showTask = (id) => {
-    this.saveLocalStorage('idCheckedTask', id);
-    this.saveLocalStorage('editTask', this.collection.get(id));
-    this.renderOneTaskPage(this.collection.get(id));
+  showTask = async (idTask) => {
+    const id = idTask || this.getLocalStorage('idCheckedTask');
+    const taskChecked = this.allTasks.find((task) => task.id === idTask);
+    const isPrivateTask = taskChecked.isPrivate;
+    const assigneeTask = taskChecked.assignee.userName;
+    const creatorTask = taskChecked.creator.userName;
+    const thisUser = this.getLocalStorage('dataUserServer').userName;
+    if (isPrivateTask && (thisUser !== creatorTask) && (thisUser !== assigneeTask)) {
+      this.renderMessageModal(messagePrivateTask());
+    } else {
+      this.renderLoader();
+      const oneTask = await this.serviseApi.getOneTask(id);
+      this.cleanLoader();
+      this.handlerError(oneTask);
+      if (!oneTask.error) {
+        if (!this.allTasks) {
+          await this.getTasksFromServer();
+        }
+        this.saveLocalStorage('idCheckedTask', id);
+        this.saveLocalStorage('editTask', oneTask);
+        this.renderOneTaskPage(oneTask);
+      }
+    }
   };
 }
 

@@ -1,5 +1,5 @@
-import { maxLengthDescription, maxLengthName } from '../ultilites/constant';
-import { taskStatusObj, priorityTask } from '../ultilites/field-task';
+import { maxLengthDescription, maxLengthName } from '../../src/ultilites/constant';
+import { taskStatusObj, priorityTask } from '../../src/ultilites/field-task';
 import Comment from './comments';
 
 class Task {

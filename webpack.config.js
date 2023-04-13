@@ -57,14 +57,14 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    assetModuleFilename: 'src/assets/img/[name].[ext]',
+    assetModuleFilename: 'dist/assets/img/[name].[ext]',
   },
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
     compress: true,
-    port: 9000,
+    port: 3000,
   },
   devtool: 'inline-source-map',
   mode: 'development',

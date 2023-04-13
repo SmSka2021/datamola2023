@@ -1,6 +1,9 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-unneeded-ternary */
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
-/* eslint-disable class-methods-use-this */
+
 import {
   createElem,
   createDiv,
@@ -12,10 +15,10 @@ import {
 import { getElement, getElements } from '../ultilites/get-element';
 import {
   validNameUser,
-  validLogin,
   validPassword,
   validRepeatPassword,
 } from '../ultilites/validation';
+import convertorImg64 from '../ultilites/convertation-img-base64';
 
 class UserPagesView {
   constructor(id) {
@@ -25,37 +28,120 @@ class UserPagesView {
 
   validationInput(e) {
     e.stopPropagation();
+    const oldDataPassword = JSON.parse(localStorage.getItem('dataUser')).password;
+    const oldDataServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    const oldUserName = oldDataServer.userName;
     const elem = e.target;
     const valueUnput = elem.value;
-    const errorLogin = getElement('.error__login_profile');
+    const nameUser = getElement('#nameProfileUser');
     const errorPassword = getElement('.error__pasword_profile');
     const errorRepeat = getElement('.error__pasword2_profile');
     const errorUserName = getElement('.error__name_profile');
-    const inputPasswordValue = getElement('#passwordProdileUser').value;
+    const errorRepeatName = getElement('.error__repeat_name');
+    const errRepeatPassword = getElement('.error__repeat_password');
+    const errEmptyPassword = getElement('.error__empty_password');
+    const errEmptyPassword2 = getElement('.error__empty_password2');
+    const errEmptyName = getElement('.error__empty_name');
+    const inputPassword = getElement('#passwordProfileUser');
+    const inputPassword2 = getElement('#password2ProdileUser');
+    const btnSubmit = getElement('.form_profile_btn_save');
+    const btnReset = getElement('.form_profile_btn_reset');
     switch (elem.id) {
-      case 'nameProdileUser':
-        if (!validNameUser(valueUnput)
-   && valueUnput.length) errorUserName.classList.remove('display_none');
-        else errorUserName.classList.add('display_none');
+      case 'nameProfileUser':
+        if (!validNameUser(valueUnput) && valueUnput.length) {
+          UserPagesView.showError(errorUserName, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errorUserName);
+        }
+        if (oldUserName === valueUnput) {
+          UserPagesView.showError(errorRepeatName, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errorRepeatName);
+        }
+        if (valueUnput === '') {
+          UserPagesView.showError(errEmptyName, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errEmptyName);
+        }
+        if (validNameUser(valueUnput) && valueUnput.length && (oldUserName !== valueUnput)) {
+          elem.classList.remove('border_red');
+        }
         break;
-      case 'loginProdileUser':
-        if (!validLogin(valueUnput)
-   && valueUnput.length) errorLogin.classList.remove('display_none');
-        else errorLogin.classList.add('display_none');
-        break;
-      case 'passwordProdileUser':
-        if (!validPassword(valueUnput)
-   && valueUnput.length) errorPassword.classList.remove('display_none');
-        else errorPassword.classList.add('display_none');
+      case 'passwordProfileUser':
+        if (!validPassword(valueUnput) && valueUnput.length) {
+          UserPagesView.showError(errorPassword, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errorPassword);
+        }
+        if (oldDataPassword === valueUnput) {
+          UserPagesView.showError(errRepeatPassword, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errRepeatPassword);
+        }
+        if (!validRepeatPassword(valueUnput, inputPassword2.value) && valueUnput.length) {
+          UserPagesView.showError(errorRepeat, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errorRepeat);
+        }
+        if (valueUnput === '') {
+          UserPagesView.showError(errEmptyPassword, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errEmptyPassword);
+        }
+        if (validPassword(valueUnput)
+         && valueUnput.length
+         && (oldDataPassword !== valueUnput)) {
+          elem.classList.remove('border_red');
+        }
+        if (validRepeatPassword(valueUnput, inputPassword2.value)) {
+          getElement('#password2ProdileUser').classList.remove('border_red');
+        } else {
+          getElement('#password2ProdileUser').classList.add('border_red');
+        }
         break;
       case 'password2ProdileUser':
-        if (!validRepeatPassword(valueUnput, inputPasswordValue)
-   && valueUnput.length) errorRepeat.classList.remove('display_none');
-        else errorRepeat.classList.add('display_none');
+        if (!validRepeatPassword(valueUnput, inputPassword.value) && valueUnput.length) {
+          UserPagesView.showError(errorRepeat, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errorRepeat);
+        }
+        if (valueUnput === '') {
+          UserPagesView.showError(errEmptyPassword2, btnSubmit, elem);
+        } else {
+          UserPagesView.hideError(errEmptyPassword2);
+        }
+        if (valueUnput.length && validRepeatPassword(valueUnput, inputPassword.value)) {
+          elem.classList.remove('border_red');
+        }
         break;
       default:
         return true;
     }
+    const arrErrors = [
+      errorUserName, errorPassword, errorRepeat, errorRepeatName, errRepeatPassword,
+      errEmptyPassword, errEmptyPassword2, errEmptyName,
+    ];
+    let isValid = true;
+    arrErrors.forEach((er) => {
+      if (!er.classList.contains('display_none')) isValid = false;
+    });
+    const validateOldAvatar = !UserPagesView.isNewAvatar();
+    const isOldName = nameUser.value === oldDataServer.userName;
+    const isOldPassword = inputPassword.value === oldDataPassword;
+    const isOldPassword2 = inputPassword2.value === oldDataPassword;
+    const isNewData = (this.newAvatar || !isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
+    btnSubmit.disabled = !isValid || !isNewData;
+    btnReset.disabled = !isNewData;
+  }
+
+  static showError(error, btnSubmit, elem) {
+    btnSubmit.disabled = true;
+    elem.classList.add('border_red');
+    error.classList.remove('display_none');
+  }
+
+  static hideError(errorUserName) {
+    errorUserName.classList.add('display_none');
   }
 
   bindSetEditProfile(handler) {
@@ -91,23 +177,20 @@ class UserPagesView {
     }
   }
 
-  resetForm(event) {
-    event.stopPropagation();
-    document.forms.editProfile.reset();
-  }
-
   bindSetDataFormEditProfile(handler) {
     const myForm = document.forms.editProfile;
     if (myForm) {
       myForm.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
+        const newAvatarUser = JSON.parse(localStorage.getItem('avatar'));
+        const imgUser = newAvatarUser || oldAvatar;
         const editUser = {
-          login: myForm.elements.profile_login_input.value,
           password: myForm.elements.profile_password_input.value,
-          repeatPassword: myForm.elements.profile_password2_input.value,
-          firstName: myForm.elements.profile_name_input.value,
-          avatar: myForm.elements.avatar.value,
+          retypedPassword: myForm.elements.profile_password2_input.value,
+          userName: myForm.elements.profile_name_input.value,
+          photo: imgUser,
         };
         this.isViewMode = 'true';
         handler(editUser);
@@ -115,26 +198,115 @@ class UserPagesView {
     }
   }
 
-  settingRadio() {
-    const src = JSON.parse(localStorage.getItem('dataUser')).avatar;
-    getElements('.profile_avatar_radio').forEach((radio) => {
-      if (radio.value === src) radio.checked = true;
-    });
+  static isNewAvatar() {
+    const checkRadioId = document.forms.editProfile.elements.avatar.value;
+    if (checkRadioId) {
+      const imgAvatarChecked = convertorImg64(checkRadioId);
+      getElement('.profile_avatar_new').value = '';
+      const oldAvatar = JSON.parse(localStorage.getItem('dataUserServer')).photo;
+      if (imgAvatarChecked !== oldAvatar) {
+        localStorage.setItem('avatar', JSON.stringify(imgAvatarChecked));
+        getElement('.form_profile_btn_save').disabled = false;
+        getElement('.form_profile_btn_reset').disabled = false;
+        return true;
+      }
+      return false;
+    }
   }
 
-  display() {
+  isDisabledSave = () => {
+    const oldDataPassword = JSON.parse(localStorage.getItem('dataUser')).password;
+    const oldDataServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    const nameUser = getElement('#nameProfileUser');
+    const inputPassword = getElement('#passwordProfileUser');
+    const inputPassword2 = getElement('#password2ProdileUser');
+    const btnSubmit = getElement('.form_profile_btn_save');
+    const btnReset = getElement('.form_profile_btn_reset');
+    const validateOldAvatar = !UserPagesView.isNewAvatar();
+    const isOldName = nameUser.value === oldDataServer.userName;
+    const isOldPassword = inputPassword.value === oldDataPassword;
+    const isOldPassword2 = inputPassword2.value === oldDataPassword;
+    const isNewData = (this.newAvatar || !isOldName || !isOldPassword || !validateOldAvatar || !isOldPassword2) && true;
+    btnSubmit.disabled = !isNewData;
+    btnReset.disabled = !isNewData;
+  };
+
+  cancelChanges() {
+    this.newAvatar = '';
     const dataUser = JSON.parse(localStorage.getItem('dataUser'));
+    const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    getElement('#passwordProfileUser').value = dataUser.password;
+    getElement('#password2ProdileUser').value = dataUser.password;
+    getElement('#nameProfileUser').value = dataUserServer.userName;
+    const errors = [
+      '.error__name_profile',
+      '.error__pasword_profile',
+      '.error__pasword2_profile',
+      '.error__repeat_name',
+      '.error__repeat_password',
+      '.error__empty_password',
+      '.error__empty_password2',
+      '.error__empty_name',
+    ];
+    errors.forEach((cl) => { getElement(cl).classList.add('display_none'); });
+    const inputElem = [
+      '#passwordProfileUser',
+      '#password2ProdileUser',
+      '#nameProfileUser',
+    ];
+    inputElem.forEach((cl) => { getElement(cl).classList.remove('border_red'); });
+    getElements('.profile_avatar_radio').forEach((radio) => {
+      radio.checked = false;
+    });
+    getElement('.form_profile_btn_reset').disabled = true;
+    getElement('.form_profile_btn_save').disabled = true;
+    getElement('.profile_avatar_new').value = '';
+    localStorage.removeItem('avatar');
+  }
+
+  encodeImageFileAsURL = (e) => {
+    getElements('.profile_avatar_radio').forEach((radio) => {
+      radio.checked = false;
+    });
+    getElement('.form_profile_btn_save').disabled = false;
+    const element = e.target;
+    const arrExe = ['png'];
+    const file = element.files[0];
+    const exe = file.name.split('.').splice(-1, 1)[0];
+    if (!arrExe.includes(exe)) {
+      alert('Извините, но на данный момент принимаются только файлы в формате "png"');
+      getElement('.profile_avatar_new').value = '';
+      this.isDisabledSave();
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      localStorage.setItem('avatar', JSON.stringify(reader.result.slice(22)));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  display() {
+    const isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) === 'true';
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
+    const dataUser = JSON.parse(localStorage.getItem('dataUser'));
+    const dataUserServer = JSON.parse(localStorage.getItem('dataUserServer'));
+    const theme = JSON.parse(localStorage.getItem('theme'));
     const parentElem = document.getElementById(this.id);
 
     const newsectionTasks = createElem('section', ['board']);
     newsectionTasks.id = 'container__columns';
     const mainRegistr = createDiv(['info_user_main']);
-    const pageTitle = createText('h4', `${this.isViewMode ? 'Page User`s Profile' : 'Edit User`s Profile'}`, ['form__task_title', 'dark_color']);
+    const pageTitle = createText('h4', (isViewMode && isRu && 'Профиль пользователя')
+     || (isViewMode && !isRu && 'Page User`s Profile')
+     || (!isViewMode && isRu && 'Редактировать профиль')
+     || (!isViewMode && !isRu && 'Edit User`s Profile'), ['form__task_title', 'dark_color']);
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title', 'container__title_profile']);
-    const viewMode = createBtn('View Mode', ['user__info_title', 'view'], 'button', 'View Mode');
-    const editProf = createBtn('Edit Profile', ['user__info_title', 'edit_profile_link'], 'button', 'Edit Profile');
-    const mainPage = createBtn('Main pages', ['user__info_title', 'main_profile_btn_link'], 'button', 'Main pages');
+    const viewMode = createBtn(isRu ? 'Смотреть' : 'View Mode', ['user__info_title', 'view'], 'button', 'View Mode');
+    const editProf = createBtn(isRu ? 'Править' : 'Edit Profile', ['user__info_title', 'edit_profile_link'], 'button', 'Edit Profile');
+    const mainPage = createBtn(isRu ? 'Главная стр' : 'Main pages', ['user__info_title', 'main_profile_btn_link'], 'button', 'Main pages');
     containerTitle.append(viewMode, editProf, mainPage);
 
     const containerForm = createDiv(['container__form_profile']);
@@ -144,62 +316,63 @@ class UserPagesView {
 
     const containerInputLogin0 = createDiv(['profile_group0']);
     const containerInputLogin = createDiv(['profile_group']);
-    const labeUserLogin = createText('p', 'Login:', ['label__user_profile']);
+    const labeUserLogin = createText('p', isRu ? 'Логин: ' : 'Login:', ['label__user_profile']);
     const userLoginInput = createInput('text', ['input__user_profile', 'login_input']);
     userLoginInput.name = 'profile_login_input';
-    userLoginInput.value = `${dataUser.login}`;
-    userLoginInput.id = 'loginProdileUser';
-    userLoginInput.setAttribute('required', true);
-    userLoginInput.setAttribute('maxlength', '100');
-    const errorLogin = createText('p', 'Only latin letter', ['eror_form_profile', 'error__login_profile', 'display_none']);
+    userLoginInput.value = `${dataUserServer.login}`;
+    userLoginInput.disabled = true;
     containerInputLogin.append(labeUserLogin, userLoginInput);
-    containerInputLogin0.append(containerInputLogin, errorLogin);
+    containerInputLogin0.append(containerInputLogin);
 
     const containerInputPassword0 = createDiv(['profile_group0']);
     const containerInputPassword = createDiv(['profile_group']);
-    const labeUserPassword = createText('p', 'Password:', ['label__user_profile']);
+    const labeUserPassword = createText('p', isRu ? 'Пароль: ' : 'Password:', ['label__user_profile']);
     const userPasswordInput = createInput('text', ['input__user_profile']);
     userPasswordInput.name = 'profile_password_input';
     userPasswordInput.value = `${dataUser.password}`;
-    userPasswordInput.id = 'passwordProdileUser';
-    userPasswordInput.setAttribute('required', true);
-    const errorPassword = createText('p', 'Symbols, large and small latin letters, numbers', ['eror_form_profile', 'error__pasword_profile', 'display_none']);
+    userPasswordInput.id = 'passwordProfileUser';
+    userPasswordInput.setAttribute('required', 'true');
+    const errorPassword = createText('p', isRu ? 'Символ, цифра, больш. и мал. латин. буква' : 'Symbols, large and small latin letters, numbers', ['eror_form_profile', 'error__pasword_profile', 'display_none']);
+    const errorRepeatPassword = createText('p', isRu ? 'Пароль не изменился' : 'Old password is not new', ['eror_form_profile', 'error__repeat_password', 'display_none']);
+    const errorEmptyPassword = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_password', 'display_none']);
     containerInputPassword.append(labeUserPassword, userPasswordInput);
-    containerInputPassword0.append(containerInputPassword, errorPassword);
+    containerInputPassword0.append(containerInputPassword, errorPassword, errorRepeatPassword, errorEmptyPassword);
 
     const containerInputPassword20 = createDiv(['profile_group0']);
     const containerInputPassword2 = createDiv(['profile_group']);
-    const labeUserPassword2 = createText('p', 'Repeat Password:', ['label__user_profile']);
+    const labeUserPassword2 = createText('p', isRu ? 'Повторите пароль' : 'Repeat Password:', ['label__user_profile']);
     const userPasswordInput2 = createInput('text', ['input__user_profile']);
     userPasswordInput2.name = 'profile_password2_input';
     userPasswordInput2.value = `${dataUser.password}`;
     userPasswordInput2.id = 'password2ProdileUser';
     userPasswordInput2.setAttribute('required', true);
-    const errorPassword2 = createText('p', 'Password mismatch', ['eror_form_profile', 'error__pasword2_profile', 'display_none']);
+    const errorPassword2 = createText('p', isRu ? 'Пароли не совпадают' : 'Password mismatch', ['eror_form_profile', 'error__pasword2_profile', 'display_none']);
+    const errorEmptyPassword2 = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_password2', 'display_none']);
     containerInputPassword2.append(labeUserPassword2, userPasswordInput2);
-    containerInputPassword20.append(containerInputPassword2, errorPassword2);
+    containerInputPassword20.append(containerInputPassword2, errorPassword2, errorEmptyPassword2);
 
     const containerInputName0 = createDiv(['profile_group0']);
     const containerInputName = createDiv(['profile_group']);
-    const labeUserName = createText('p', 'Name User:', ['label__user_profile']);
+    const labeUserName = createText('p', isRu ? 'Имя пользователя: ' : 'Name User: ', ['label__user_profile']);
     const userNameInput = createInput('text', ['input__user_profile']);
     userNameInput.name = 'profile_name_input';
-    userNameInput.value = `${dataUser.firstName}`;
-    userNameInput.id = 'nameProdileUser';
+    userNameInput.value = `${dataUserServer.userName}`;
+    userNameInput.id = 'nameProfileUser';
     userNameInput.setAttribute('required', true);
-    const errorNameUser = createText('p', 'Only in Latin or Cyrillic letter', ['eror_form_profile', 'error__name_profile', 'display_none']);
+    const errorRepeat = createText('p', isRu ? 'Имя не изменилось' : 'Old name is not new', ['eror_form_profile', 'error__repeat_name', 'display_none']);
+    const errorNameUser = createText('p', isRu ? 'Только латинские буквы или кириллица' : 'Only in Latin or Cyrillic letter', ['eror_form_profile', 'error__name_profile', 'display_none']);
+    const errorEmptyName = createText('p', isRu ? 'Поле не может быть пустым' : 'Field cannot be empty', ['eror_form_profile', 'error__empty_name', 'display_none']);
     containerInputName.append(labeUserName, userNameInput);
-    containerInputName0.append(containerInputName, errorNameUser);
+    containerInputName0.append(containerInputName, errorNameUser, errorRepeat, errorEmptyName);
 
     const containerInputAvatar0 = createDiv(['profile_group0']);
     const containerInputAvatar = createDiv(['profile_group']);
-    const labeUserAvatar = createText('p', 'Avatar:', ['label__user_profile']);
-    const imgAvatarUser = createImg(dataUser.avatar, 'avatar', ['profile__img_avatar']);
+    const labeUserAvatar = createText('p', isRu ? 'Аватар' : 'Avatar:', ['label__user_profile']);
+    const imgAvatarUser = createImg(`data:image/png;base64,${dataUserServer.photo}`, 'avatar', ['profile__img_avatar']);
     containerInputAvatar.append(labeUserAvatar, imgAvatarUser);
     containerInputAvatar0.append(containerInputAvatar);
 
     if (this.isViewMode === 'true') {
-      userLoginInput.disabled = true;
       userPasswordInput.disabled = true;
       userPasswordInput2.disabled = true;
       userNameInput.disabled = true;
@@ -207,34 +380,40 @@ class UserPagesView {
       viewMode.classList.toggle('view_mode');
       editProf.classList.toggle('edit_profile_btn_link');
     } else {
-      userLoginInput.disabled = false;
       userPasswordInput.disabled = false;
       userPasswordInput2.disabled = false;
       userNameInput.disabled = false;
-      containerInputAvatar.classList.add('display_none');
       viewMode.classList.toggle('edit_profile_btn_link');
       editProf.classList.toggle('view_mode');
 
       containerInfoUs.insertAdjacentHTML('beforeend', `<div class='profile__avatar_group'>
-    <p class='label__user_profile'>Avatar</p>
-    <div class='container__avatar'>
-        <img src='./../assets/icon/vue-color-avatar0.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar1.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar2.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar3.svg' alt='icon avatar' class='profile__img_avatars'/>
-        <img src='./../assets/icon/vue-color-avatar4.svg' alt='icon avatar' class='profile__img_avatars'/>       
+      <hr/>
+    <p class='label__user_profile profile_new_avatar'> New Avatar:</p>
+    <div class='container__avatar_profile'>
+      <img src='./assets/img/avatar10.png' id='Img1' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar11.png' id='Img2' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar12.png' id='Img3' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar13.png' id='Img4' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar14.png' id='Img5' alt='icon avatar' class='profile_avatar_img'/>
+      <img src='./assets/img/avatar15.png' id='Img6' alt='icon avatar' class='profile_avatar_img'/>              
     </div>
-    <div class='container__radio'>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar0.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar1.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar2.svg"/> 
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar3.svg"/>
-    <input name="avatar" class="profile_avatar_radio" type="radio" value="./assets/icon/vue-color-avatar4.svg"/>  
+    <div class='container__radio_profile'>
+      <input name="avatar" type="radio" value='Img1' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img2' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img3' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img4' class='profile_avatar_radio'/>
+      <input name="avatar" type="radio" value='Img5' class='profile_avatar_radio'/> 
+      <input name="avatar" type="radio" value='Img6' class='profile_avatar_radio'/>  
     </div>
+    <hr/>
+    <span class='label__user_profile upload_avatar'>Upload your Avatar:</span>
+    <input type="file" class='profile_avatar_new' name="myAvatar"/>
 </div>
+
 <div class='form_btns'>
-    <div class='form_btns_profile'>      
-        <button type='submit' class='dark_btn btn form_profile_btn_save'>Save</button>
+    <div class='form_btns_profile'>
+        <button type='button' disabled class='dark_btn btn form_profile_btn_reset'>Cancel</button>      
+        <button type='submit' disabled class='dark_btn btn form_profile_btn_save'>Save</button>
     </div>   
 </div>`);
     }
@@ -254,8 +433,19 @@ class UserPagesView {
     newsectionTasks.append(mainRegistr);
     parentElem.replaceWith(newsectionTasks);
     if (this.isViewMode !== 'true') {
-      this.settingRadio();
       getElements('.input__user_profile').forEach((input) => input.addEventListener('input', this.validationInput));
+      getElement('.container__radio_profile').addEventListener('change', UserPagesView.isNewAvatar);
+      getElement('.form_profile_btn_reset').addEventListener('click', this.cancelChanges);
+      if (isRu) {
+        getElement('.form_profile_btn_reset').textContent = 'Отменить';
+        getElement('.form_profile_btn_save').textContent = 'Сохранить';
+        getElement('.profile_new_avatar').textContent = 'Новый аватар:';
+        getElement('.upload_avatar').textContent = 'Свой аватар:  ';
+      }
+      getElement('.profile_avatar_new').addEventListener('change', this.encodeImageFileAsURL);
+    }
+    if (theme === 'dark') {
+      pageTitle.classList.add('light_color');
     }
   }
 }

@@ -63,11 +63,17 @@
   display: flex;
   gap: 1.5rem;
   margin-right: 4rem;
+  align-items:center;
 }
 
 .user__name {
   font-weight: 700;
   font-size: 20px;
+}
+.user__img_avatar {
+  width: 40px;
+  height: 40px;
+  margin: 0;
 }
 
 .btn {
@@ -99,6 +105,21 @@
 }
 .header_for_auth_user {
   cursor: pointer;
+}
+.container__lang {
+  display: flex;
+  cursor: pointer;
+  font-size: 1.5rem;
+  width: 75px;
+  justify-content: space-between;
+}
+.ru_lang:hover,
+.en_lang:hover {
+  filter: invert(48%) sepia(46%) saturate(2587%) hue-rotate(160deg) brightness(93%) contrast(101%);
+}
+.active_lang {
+  border-bottom: 2px solid var(--irys-color);
+  filter: invert(48%) sepia(46%) saturate(2587%) hue-rotate(160deg) brightness(93%) contrast(101%);
 }
 /*footer*/
 .footer {

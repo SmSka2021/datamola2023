@@ -23,18 +23,34 @@ class MessageModalView {
     }
   }
 
-  display() {
+  bindShowMainPages(handler) {
+    const btn = getElement('.main_pages_btn');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        handler();
+      });
+    }
+  }
+
+  display(text, isShowBtnMain = false) {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
-    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'sction__confirm_modal']);
-    newsectionTasks.id = 'create_task';
+    const newsectionTasks = createElem('section', ['section__confirm_modal']);
+    newsectionTasks.id = 'modal_message';
     const modalWraper = createDiv(['wrapper__confirm_modal']);
     const modalContainer = createDiv(['container__confirm_modal']);
     const modal = createDiv(['modal']);
     const btnClose = createBtn('X', ['form__btn_close', 'close_confirm'], 'button', 'Close');
-    const title = createText('h4', 'You can edit and delete only your own tasks', ['confirm__modal_title', 'message_title']);
-
-    modal.append(btnClose, title);
+    const title = createText('h4', `${text}`, ['confirm__modal_title', 'message_title']);
+    if (isShowBtnMain) {
+      const btnMainPages = createBtn(isRu ? 'Главная стр' : 'Main pages', ['btn', 'light_btn', 'main_pages_btn'], 'button', 'main pages');
+      modal.append(btnClose, title, btnMainPages);
+    } else {
+      modal.append(btnClose, title);
+    }
     modalContainer.append(modal);
     newsectionTasks.append(modalWraper, modalContainer);
     parentElem.replaceWith(newsectionTasks);

@@ -12,8 +12,8 @@ import srcPriority from '../ultilites/convertor-src';
 import { maxLengthDescription } from '../ultilites/constant';
 import { getElement } from '../ultilites/get-element';
 import { pathName } from '../ultilites/path';
+import { translateStatus } from '../ultilites/field-task';
 
-// ----------PAGE ONE TASK  -TaskView---------------- //
 class TaskViewPage {
   constructor(id) {
     this.id = id;
@@ -29,7 +29,7 @@ class TaskViewPage {
         const idTask = commentForm.dataset.id;
         if (newComment.length) {
           event.preventDefault();
-          handler(idTask, newComment);
+          handler(idTask, { text: newComment });
           commentForm.reset();
         }
       });
@@ -75,6 +75,9 @@ class TaskViewPage {
 
   display(task) {
     if (!task) return;
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
     newsectionTasks.id = 'main_task';
@@ -88,10 +91,10 @@ class TaskViewPage {
 
     const containerLabel = createDiv(['container__label']);
     const labelTodo = createDiv(['label__todo']);
-    const todoTitle = createText('p', `${task.status}`);
+    const todoTitle = createText('p', isRu ? translateStatus(task.status) : `${task.status}`);
     labelTodo.append(todoTitle);
     const labelUser = createDiv(['label__todo', 'user_name']);
-    const userTitle = createText('p', `${task.assignee}`);
+    const userTitle = createText('p', `${task.assignee.userName}`);
     labelUser.append(userTitle);
     containerLabel.append(labelTodo, labelUser);
 
@@ -102,22 +105,24 @@ class TaskViewPage {
 
     const containerBtnTask = createDiv(['container__btn_task']);
     const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
-    btnDel.setAttribute('data-id', `${task._id}`);
+    btnDel.setAttribute('data-id', `${task.id}`);
     const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
     const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
-    btnEdit.setAttribute('data-id', `${task._id}`);
+    btnEdit.setAttribute('data-id', `${task.id}`);
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['edit_img_one_task']);
     btnEdit.append(imgEdit);
     containerBtnTask.append(btnDel, btnEdit);
     headerTask.append(containerLabel, containerTitleTask, containerBtnTask);
     const containerDateTask = createDiv(['container__date_task_one']);
-    const taskDateItem = createText('p', `${convertationDate(task._createdAt)}`, ['task__date']);
+    const taskDateItem = createText('p', `${convertationDate(task.createdAt)}`, ['task__date']);
     const imgIsPrivacy = createImg(`${task.isPrivate ? srcImgCollection.private.person : srcImgCollection.private.multiple}`, 'privacy img', ['task__img_privacy']);
     containerDateTask.append(taskDateItem, imgIsPrivacy);
 
-    const deckriptionTask = createText('p', `${task.description}`, ['task__text_one']);
-    const commentsTitle = createText('h6', 'Comments:', ['comments__title']);
+    const creatorTask = createText('h6', isRu ? `Задачу создал:  ${task.creator.userName}` : `Creator task: ${task.creator.userName}`, ['creator']);
+    const deckriptionTitle = createText('span', isRu ? 'Описание задачи: ' : 'Description: ', ['comments__title']);
+    const deckriptionTask = createText('span', ` ${task.description}`, ['task__text_one']);
+    const commentsTitle = createText('h6', isRu ? 'Комментарии: ' : 'Comments:', ['comments__title']);
     const commentsList = createElem('ul', ['comments__list']);
     if (task.comments.length) {
       task.comments.forEach((comment) => {
@@ -125,8 +130,8 @@ class TaskViewPage {
         const imgComment = createImg(srcImgCollection.comments, 'comments icon', ['task__img_comment']);
         const commentItem = createDiv(['comment__item']);
         const commentUserName = createDiv(['comment__user_name']);
-        const commentAuthor = createText('p', `${comment._author}`, ['user__name_item']);
-        const commentDateItem = createText('p', `${convertationDate(comment._createdAt)}`, ['task__date']);
+        const commentAuthor = createText('p', `${comment.creator.userName}`, ['user__name_item']);
+        const commentDateItem = createText('p', `${convertationDate(comment.createdAt)}`, ['task__date']);
         commentUserName.append(commentAuthor, commentDateItem);
         const commentText = createText('p', `${comment.text}`, ['task__comments_one']);
         commentItem.append(commentUserName, commentText);
@@ -135,21 +140,23 @@ class TaskViewPage {
       });
     }
     const formElem = createElem('form', ['form']);
-    formElem.setAttribute('data-id', `${task._id}`);
+    formElem.setAttribute('data-id', `${task.id}`);
     const formLabel = createElem('label', ['form__label']);
     formLabel.for = 'addComment';
-    formLabel.textContent = 'Comment: ';
+    formLabel.textContent = isRu ? 'Комментарий: ' : 'Comment: ';
     const formTextArea = createElem('textarea', ['form__area']);
     formTextArea.name = 'newComment';
     formTextArea.id = 'addComment';
-    formElem.setAttribute('data-id', `${task._id}`);
+    formElem.setAttribute('data-id', `${task.id}`);
     formTextArea.maxlength = maxLengthDescription;
-    const btnForm = createBtn('Add', ['light_btn', 'btn'], 'submit', 'add comment');
+    const btnForm = createBtn(isRu ? 'Добавить: ' : 'Add', ['light_btn', 'btn'], 'submit', isRu ? 'Добавить комментарий' : 'Add comment');
     formElem.append(formLabel, formTextArea, btnForm);
 
     sectionOneTask.append(
       headerTask,
       containerDateTask,
+      creatorTask,
+      deckriptionTitle,
       deckriptionTask,
       commentsTitle,
       commentsList,
@@ -158,6 +165,9 @@ class TaskViewPage {
 
     newsectionTasks.append(btnPrevious, sectionOneTask);
     parentElem.replaceWith(newsectionTasks);
+    if (theme === 'dark') {
+      newsectionTasks.style.backgroundImage = 'url(../assets/img/dark_fon3.png)';
+    }
   }
 }
 

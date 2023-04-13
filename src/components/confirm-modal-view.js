@@ -44,18 +44,20 @@ class ConfirmModalView {
   }
 
   display() {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    const isRu = lang === 'ru';
     const parentElem = document.getElementById(this.id);
 
-    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'sction__confirm_modal']);
+    const newsectionTasks = createElem('section', ['container_Modal_create_task', 'section__confirm_modal']);
     newsectionTasks.id = 'create_task';
     const modalWraper = createDiv(['wrapper__confirm_modal']);
     const modalContainer = createDiv(['container__confirm_modal']);
     const modal = createDiv(['modal']);
     const btnClose = createBtn('X', ['form__btn_close', 'close_confirm'], 'button', 'Close');
-    const title = createText('h4', 'A you sure?', ['confirm__modal_title']);
+    const title = createText('h4', isRu ? 'Вы уверены?' : 'A you sure?', ['confirm__modal_title']);
     const containerBtn = createDiv(['confirm__modal_btns']);
-    const btnNot = createBtn('No', ['light_btn', 'btn', 'confirm__modal_btn', 'not'], 'button', 'Not Delete');
-    const yesBtn = createBtn('Yes', ['light_btn', 'btn', 'confirm__modal_btn', 'yes'], 'button', 'Delete Task');
+    const btnNot = createBtn(isRu ? 'Нет' : 'No', ['light_btn', 'btn', 'confirm__modal_btn', 'not'], 'button', 'Not Delete');
+    const yesBtn = createBtn(isRu ? 'Да' : 'Yes', ['light_btn', 'btn', 'confirm__modal_btn', 'yes'], 'button', 'Delete Task');
     containerBtn.append(btnNot, yesBtn);
     modal.append(btnClose, title, containerBtn);
     modalContainer.append(modal);

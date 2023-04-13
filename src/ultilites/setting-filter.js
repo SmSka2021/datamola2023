@@ -1,4 +1,5 @@
 export const settingFilterStart = {
+  dataSearch: '',
   assignee: false,
   description: false,
   title: false,
@@ -16,10 +17,16 @@ export const settingFilterStart = {
 };
 
 export const filterDataStart = {
-  assignee: null,
-  description: null,
-  name: null,
-  status: null,
-  priority: null,
-  isPrivate: null,
+  assignee: '',
+  description: '',
+  name: '',
+  priority: {
+    low: false,
+    medium: false,
+    high: false,
+  },
+  isPrivate: {
+    privacy: false,
+    public: false,
+  },
 };
