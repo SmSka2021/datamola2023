@@ -81,7 +81,7 @@ class TaskViewPage {
     const parentElem = document.getElementById(this.id);
     const newsectionTasks = createElem('section', ['main', 'main_task']);
     newsectionTasks.id = 'main_task';
-    const btnPrevious = createBtn('', ['dark_btn', 'btn', 'previosView'], 'button', 'back');
+    const btnPrevious = createBtn('', ['dark_btn', 'btn', 'previosView'], 'button', isRu ? 'Назад' : 'Back');
     const imgPrevios = createImg(srcImgCollection.previos, 'icon', ['previosView_img']);
     btnPrevious.append(imgPrevios);
 

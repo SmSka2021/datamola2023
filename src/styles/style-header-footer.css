@@ -77,9 +77,11 @@
 }
 
 .btn {
-  width: 100px;
+  min-width: 100px;
+  max-width: 200px;
   height: 35px;
   border: none;
+  padding: 3px 17px;
   font-size: 1.6rem;
   font-family: "Roboto"sans-serif;
   border-radius: 25px;
@@ -90,7 +92,7 @@
 
 .light_btn {
   background: var(--secondary-color);
-  color: var(--primary-color);
+  color: var(--primary-color); 
 }
 
 .dark_btn {

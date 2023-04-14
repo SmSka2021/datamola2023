@@ -224,9 +224,9 @@ class RegistrationFormView {
     const mainRegistr = createDiv(['info_user_main']);
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title']);
-    const signUp = createBtn(isRu ? 'Регистр' : 'SignUp', ['user__info_title', 'sign_up'], 'button', 'Registration');
-    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'login_btn_link', 'login__modal_link'], 'button', 'Authorize');
-    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link'], 'button', 'LogIn as a guest');
+    const signUp = createBtn(isRu ? 'Регистр.' : 'SignUp', ['user__info_title', 'sign_up'], 'button', isRu ? 'Регистрация' : 'SignUp');
+    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'login_btn_link', 'login__modal_link'], 'button', isRu ? 'Войти' : 'LogIn');
+    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link'], 'button', isRu ? 'Войти как гость' : 'LogIn as a guest');
     containerTitle.append(signUp, logIn, guest);
     const containerForm = createDiv(['container__form']);
 
