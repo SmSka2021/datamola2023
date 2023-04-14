@@ -117,15 +117,12 @@ class BoardViewList {
     const tablesTodo = getElements('.open__table');
     const btnsImgCloseColumn = getElements('.img_close');
     const btnsImgOpenColumn = getElements('.img_open');
-    // const loadBths = getElements('.load__btn_list');
-
     elem.classList.toggle('table__header_open');
     elem.classList.toggle('table__header_close');
     titleColumn[index].classList.toggle('label_open');
     tablesTodo[index].hidden = !tablesTodo[index].hidden;
     btnsImgCloseColumn[index].hidden = !btnsImgCloseColumn[index].hidden;
     btnsImgOpenColumn[index].hidden = !btnsImgOpenColumn[index].hidden;
-    // loadBths[index].classList.toggle('display_none');
   };
 
   actionLabelTodo = (e) => {

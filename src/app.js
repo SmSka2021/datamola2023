@@ -143,6 +143,10 @@ class TasksController {
       this.renderFilter();
       return;
     }
+    if (this.path.actuale === pathName.auth) {
+      this.renderAuthPage();
+      return;
+    }
     if ((this.path.actuale === pathName.oneTaskPage) && this.isAuth) {
       const idCheckedTask = this.getLocalStorage('idCheckedTask');
       if (idCheckedTask) {
@@ -176,6 +180,7 @@ class TasksController {
   };
 
   renderAuthPage = () => {
+    this.savePathActual(pathName.auth);
     this.authModalForm.display();
     this.removeElement('container__filter');
     this.authModalForm.bindOpenRegistrModalForm(this.renderRegistrationPage);
@@ -448,8 +453,9 @@ class TasksController {
     getElement('.sunny').classList.remove('check_btn');
     getElement('.dark').classList.add('check_btn');
     const pagesProfile = getElement('.info_user_main');
-    if (pagesProfile) {
-      getElement('.dark_color').classList.add('light_color');
+    const fonImg = getElement('.dark_color');
+    if (pagesProfile && fonImg) {
+      fonImg.classList.add('light_color');
     }
   };
 
@@ -460,8 +466,9 @@ class TasksController {
     getElement('.sunny').classList.add('check_btn');
     getElement('.dark').classList.remove('check_btn');
     const pagesProfile = getElement('.info_user_main');
-    if (pagesProfile) {
-      getElement('.dark_color').classList.remove('light_color');
+    const fonImg = getElement('.dark_color');
+    if (pagesProfile && fonImg) {
+      fonImg.classList.remove('light_color');
     }
   };
 
@@ -523,7 +530,6 @@ class TasksController {
 
   openModalCreateTask = (id) => {
     if (id) {
-      console.log(this.allTasks.find((task) => task.id === id));
       const assigneeTask = this.allTasks.find((task) => task.id === id).creator.userName;
       const userActual = this.getLocalStorage('dataUserServer').userName;
       if (assigneeTask !== userActual) {
@@ -563,6 +569,7 @@ class TasksController {
     const authDataUser = await this.serviseApi.authorizeUser(dataUser);
     this.handlerError(authDataUser);
     if (!authDataUser.error) {
+      this.savePathActual(pathName.boardCard);
       this.saveLocalStorage('auth', 'true');
       this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('tokken', authDataUser);
@@ -582,6 +589,7 @@ class TasksController {
   };
 
   logInAsGuest = () => {
+    this.savePathActual(pathName.boardCard);
     this.saveLocalStorage('statusUser', 'guest');
     const dataLocal = ['tokken',
       'dataRemoveTask',

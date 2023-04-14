@@ -147,9 +147,9 @@ class AuthFormView {
     const mainRegistr = createDiv(['info_user_main']);
     const userInfor = createDiv(['user__info']);
     const containerTitle = createDiv(['container__title']);
-    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'sign_up'], 'button', 'Authorize');
-    const signUp = createBtn(isRu ? 'Регистр' : 'SignUp', ['user__info_title', 'login_btn_link', 'sign__modal_link'], 'button', 'Registration');
-    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link', 'guest_btn_link_auth'], 'button', 'LogIn as a guest');
+    const logIn = createBtn(isRu ? 'Войти' : 'LogIn', ['user__info_title', 'sign_up'], 'button', isRu ? 'Войти' : 'LogIn');
+    const signUp = createBtn(isRu ? 'Регистр.' : 'SignUp', ['user__info_title', 'login_btn_link', 'sign__modal_link'], 'button', isRu ? 'Регистрация' : 'SignUp');
+    const guest = createBtn(isRu ? 'Войти как гость' : 'LogIn as a guest', ['user__info_title', 'guest_btn_link', 'guest_btn_link_auth'], 'button', isRu ? 'Войти как гость' : 'LogIn as a guest');
     containerTitle.append(logIn, signUp, guest);
     const containerForm = createDiv(['container__form']);
 

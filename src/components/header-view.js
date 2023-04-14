@@ -103,6 +103,17 @@ class HeaderView {
     }
   };
 
+  setThemeStart = () => {
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    if (theme) {
+      if (theme === 'dark') {
+        getElement('.dark').classList.add('check_btn');
+      } else {
+        getElement('.sunny').classList.add('check_btn');
+      }
+    }
+  };
+
   checkIsGuest = () => localStorage.getItem('statusUser');
 
   isAuthUser = () => JSON.parse(localStorage.getItem('auth'));
@@ -123,7 +134,7 @@ class HeaderView {
     const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img', 'img_light_theme']);
     themaBtnLiht.append(imgLightThema);
     const spanSlesh = createText('span', ' / ');
-    const themaBtnDark = createBtn('', ['thema__btn', 'dark', 'check_btn'], 'button', isRu ? 'Тёмная тема' : 'Dark theme');
+    const themaBtnDark = createBtn('', ['thema__btn', 'dark'], 'button', isRu ? 'Тёмная тема' : 'Dark theme');
     const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img', 'img_dark_theme']);
     themaBtnDark.append(imgDarkThema);
     containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
@@ -137,6 +148,7 @@ class HeaderView {
     else enLang.classList.add('active_lang');
     const containerAuth1 = createDiv(['container__authorize', 'header_for_auth_user']);
     const containerUserName1 = createDiv(['container__userName']);
+    containerUserName1.title = isRu ? 'Профиль пользователя' : 'User`s profile';
     const imgIconUser1 = createImg(srcImgCollection.iconUser, 'icon user', ['user__img_avatar']);
     const itemNameUser1 = createText('p', 'user', ['user__name', 'set_name']);
     containerUserName1.append(imgIconUser1, itemNameUser1);
@@ -168,6 +180,7 @@ class HeaderView {
     header.prepend(containerLogo, containerLang, containerThema);
     parentElem.replaceWith(header);
     this.setUser();
+    this.setThemeStart();
   }
 }
 export default HeaderView;
