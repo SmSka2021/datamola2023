@@ -77,8 +77,7 @@
 }
 
 .btn {
-  min-width: 100px;
-  max-width: 200px;
+  min-width: 100px;  
   height: 35px;
   border: none;
   padding: 3px 17px;
