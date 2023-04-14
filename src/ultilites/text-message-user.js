@@ -43,7 +43,7 @@ export const messageNoMoreTasks = () => {
 };
 
 export const messagePrivateTask = () => {
-  if (checkLang()) return 'Это приватня задача, доступ имеет только автор или исполнитель задачи';
+  if (checkLang()) return 'Это приватная задача, доступ имеет только автор или исполнитель задачи';
   return 'You have not access to private tasks other users';
 };
 

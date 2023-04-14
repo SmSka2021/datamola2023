@@ -54,13 +54,13 @@ class OneTaskViewCard {
     userNameLabel.append(userNameItem);
 
     const containerBtn = createDiv(['container__btn_delete', 'hidden_button_delete']);
-    const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
+    const btnDelete = createBtn('', ['btn_icon', 'delete'], 'button', !isRu ? 'Delete task' : 'Удалить задачу');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     imgDelete.setAttribute('data-id', `${taskOne.id}`);
     btnDelete.append(imgDelete);
 
-    const btnEdit = createBtn('', ['btn_icon', 'edit']);
-    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit'], 'button', 'edit task');
+    const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', !isRu ? 'Edit task' : 'Править задачу');
+    const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
     imgEdit.setAttribute('data-id', `${taskOne.id}`);
     btnEdit.append(imgEdit);
     containerBtn.append(btnDelete, btnEdit);

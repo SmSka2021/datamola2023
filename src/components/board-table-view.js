@@ -124,7 +124,7 @@ class TaskFeedView {
       const idList = createIdList(column);
       list.id = idList;
 
-      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table']);
+      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_table'], 'button', isRu ? 'Загрузить ещё' : 'Load more tasks');
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
@@ -135,11 +135,11 @@ class TaskFeedView {
     });
     const containerViewBtn = createDiv(['container__view_btn']);
 
-    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list'], 'button', 'view list');
+    const btnViewList = createBtn('', ['dark_btn', 'btn', 'btn_list'], 'button', isRu ? 'Таблица' : 'View table');
     const imgList = createImg(srcImgCollection.viewList, 'icon');
     btnViewList.append(imgList);
 
-    const btnViewTable = createBtn('', ['check_btn', 'btn', 'btn_table'], 'button', 'view card');
+    const btnViewTable = createBtn('', ['check_btn', 'btn', 'btn_table'], 'button', isRu ? 'Карточки' : 'View cards');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
 

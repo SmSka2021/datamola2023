@@ -59,14 +59,14 @@ class OneTaskViewList {
 
     const taskEdit = createElem('td', ['td_edit']);
     taskEdit.setAttribute('data-id', `${task.id}`);
-    const btnEdit = createBtn('', ['btn_icon', 'edit_btn_list', 'edit'], 'button', 'edit task');
+    const btnEdit = createBtn('', ['btn_icon', 'edit_btn_list', 'edit'], 'button', !isRu ? 'Edit task' : 'Править задачу');
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['img_edit']);
     imgEdit.setAttribute('data-id', `${task.id}`);
     btnEdit.append(imgEdit);
     taskEdit.append(btnEdit);
     const taskDelete = createElem('td', ['td_delit']);
     taskDelete.setAttribute('data-id', `${task.id}`);
-    const btnDelete = createBtn('', ['btn_icon', 'delete', 'delete_btn_list'], 'button', 'delete task');
+    const btnDelete = createBtn('', ['btn_icon', 'delete', 'delete_btn_list'], 'button', !isRu ? 'Delete task' : 'Удалить задачу');
     const imgDelete = createImg(srcImgCollection.delete, 'icon delete', ['img_delete']);
     imgDelete.setAttribute('data-id', `${task.id}`);
     btnDelete.append(imgDelete);

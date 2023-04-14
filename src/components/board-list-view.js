@@ -93,21 +93,21 @@ class BoardViewList {
 
   getStateIsOpenTodo() {
     if (localStorage.getItem('isOpenTodo')) {
-      return localStorage.getItem('isOpenTodo') === 'true';
+      return JSON.parse(localStorage.getItem('isOpenTodo')) === true;
     }
     return false;
   }
 
   getStateIsOpenComplete() {
     if (localStorage.getItem('isOpenTodo')) {
-      return localStorage.getItem('isOpenComplete') === 'true';
+      return JSON.parse(localStorage.getItem('isOpenComplete')) === true;
     }
     return false;
   }
 
   getStateIsOpenInProgress() {
     if (localStorage.getItem('isOpenTodo')) {
-      return localStorage.getItem('isOpenInProgress') === 'true';
+      return JSON.parse(localStorage.getItem('isOpenInProgress')) === true;
     }
     return false;
   }
@@ -117,7 +117,7 @@ class BoardViewList {
     const tablesTodo = getElements('.open__table');
     const btnsImgCloseColumn = getElements('.img_close');
     const btnsImgOpenColumn = getElements('.img_open');
-    const loadBths = getElements('.load__btn_list');
+    // const loadBths = getElements('.load__btn_list');
 
     elem.classList.toggle('table__header_open');
     elem.classList.toggle('table__header_close');
@@ -125,7 +125,7 @@ class BoardViewList {
     tablesTodo[index].hidden = !tablesTodo[index].hidden;
     btnsImgCloseColumn[index].hidden = !btnsImgCloseColumn[index].hidden;
     btnsImgOpenColumn[index].hidden = !btnsImgOpenColumn[index].hidden;
-    loadBths[index].classList.toggle('display_none');
+    // loadBths[index].classList.toggle('display_none');
   };
 
   actionLabelTodo = (e) => {
@@ -134,17 +134,17 @@ class BoardViewList {
     switch (elem.dataset.column) {
       case 'todo':
         this.isOpenTodo = !this.isOpenTodo;
-        localStorage.setItem('isOpenTodo', this.isOpenTodo);
+        localStorage.setItem('isOpenTodo', JSON.stringify(this.isOpenTodo));
         this.changeOpenCloseTodo(elem, 0);
         break;
       case 'inProgress':
         this.isOpenInProgress = !this.isOpenInProgress;
-        localStorage.setItem('isOpenInProgress', this.isOpenInProgress);
+        localStorage.setItem('isOpenInProgress', JSON.stringify(this.isOpenInProgress));
         this.changeOpenCloseTodo(elem, 1);
         break;
       case 'complete':
         this.isOpenComplete = !this.isOpenComplete;
-        localStorage.setItem('isOpenComplete', this.isOpenComplete);
+        localStorage.setItem('isOpenComplete', JSON.stringify(this.isOpenComplete));
         this.changeOpenCloseTodo(elem, 2);
         break;
       default:
@@ -174,10 +174,10 @@ class BoardViewList {
     newsectionTasks.id = 'container__columns';
 
     const containerViewBtn = createDiv(['container__view_btn_list']);
-    const btnViewList = createBtn('', ['check_btn', 'btn', 'btn_list'], 'button', 'view list');
+    const btnViewList = createBtn('', ['check_btn', 'btn', 'btn_list'], 'button', isRu ? 'Таблица' : 'View table');
     const imgList = createImg(srcImgCollection.viewList, 'icon', ['img_viewList']);
     btnViewList.append(imgList);
-    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'button', 'view table');
+    const btnViewTable = createBtn('', ['dark_btn', 'btn', 'btn_table'], 'button', isRu ? 'Карточки' : 'View cards');
     const imgTable = createImg(srcImgCollection.viewTable, 'icon');
     btnViewTable.append(imgTable);
     containerViewBtn.append(btnViewList, btnViewTable);
@@ -232,15 +232,25 @@ class BoardViewList {
       tableThead.append(tableRowTitle);
       const tableBody = createElem('tbody', []);
       tableBody.id = createIdList(column);
-      tableTodo.append(tableThead, tableBody);
-      tableTodo.hidden = true;
 
-      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'display_none', 'dark_btn', 'btn', 'load__btn_list'], 'button', 'Load more tasks');
+      const tableFoot = createElem('tfoot', []);
+      const rowFoot = createElem('tr', []);
+      const tdFoot = createElem('td', ['tFoot']);
+      tdFoot.setAttribute('colspan', this.isAuthUser() ? '11' : '9');
+
+      const btnMoreTasks = createBtn(isRu ? 'Загрузить ещё' : 'Load more', ['load__btn', 'dark_btn', 'btn', 'load__btn_list'], 'button', isRu ? 'Загрузить ещё' : 'Load more tasks');
       const imgMoreTasks = createImg(srcImgCollection.loadMoreTasks, 'icon');
       btnMoreTasks.append(imgMoreTasks);
       btnMoreTasks.setAttribute('data-column', `${createIdList(column)}`);
       btnMoreTasks.id = `load_list_${createIdList(column)}`;
-      columnOne.append(tableHeader, tableTodo, btnMoreTasks);
+
+      tdFoot.append(btnMoreTasks);
+      rowFoot.append(tdFoot);
+      tableFoot.append(rowFoot);
+      tableTodo.append(tableThead, tableBody, tableFoot);
+      tableTodo.hidden = true;
+
+      columnOne.append(tableHeader, tableTodo);
       sectionTasks.append(columnOne);
     });
 
