@@ -119,11 +119,11 @@ class HeaderView {
     containerLogo.append(imgLogo, logoTitle);
 
     const containerThema = createDiv(['container__thema']);
-    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny'], 'button', 'Light theme');
+    const themaBtnLiht = createBtn('', ['thema__btn', 'sunny'], 'button', isRu ? 'Светлая тема' : 'Light theme');
     const imgLightThema = createImg(srcImgCollection.lightThema, 'white thema', ['thema__img', 'img_light_theme']);
     themaBtnLiht.append(imgLightThema);
     const spanSlesh = createText('span', ' / ');
-    const themaBtnDark = createBtn('', ['thema__btn', 'dark', 'check_btn'], 'button', 'Dark theme');
+    const themaBtnDark = createBtn('', ['thema__btn', 'dark', 'check_btn'], 'button', isRu ? 'Тёмная тема' : 'Dark theme');
     const imgDarkThema = createImg(srcImgCollection.darkThema, 'dark thema', ['thema__img', 'img_dark_theme']);
     themaBtnDark.append(imgDarkThema);
     containerThema.append(themaBtnLiht, spanSlesh, themaBtnDark);
@@ -140,7 +140,7 @@ class HeaderView {
     const imgIconUser1 = createImg(srcImgCollection.iconUser, 'icon user', ['user__img_avatar']);
     const itemNameUser1 = createText('p', 'user', ['user__name', 'set_name']);
     containerUserName1.append(imgIconUser1, itemNameUser1);
-    const btnLogOut1 = createBtn(isRu ? 'Выйти' : 'LogOut', ['light_btn', 'btn', 'logout_btn_header']);
+    const btnLogOut1 = createBtn(isRu ? 'Выйти' : 'LogOut', ['light_btn', 'btn', 'logout_btn_header'], 'button', isRu ? 'Выйти' : 'LogOut');
     containerAuth1.append(containerUserName1, btnLogOut1);
 
     const containerAuth2 = createDiv(['container__authorize', 'header_for_guest_user']);
@@ -148,7 +148,7 @@ class HeaderView {
     const imgIconUser2 = createImg(srcImgCollection.iconUser, 'icon user', ['user__img']);
     const itemNameUser2 = createText('p', isRu ? 'Гость' : 'Guest', ['user__name']);
     containerUserName2.append(imgIconUser2, itemNameUser2);
-    const btnLogOut2 = createBtn(isRu ? 'Войти' : 'LogIn', ['light_btn', 'btn', 'login_header']);
+    const btnLogOut2 = createBtn(isRu ? 'Войти' : 'LogIn', ['light_btn', 'btn', 'login_header'], 'button', isRu ? 'Войти' : 'LogIn');
     containerAuth2.append(containerUserName2, btnLogOut2);
     header.append(containerAuth1, containerAuth2);
 

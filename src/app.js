@@ -122,7 +122,7 @@ class TasksController {
     if (!this.allTasks.length) {
       await this.getTasksFromServer();
     }
-    if (!localStorage.getItem('allUsers') && this.isAuth) this.getDataUsers();
+    if (!localStorage.getItem('allUsers') && this.isAuth) await this.getDataUsers();
     if (this.isAuth && !this.getLocalStorage('statusUser') && (this.path.actuale === pathName.profilePage)) {
       await this.getDataUserProfile();
       this.renderProfilePage();
@@ -147,7 +147,7 @@ class TasksController {
       const idCheckedTask = this.getLocalStorage('idCheckedTask');
       if (idCheckedTask) {
         this.path.prev = pathName.boardCard;
-        this.saveLocalStorage(this.path);
+        this.saveLocalStorage('path', this.path);
         this.showTask(idCheckedTask);
       } else this.renderMainBoardCard();
     }
@@ -196,7 +196,6 @@ class TasksController {
     const successfulPromises = results.filter((promis) => promis.status === 'fulfilled');
     successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
     this.cleanLoader();
-    console.log(this.allTasks);
   };
 
   getTasksAfterFilterFromLocal = () => {
@@ -348,7 +347,7 @@ class TasksController {
         return;
       }
       this.renderLoader();
-      moreTask = this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
+      moreTask = await this.serviseApi.getTasks(isLoadPage.inProgress.to, isLoadPage.inProgress.to + 10, 2);
       this.handlerError(moreTask);
       if (!moreTask.error) {
         isLoadPage.inProgress = { from: 0, to: isLoadPage.inProgress.to + 10 };
@@ -375,7 +374,7 @@ class TasksController {
         return;
       }
       this.renderLoader();
-      moreTask = this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
+      moreTask = await this.serviseApi.getTasks(isLoadPage.complete.to, isLoadPage.complete.to + 10, 3);
       this.handlerError(moreTask);
       if (!moreTask.error) {
         isLoadPage.complete = { from: 0, to: isLoadPage.complete.to + 10 };
@@ -524,6 +523,7 @@ class TasksController {
 
   openModalCreateTask = (id) => {
     if (id) {
+      console.log(this.allTasks.find((task) => task.id === id));
       const assigneeTask = this.allTasks.find((task) => task.id === id).creator.userName;
       const userActual = this.getLocalStorage('dataUserServer').userName;
       if (assigneeTask !== userActual) {
@@ -592,7 +592,9 @@ class TasksController {
       'isViewProfile',
       'settingFilter',
       'confirmReset',
-      'hideBtnsLoad',
+      'avatar',
+      'user',
+      'profileUser',
     ];
     dataLocal.forEach((data) => { localStorage.removeItem(data); });
     this.renderStartPages();

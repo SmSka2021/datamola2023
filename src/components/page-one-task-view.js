@@ -104,11 +104,11 @@ class TaskViewPage {
     containerTitleTask.append(imgPriorityTasks, userNameItem);
 
     const containerBtnTask = createDiv(['container__btn_task']);
-    const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', 'delete task');
+    const btnDel = createBtn('', ['btn_icon', 'delete'], 'button', !isRu ? 'Delete task' : 'Удалить задачу');
     btnDel.setAttribute('data-id', `${task.id}`);
     const imgDel = createImg(srcImgCollection.delete, 'icon delete', ['delete_img']);
     btnDel.append(imgDel);
-    const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', 'edit task');
+    const btnEdit = createBtn('', ['btn_icon', 'edit'], 'button', !isRu ? 'Edit task' : 'Править задачу');
     btnEdit.setAttribute('data-id', `${task.id}`);
     const imgEdit = createImg(srcImgCollection.edit, 'icon edit', ['edit_img_one_task']);
     btnEdit.append(imgEdit);

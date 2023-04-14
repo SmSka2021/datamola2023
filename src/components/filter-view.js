@@ -11,7 +11,7 @@ import {
 import srcImgCollection from '../ultilites/src-img-collection';
 import { getElement } from '../ultilites/get-element';
 import { settingFilterStart } from '../ultilites/setting-filter';
-import { checkStateFilter } from '../ultilites/is-equal-obj';
+import checkStateFilter from '../ultilites/is-equal-obj';
 
 class FilterView {
   constructor(id) {
@@ -266,7 +266,7 @@ class FilterView {
     labelTo.append(inputDateTo);
     blockDate.append(labelFrom, labelTo);
     containerDate.append(dateTitle, blockDate);
-    const resetBtn = createBtn(isRu ? 'Сбросить  ' : 'Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', 'reset all filter');
+    const resetBtn = createBtn(isRu ? 'Сбросить  ' : 'Reset', ['dark_btn', 'btn', 'reset_btn'], 'button', isRu ? 'Сбросить все фильтры' : 'Reset all filters');
 
     myForm.append(
       filterTitle,

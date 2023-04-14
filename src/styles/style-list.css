@@ -126,3 +126,8 @@ margin-left: calc(50% - 90px);
   color: var(--primary-color);
   cursor: not-allowed;
 }
+.tFoot {
+  min-width: 100%;
+  max-width: 100%;
+  background: none;
+}
