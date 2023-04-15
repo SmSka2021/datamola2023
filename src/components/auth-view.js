@@ -11,6 +11,7 @@ import {
   validLogin,
   validPassword,
 } from '../ultilites/validation';
+import { settingColorFontLight, settingColorFontDark } from '../ultilites/setting-font-color';
 
 class AuthFormView {
   constructor(id) {
@@ -136,6 +137,17 @@ class AuthFormView {
     }
   }
 
+  settingTheme() {
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    if (theme && theme === 'dark') {
+      settingColorFontLight('.sign__modal_link');
+      settingColorFontLight('.guest_btn_link_auth');
+    } else {
+      settingColorFontDark('.sign__modal_link');
+      settingColorFontDark('.guest_btn_link_auth');
+    }
+  }
+
   display() {
     const lang = JSON.parse(localStorage.getItem('lang'));
     const isRu = lang === 'ru';
@@ -196,6 +208,7 @@ class AuthFormView {
       getElement('.reset_auth').textContent = 'Очистить';
       getElement('.btn_login').textContent = 'Войти';
     }
+    this.settingTheme();
   }
 }
 export default AuthFormView;

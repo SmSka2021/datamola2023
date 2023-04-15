@@ -170,6 +170,9 @@
 .light_color {
     color: var(--white-color); 
 }
+.dark_font {
+   color: var(--primary-color);  
+}
 /********profile page ****/
 .container__title_profile {
 width: 600px;

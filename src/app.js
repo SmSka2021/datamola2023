@@ -35,6 +35,7 @@ import {
 } from './ultilites/text-message-user';
 import { filterAllTasks } from './ultilites/filter-tasks';
 import { fiveMinutes } from './ultilites/constant';
+import { settingColorFontLight, settingColorFontDark } from './ultilites/setting-font-color';
 
 class TasksController {
   constructor() {
@@ -189,8 +190,8 @@ class TasksController {
   };
 
   getTasksFromServer = async () => {
-    const isLoadPage = this.getLocalStorage('loadPages') || loadPagesStart;
     this.renderLoader();
+    const isLoadPage = this.getLocalStorage('loadPages') || loadPagesStart;
     const promises = [
       this.serviseApi.getTasks(isLoadPage.todo.from, isLoadPage.todo.to, 1),
       this.serviseApi.getTasks(isLoadPage.inProgress.from, isLoadPage.inProgress.to, 2),
@@ -457,6 +458,18 @@ class TasksController {
     if (pagesProfile && fonImg) {
       fonImg.classList.add('light_color');
     }
+    const pageAutSigh = getElement('.sign__modal_link');
+    const pageAutGuest = getElement('.guest_btn_link_auth');
+    if (pageAutSigh && pageAutGuest) {
+      settingColorFontLight('.sign__modal_link');
+      settingColorFontLight('.guest_btn_link_auth');
+    }
+    const pageRegSigh = getElement('.login__modal_link');
+    const pageRegGuest = getElement('.guest_btn_link');
+    if (pageRegSigh && pageRegGuest) {
+      settingColorFontLight('.login__modal_link');
+      settingColorFontLight('.guest_btn_link');
+    }
   };
 
   setLightTheme = () => {
@@ -469,6 +482,18 @@ class TasksController {
     const fonImg = getElement('.dark_color');
     if (pagesProfile && fonImg) {
       fonImg.classList.remove('light_color');
+    }
+    const pageAutSigh = getElement('.sign__modal_link');
+    const pageAutGuest = getElement('.guest_btn_link_auth');
+    if (pageAutSigh && pageAutGuest) {
+      settingColorFontDark('.sign__modal_link');
+      settingColorFontDark('.guest_btn_link_auth');
+    }
+    const pageRegSigh = getElement('.login__modal_link');
+    const pageRegGuest = getElement('.guest_btn_link');
+    if (pageRegSigh && pageRegGuest) {
+      settingColorFontDark('.login__modal_link');
+      settingColorFontDark('.guest_btn_link');
     }
   };
 
@@ -570,11 +595,13 @@ class TasksController {
     this.handlerError(authDataUser);
     if (!authDataUser.error) {
       this.savePathActual(pathName.boardCard);
+      this.saveLocalStorage('loadPages', loadPagesStart);
       this.saveLocalStorage('auth', 'true');
       this.saveLocalStorage('dataUser', dataUser);
       this.saveLocalStorage('tokken', authDataUser);
       this.isAuth = true;
       localStorage.removeItem('statusUser');
+      localStorage.removeItem('hideBtnsLoad');
       this.renderLoader();
       const allUsers = await this.serviseApi.getUsers();
       this.handlerError(allUsers);
@@ -603,8 +630,11 @@ class TasksController {
       'avatar',
       'user',
       'profileUser',
+      'hideBtnsLoad',
+      'loadPages',
     ];
     dataLocal.forEach((data) => { localStorage.removeItem(data); });
+    this.saveLocalStorage('loadPages', loadPagesStart);
     this.renderStartPages();
     this.renderHeader();
   };
@@ -689,16 +719,20 @@ class TasksController {
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
     this.renderLoader();
     const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
-    this.handlerError(deleteTask);
-    await this.getTasksFromServer();
-    if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
-    if (this.path.actuale === pathName.boardCard) {
-      this.renderMainBoardCard();
+    this.renderLoader();
+    if (!deleteTask.error) {
+      await this.getTasksFromServer();
+      if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
+      if (this.path.actuale === pathName.boardCard) {
+        this.renderMainBoardCard();
+      } else {
+        this.renderMainBoardList();
+      }
+      localStorage.removeItem('dataRemoveTask');
+      localStorage.removeItem('editTask');
     } else {
-      this.renderMainBoardList();
+      this.handlerError(deleteTask);
     }
-    localStorage.removeItem('dataRemoveTask');
-    localStorage.removeItem('editTask');
   };
 
   getFeed = () => {
