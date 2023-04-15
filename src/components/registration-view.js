@@ -14,6 +14,7 @@ import {
   validPassword,
   validRepeatPassword,
 } from '../ultilites/validation';
+import { settingColorFontLight, settingColorFontDark } from '../ultilites/setting-font-color';
 
 class RegistrationFormView {
   constructor(id) {
@@ -214,6 +215,17 @@ class RegistrationFormView {
     }
   }
 
+  settingTheme() {
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    if (theme && theme === 'dark') {
+      settingColorFontLight('.login__modal_link');
+      settingColorFontLight('.guest_btn_link');
+    } else {
+      settingColorFontDark('.login__modal_link');
+      settingColorFontDark('.guest_btn_link');
+    }
+  }
+
   display() {
     const lang = JSON.parse(localStorage.getItem('lang'));
     const isRu = lang === 'ru';
@@ -313,6 +325,7 @@ class RegistrationFormView {
       getElement('.reset_reg').textContent = 'Очистить';
       getElement('.save_reg').textContent = 'Сохранить';
     }
+    this.settingTheme();
   }
 }
 export default RegistrationFormView;

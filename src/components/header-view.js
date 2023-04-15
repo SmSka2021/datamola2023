@@ -105,12 +105,19 @@ class HeaderView {
 
   setThemeStart = () => {
     const theme = JSON.parse(localStorage.getItem('theme'));
-    if (theme) {
-      if (theme === 'dark') {
-        getElement('.dark').classList.add('check_btn');
-      } else {
-        getElement('.sunny').classList.add('check_btn');
-      }
+    if (theme && theme === 'dark') {
+      getElement('.dark').classList.add('check_btn');
+    } else {
+      getElement('.sunny').classList.add('check_btn');
+    }
+  };
+
+  setLangStart = () => {
+    const lang = JSON.parse(localStorage.getItem('lang'));
+    if (lang && lang === 'ru') {
+      getElement('.ru_lang').classList.add('active_lang');
+    } else {
+      getElement('.en_lang').classList.add('active_lang');
     }
   };
 
@@ -144,8 +151,6 @@ class HeaderView {
     const slach = createText('span', '/', ['en_lang']);
     const ruLang = createText('span', isRu ? ' Ру' : ' Ru', ['ru_lang']);
     containerLang.append(enLang, slach, ruLang);
-    if (lang === 'ru') ruLang.classList.add('active_lang');
-    else enLang.classList.add('active_lang');
     const containerAuth1 = createDiv(['container__authorize', 'header_for_auth_user']);
     const containerUserName1 = createDiv(['container__userName']);
     containerUserName1.title = isRu ? 'Профиль пользователя' : 'User`s profile';
@@ -181,6 +186,7 @@ class HeaderView {
     parentElem.replaceWith(header);
     this.setUser();
     this.setThemeStart();
+    this.setLangStart();
   }
 }
 export default HeaderView;
