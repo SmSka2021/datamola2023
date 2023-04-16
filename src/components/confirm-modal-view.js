@@ -17,6 +17,7 @@ class ConfirmModalView {
     const btn = getElement('.close_confirm');
     if (btn) {
       btn.addEventListener('click', (event) => {
+        event.preventDefault();
         event.stopPropagation();
         handler();
       });
@@ -27,6 +28,7 @@ class ConfirmModalView {
     const btn = getElement('.not');
     if (btn) {
       btn.addEventListener('click', (event) => {
+        event.preventDefault();
         event.stopPropagation();
         handler();
       });
@@ -37,6 +39,7 @@ class ConfirmModalView {
     const btn = getElement('.yes');
     if (btn) {
       btn.addEventListener('click', (event) => {
+        event.preventDefault();
         event.stopPropagation();
         handler();
       });
