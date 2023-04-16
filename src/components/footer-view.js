@@ -25,7 +25,7 @@ class FooterView {
     ancor.textContent = 'Sve-Mac@yandex.ru';
     ancor.href = 'mailto: Sve-Mac@yandex.ru';
     adress.append(myName, imgEmail, ancor);
-    const date = createText('p', `${convertationDate(new Date('2023-04-14').toISOString())}`, ['footer__date']);
+    const date = createText('p', `${convertationDate(new Date('2023-04-16').toISOString())}`, ['footer__date']);
     footer.append(footerTitle, adress, date);
     parentElem.replaceWith(footer);
   }
