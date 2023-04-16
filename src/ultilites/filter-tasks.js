@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+import { millSecOneDay } from './constant';
+
 export function filterTask(task, config) {
   if (config.title
      && !task.name.toLowerCase().includes(config.dataSearch.toLowerCase())) return false;
@@ -16,7 +19,7 @@ export function filterTask(task, config) {
   if (config.dateFrom
      && new Date(task.createdAt).getTime() <= new Date(config.dateFrom).getTime()) return false;
   if (config.dateTo
-     && new Date(task.createdAt).getTime() >= new Date(config.dateTo).getTime()) return false;
+     && new Date(task.createdAt).getTime() > new Date(config.dateTo).getTime() + millSecOneDay) return false;
   return true;
 }
 

@@ -19,11 +19,13 @@ import {
   validRepeatPassword,
 } from '../ultilites/validation';
 import convertorImg64 from '../ultilites/convertation-img-base64';
+import { twoHundKBait } from '../ultilites/constant';
+import { messageUpdateProfile } from '../ultilites/text-message-user';
 
 class UserPagesView {
   constructor(id) {
     this.id = id;
-    this.isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) || 'true';
+    this.isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) || true;
   }
 
   validationInput(e) {
@@ -273,8 +275,9 @@ class UserPagesView {
     const arrExe = ['png'];
     const file = element.files[0];
     const exe = file.name.split('.').splice(-1, 1)[0];
-    if (!arrExe.includes(exe)) {
-      alert('Извините, но на данный момент принимаются только файлы в формате "png"');
+    const size = file.size > twoHundKBait;
+    if (!arrExe.includes(exe) || size) {
+      alert(messageUpdateProfile());
       getElement('.profile_avatar_new').value = '';
       this.isDisabledSave();
       return;
@@ -287,7 +290,7 @@ class UserPagesView {
   };
 
   display() {
-    const isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) === 'true';
+    const isViewMode = JSON.parse(localStorage.getItem('isViewProfile')) === true;
     const lang = JSON.parse(localStorage.getItem('lang'));
     const isRu = lang === 'ru';
     const dataUser = JSON.parse(localStorage.getItem('dataUser'));
