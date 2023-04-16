@@ -201,7 +201,6 @@ class TasksController {
       const progr = allTasksserver.filter((task) => task.status === 'In progress').slice(isLoadPage.complete.from, isLoadPage.complete.to);
       this.allTasks = [];
       this.allTasks.push(...todo, ...complete, ...progr);
-      console.log(this.allTasks);
       this.cleanLoader();
     }
   };
