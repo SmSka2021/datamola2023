@@ -57,12 +57,12 @@ class TasksController {
     this.renderHeader();
     this.footer.display();
     this.path = JSON.parse(localStorage.getItem('path')) || pathData;
+    this.saveLocalStorage('loadPages', loadPagesStart);
+    localStorage.removeItem('hideBtnsLoad');
     this.renderStartPages();
     this.updateDataTask();
     this.setCurrentUser();
     this.setTheme();
-    this.saveLocalStorage('loadPages', loadPagesStart);
-    localStorage.removeItem('hideBtnsLoad');
     this.settingLang();
   }
 
@@ -191,17 +191,19 @@ class TasksController {
 
   getTasksFromServer = async () => {
     this.renderLoader();
-    const isLoadPage = this.getLocalStorage('loadPages') || loadPagesStart;
-    const promises = [
-      this.serviseApi.getTasks(isLoadPage.todo.from, isLoadPage.todo.to, 1),
-      this.serviseApi.getTasks(isLoadPage.inProgress.from, isLoadPage.inProgress.to, 2),
-      this.serviseApi.getTasks(isLoadPage.complete.from, isLoadPage.complete.to, 3),
-    ];
-    const results = await Promise.allSettled(promises);
-    this.allTasks = [];
-    const successfulPromises = results.filter((promis) => promis.status === 'fulfilled');
-    successfulPromises.forEach((arr) => { this.allTasks.push(...arr.value); });
-    this.cleanLoader();
+    const isLoadPage = this.getLocalStorage('loadPages');
+    const allTasksserver = await this.serviseApi.getAllTasks();
+    if (allTasksserver.error) {
+      this.handlerError(allTasksserver);
+    } else {
+      const todo = allTasksserver.filter((task) => task.status === 'To Do').slice(isLoadPage.todo.from, isLoadPage.todo.to);
+      const complete = allTasksserver.filter((task) => task.status === 'Complete').slice(isLoadPage.inProgress.from, isLoadPage.inProgress.to);
+      const progr = allTasksserver.filter((task) => task.status === 'In progress').slice(isLoadPage.complete.from, isLoadPage.complete.to);
+      this.allTasks = [];
+      this.allTasks.push(...todo, ...complete, ...progr);
+      console.log(this.allTasks);
+      this.cleanLoader();
+    }
   };
 
   getTasksAfterFilterFromLocal = () => {
@@ -709,11 +711,12 @@ class TasksController {
     const response = await this.serviseApi.addTask(data);
     await this.getTasksFromServer();
     this.cleanLoader();
-    this.handlerError(response);
     if (!response.error) {
       this.cleanModalCreateTask();
-      this.renderStartPages();
       localStorage.removeItem('editTask');
+      this.renderStartPages();
+    } else {
+      this.handlerError(response);
     }
   };
 
@@ -729,6 +732,7 @@ class TasksController {
   };
 
   confirmDeleteTask = async () => {
+    const path = this.getLocalStorage('path');
     this.closeModalConfirm();
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
     this.loader.display();
@@ -737,7 +741,7 @@ class TasksController {
     if (!deleteTask.error) {
       await this.getTasksFromServer();
       if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();
-      if (this.path.actuale === pathName.boardCard) {
+      if (path.actuale === pathName.boardCard) {
         this.renderMainBoardCard();
       } else {
         this.renderMainBoardList();

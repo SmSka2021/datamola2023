@@ -116,11 +116,9 @@ class TaskFeedApiService {
 
   deleteTask = async (idTask) => {
     try {
-      console.log('111dvfdb');
       const response = await fetch(this.createDelete(`${urlAddTasks}/${idTask}`));
       if (response.ok) {
         const res = await response.json();
-        console.log('222dvfdb');
         return res;
       }
       return { error: 400 };
@@ -133,6 +131,23 @@ class TaskFeedApiService {
   getTasks = async (from = 0, to = 10, status = 0) => {
     try {
       const response = await fetch(this.createGet(`tasks?skip=${from}&to=${to}&status=${status}`));
+      if (response.ok) {
+        const res = await response.json();
+        return res;
+      }
+      if (response.status === 401) {
+        return { error: 401 };
+      }
+      return { error: 400 };
+    } catch (er) {
+      console.log('error server');
+      return { error: 500 };
+    }
+  };
+
+  getAllTasks = async () => {
+    try {
+      const response = await fetch(this.createGet('tasks'));
       if (response.ok) {
         const res = await response.json();
         return res;
