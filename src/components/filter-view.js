@@ -143,8 +143,8 @@ class FilterView {
     if (stateFilter.priority.high) getElement('#checkbox_high').setAttribute('checked', 'true');
     if (stateFilter.isPrivate.public) getElement('#public0').setAttribute('checked', 'true');
     if (stateFilter.isPrivate.privacy) getElement('#privacy0').setAttribute('checked', 'true');
-    if (stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', this.stateFilter.dateFrom.slice(0, 10));
-    if (stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', this.stateFilter.dateTo.slice(0, 10));
+    if (stateFilter.dateFrom) getElement('#inputDateFrom').setAttribute('value', stateFilter.dateFrom.slice(0, 10));
+    if (stateFilter.dateTo) getElement('#inputDateTo').setAttribute('value', stateFilter.dateTo.slice(0, 10));
     if (stateFilter.dataSearch) getElement('.search__input').setAttribute('value', stateFilter.dataSearch);
     const resetBtn = getElement('.reset_btn');
     resetBtn.disabled = checkStateFilter(stateFilter);

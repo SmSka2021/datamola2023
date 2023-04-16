@@ -255,32 +255,32 @@ class TasksController {
     this.renderLoader();
     const responseServer = await this.serviseApi.editUserProfile(dataUser);
     this.cleanLoader();
-    this.handlerError(responseServer);
     if (!responseServer.error) {
+      this.saveLocalStorage('isViewProfile', true);
       this.saveLocalStorage('dataUserServer', responseServer);
       this.saveLocalStorage('dataUser', dataUser);
-      this.saveLocalStorage('isViewProfile', 'true');
       this.renderProfilePage();
       this.setCurrentUser();
     } else {
-      this.saveLocalStorage('isViewProfile', 'true');
+      this.saveLocalStorage('isViewProfile', true);
       this.renderProfilePage();
+      this.handlerError(responseServer);
     }
   };
 
   setEditProfile = () => {
-    this.saveLocalStorage('isViewProfile', 'false');
+    this.saveLocalStorage('isViewProfile', false);
     this.renderProfilePage();
   };
 
   setMainPage = () => {
-    this.saveLocalStorage('isViewProfile', 'true');
+    this.saveLocalStorage('isViewProfile', true);
     this.renderMainBoardCard();
     this.renderFilter();
   };
 
   setViewProfile = () => {
-    this.saveLocalStorage('isViewProfile', 'true');
+    this.saveLocalStorage('isViewProfile', true);
     this.renderProfilePage();
   };
 
@@ -396,8 +396,14 @@ class TasksController {
       }
     }
     this.cleanLoader();
-    this.renderStartPages();
     this.saveLocalStorage('loadPages', isLoadPage);
+    const path = this.getLocalStorage('path');
+    if (path.actuale === pathName.boardCard) {
+      this.renderMainBoardCard();
+    }
+    if (path.actuale === pathName.boardList) {
+      this.renderMainBoardList();
+    }
   };
 
   cleanMainBoard = () => {
@@ -573,6 +579,10 @@ class TasksController {
     this.renderStartPages();
   };
 
+  closeModalConfirm = () => {
+    this.cleanModalCreateTask();
+  };
+
   closeModalMessage = () => {
     this.removeElement('modal_message');
   };
@@ -602,8 +612,11 @@ class TasksController {
       this.isAuth = true;
       localStorage.removeItem('statusUser');
       localStorage.removeItem('hideBtnsLoad');
+      localStorage.removeItem('settingFilter');
+      await this.getTasksFromServer();
       this.renderLoader();
       const allUsers = await this.serviseApi.getUsers();
+      this.cleanLoader();
       this.handlerError(allUsers);
       if (!allUsers.error) {
         const userThis = allUsers.find((user) => user.login === dataUser.login);
@@ -615,7 +628,7 @@ class TasksController {
     }
   };
 
-  logInAsGuest = () => {
+  logInAsGuest = async () => {
     this.savePathActual(pathName.boardCard);
     this.saveLocalStorage('statusUser', 'guest');
     const dataLocal = ['tokken',
@@ -635,6 +648,7 @@ class TasksController {
     ];
     dataLocal.forEach((data) => { localStorage.removeItem(data); });
     this.saveLocalStorage('loadPages', loadPagesStart);
+    await this.getTasksFromServer();
     this.renderStartPages();
     this.renderHeader();
   };
@@ -715,11 +729,11 @@ class TasksController {
   };
 
   confirmDeleteTask = async () => {
-    this.closeModalCreateTask();
+    this.closeModalConfirm();
     const dataDeleteTask = this.getLocalStorage('dataRemoveTask');
-    this.renderLoader();
+    this.loader.display();
     const deleteTask = await this.serviseApi.deleteTask(dataDeleteTask.id);
-    this.renderLoader();
+    this.cleanLoader();
     if (!deleteTask.error) {
       await this.getTasksFromServer();
       if (dataDeleteTask.isNeedRenderFilter) this.renderFilter();

@@ -60,3 +60,8 @@ export const messageConfirmDelete = () => {
   if (checkLang()) return 'Вы уверены?';
   return 'A you sure?';
 };
+
+export const messageUpdateProfile = () => {
+  if (checkLang()) return 'Извините, но на данный момент принимаются только файлы в формате "png" размером не более 200 килобайт';
+  return 'Sorry, but at the moment you can upload files in the "png" format with a maximum size of 200 kilobytes';
+};

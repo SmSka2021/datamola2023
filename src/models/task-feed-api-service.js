@@ -116,9 +116,11 @@ class TaskFeedApiService {
 
   deleteTask = async (idTask) => {
     try {
+      console.log('111dvfdb');
       const response = await fetch(this.createDelete(`${urlAddTasks}/${idTask}`));
       if (response.ok) {
         const res = await response.json();
+        console.log('222dvfdb');
         return res;
       }
       return { error: 400 };
