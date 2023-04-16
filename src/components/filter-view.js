@@ -34,6 +34,7 @@ class FilterView {
       event.stopPropagation();
 
       getElement('#inputDateFrom').onchange = (e) => {
+        e.stopPropagation();
         const dateFrom = e.target.value;
         this.stateFilter.dateFrom = new Date(dateFrom);
         this.saveSettingLocalStorage();
@@ -41,55 +42,64 @@ class FilterView {
         handler();
       };
       getElement('#inputDateTo').onchange = (e) => {
+        e.stopPropagation();
         const dateTo = e.target.value;
         this.stateFilter.dateTo = new Date(dateTo);
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#checkbox_low').onchange = () => {
+      getElement('#checkbox_low').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.priority.low = !this.stateFilter.priority.low;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#checkbox_medium').onchange = () => {
+      getElement('#checkbox_medium').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.priority.medium = !this.stateFilter.priority.medium;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#checkbox_high').onchange = () => {
+      getElement('#checkbox_high').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.priority.high = !this.stateFilter.priority.high;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#public0').onchange = () => {
+      getElement('#public0').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.isPrivate.public = !this.stateFilter.isPrivate.public;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#privacy0').onchange = () => {
+      getElement('#privacy0').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.isPrivate.privacy = !this.stateFilter.isPrivate.privacy;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#assignee0').onchange = () => {
+      getElement('#assignee0').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.assignee = !this.stateFilter.assignee;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#description0').onchange = () => {
+      getElement('#description0').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.description = !this.stateFilter.description;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
         handler();
       };
-      getElement('#title0').onchange = () => {
+      getElement('#title0').onchange = (e) => {
+        e.stopPropagation();
         this.stateFilter.title = !this.stateFilter.title;
         this.saveSettingLocalStorage();
         this.isDisabledReset();
@@ -97,7 +107,8 @@ class FilterView {
       };
       const searchInput = getElement('.search__input');
       if (searchInput) {
-        searchInput.addEventListener('input', () => {
+        searchInput.addEventListener('input', (e) => {
+          e.stopPropagation();
           this.stateFilter.dataSearch = searchInput.value;
           this.saveSettingLocalStorage();
           this.isDisabledReset();
